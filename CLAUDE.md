@@ -207,18 +207,26 @@ Each exercise is exactly three cells:
 # ### Exercise N: <title>
 #
 # <prompt text>
+#
+# $$<formula in LaTeX if needed>$$
 
 # %%
-# Your code here (plus any prefilled variables above this comment)
-variable_name = ...
+prefilled_var = <value>     # any prefilled variables come FIRST
+# Your code here
+answer_var = ...            # student fills this in
 
 # %%
-grader.check("exN_<short_name>", lambda: checks.check_exN(variable_name))
+grader.check("exN_<short_name>", lambda: checks.check_exN(answer_var))
 ```
 
 - The check cell is always a **single line** — a lambda that passes the
   student's variable into the corresponding function in `checks.py`.
 - Never put check logic in the notebook itself. Students can read it.
+- Prefilled variables (e.g. `n = 14`, `name = "Sam"`) go **above**
+  `# Your code here`. The student's answer variable goes below it with
+  `= ...` as the placeholder.
+- Use LaTeX `$$...$$` for any mathematical formulas in the prompt.
+  Example: `# $$F = C \times \frac{9}{5} + 32$$`
 
 ### 5. Final Score cell
 ```python
