@@ -5,8 +5,18 @@
 # After finishing an exercise, run its **check cell** to see if your answer is correct.
 # When you're done, run the **Final Score** cell, then the **Submit** cell.
 
+# %% [markdown]
+# **Enter your name below exactly as it appears on the course roster —
+# spelling and capitalization matter. This is used to record your score.**
+
 # %%
-# Setup — DO NOT EDIT THIS CELL
+student_name = "Your Name Here"
+
+# %% [markdown]
+# ---
+# ## Setup — RUN AT BEGINNING, DO NOT MODIFY
+
+# %%
 import urllib.request, pathlib, sys
 
 _BASE = "https://raw.githubusercontent.com/johnmccuin/python-course/main"
@@ -32,16 +42,6 @@ grader = Grader("Week 1 Homework")
 SUBMIT_URL = "https://script.google.com/macros/s/AKfycbxmZUvgnvH3-rWYfr3ZV9vMcK8mpKvoStmjsoF0iRNLPCb_wuPNzj-MENyzRs44CwdXkQ/exec"
 
 print("Ready!")
-
-# %% [markdown]
-# ## Before you begin
-#
-# Enter your name in the cell below **exactly as it appears on the course
-# roster** — spelling and capitalization matter. This is used to record
-# your score in the gradebook.
-
-# %%
-student_name = "Your Name Here"
 
 # %% [markdown]
 # ---

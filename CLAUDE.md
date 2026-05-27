@@ -158,10 +158,23 @@ Every homework notebook follows this exact structure, in order:
 # When you're done, run the **Final Score** cell, then the **Submit** cell.
 ```
 
-### 2. Setup cell (update the two week numbers — SUBMIT_URL is already set)
+### 2. Student name cell (comes BEFORE setup — very first interactive cell)
 ```python
+# %% [markdown]
+# **Enter your name below exactly as it appears on the course roster —
+# spelling and capitalization matter. This is used to record your score.**
+
 # %%
-# Setup — DO NOT EDIT THIS CELL
+student_name = "Your Name Here"
+```
+
+### 3. Setup section (update the two week numbers — SUBMIT_URL is already set)
+```python
+# %% [markdown]
+# ---
+# ## Setup — RUN AT BEGINNING, DO NOT MODIFY
+
+# %%
 import urllib.request, pathlib, sys
 
 _BASE = "https://raw.githubusercontent.com/johnmccuin/python-course/main"
@@ -192,19 +205,6 @@ print("Ready!")
 > **Note:** `checks-0N.py` is fetched from GitHub under its week-numbered name
 > but saved locally as `checks.py` so that `import checks` works without issue.
 > Never change the dict key (`"checks.py"`) — only update the URL value.
-
-### 3. Student name cell
-```python
-# %% [markdown]
-# ## Before you begin
-#
-# Enter your name in the cell below **exactly as it appears on the course
-# roster** — spelling and capitalization matter. This is used to record
-# your score in the gradebook.
-
-# %%
-student_name = "Your Name Here"
-```
 
 ### 4. Exercises section header
 ```python

@@ -4,13 +4,23 @@
 # **Instructor reference — do not distribute to students.**
 #
 # This file is intentionally excluded from `build.sh` and the `dist/`
-# folder so it is never published to the public repo. Run it locally
-# with `jupytext --to notebook homework_solution-01.py` to verify grading.
+# folder so it is never published to the public repo. Run
+# `bash build.sh` to regenerate `homework_solution-01.ipynb` locally.
 #
 # Running all cells top-to-bottom should score **7 / 7**.
 
+# %% [markdown]
+# **Enter your name below exactly as it appears on the course roster —
+# spelling and capitalization matter. This is used to record your score.**
+
 # %%
-# Setup — DO NOT EDIT THIS CELL
+student_name = "Instructor"
+
+# %% [markdown]
+# ---
+# ## Setup — RUN AT BEGINNING, DO NOT MODIFY
+
+# %%
 import urllib.request, pathlib, sys
 
 _BASE = "https://raw.githubusercontent.com/johnmccuin/python-course/main"
@@ -33,19 +43,9 @@ from grader import Grader
 import checks
 grader = Grader("Week 1 Homework")
 
-SUBMIT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"
+SUBMIT_URL = "https://script.google.com/macros/s/AKfycbxmZUvgnvH3-rWYfr3ZV9vMcK8mpKvoStmjsoF0iRNLPCb_wuPNzj-MENyzRs44CwdXkQ/exec"
 
 print("Ready!")
-
-# %% [markdown]
-# ## Before you begin
-#
-# Enter your name in the cell below **exactly as it appears on the course
-# roster** — spelling and capitalization matter. This is used to record
-# your score in the gradebook.
-
-# %%
-student_name = "Instructor"
 
 # %% [markdown]
 # ---
