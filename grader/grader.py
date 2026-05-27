@@ -210,15 +210,25 @@ class Grader:
         try:
             with urllib.request.urlopen(full_url, timeout=10) as resp:
                 body = resp.read().decode("utf-8")
-            result = json.loads(body)
-            if result.get("status") == "ok":
-                print(f"✓ Score submitted for {name}: {passed}/{total} ({pct}%)")
-                print("  You can re-submit any time — only your highest score is kept.")
-            else:
-                print(f"✗ Server returned an unexpected response: {body}")
         except urllib.error.HTTPError as exc:
             print(f"✗ Submission failed (HTTP {exc.code} {exc.reason}).")
             print("  Double-check that SUBMIT_URL is correct.")
+            return
         except OSError as exc:
             print(f"✗ Submission failed: {exc}")
             print("  Check your internet connection and that SUBMIT_URL is correct.")
+            return
+
+        try:
+            result = json.loads(body)
+        except json.JSONDecodeError:
+            print(f"✗ Submission failed: server returned an unexpected response.")
+            print(f"  The Apps Script may need to be redeployed with the latest gradebook.js.")
+            print(f"  Response was: {body[:200]!r}")
+            return
+
+        if result.get("status") == "ok":
+            print(f"✓ Score submitted for {name}: {passed}/{total} ({pct}%)")
+            print("  You can re-submit any time — only your highest score is kept.")
+        else:
+            print(f"✗ Server returned an error: {result.get('message', body)}")
