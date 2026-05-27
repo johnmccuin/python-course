@@ -55,12 +55,12 @@ print("Ready!")
 # Python checks them **top to bottom** and runs only the first one that matches.
 #
 # ```python
-# if score >= 90:
-#     label = "A"
-# elif score >= 80:
-#     label = "B"
+# if condition_1:
+#     result = "value_1"
+# elif condition_2:
+#     result = "value_2"
 # else:
-#     label = "C or below"
+#     result = "default_value"
 # ```
 
 # %% [markdown]
@@ -97,9 +97,9 @@ grader.check("ex1_grade_label", lambda: checks.check_ex1(label))
 #
 # | Weight | Price |
 # |--------|-------|
-# | 1 lb or under | $3.99 |
-# | Over 1 lb, up to 5 lbs | $7.99 |
-# | Over 5 lbs | $14.99 |
+# | 1 lb or under | \$3.99 |
+# | Over 1 lb, up to 5 lbs | \$7.99 |
+# | Over 5 lbs | \$14.99 |
 #
 # The variable `weight` is set to `3.5` (pounds).
 # Write an `if/elif/else` block that assigns `cost` to the correct price.
@@ -122,14 +122,13 @@ grader.check("ex2_shipping_cost", lambda: checks.check_ex2(cost))
 # and a **change** inside the body that will eventually make the condition False.
 #
 # ```python
-# total = 0    # starting value
-# i = 1
+# n = 10            # starting value
 #
-# while i <= 5:     # condition
-#     total += i    # do some work
-#     i += 1        # change — without this the loop runs forever!
+# while n > 0:      # condition
+#     print(n)      # do some work
+#     n -= 1        # change — without this the loop runs forever!
 #
-# print(total)      # read the result after the loop finishes
+# print("Done!")    # code here runs after the loop finishes
 # ```
 
 # %% [markdown]
