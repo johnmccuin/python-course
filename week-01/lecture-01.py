@@ -297,13 +297,6 @@ print(f"Hello, {name}! You are {age} years old.")
 # Your code here
 
 # %% [markdown]
-# ---
-# ## ☕ 15-minute break
-#
-# See you back here at the time the instructor announces!
-# ---
-
-# %% [markdown]
 # ## Block 4: Making Decisions with if / elif / else
 #
 # So far our programs do the same thing every time. Now we'll make
@@ -403,12 +396,3 @@ else:
 
 # %%
 # Your code here
-
-# %% [markdown]
-# ## That's it for tonight!
-#
-# Open the homework notebook (linked in Blackboard) to start
-# practicing. You can work on it now, finish it during class, or
-# take it home — it's autograded, so you'll know how you did.
-#
-# See you next week!
