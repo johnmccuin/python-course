@@ -3,6 +3,10 @@
 #
 # **Instructor reference — do not distribute to students.**
 #
+# This file is intentionally excluded from `build.sh` and the `dist/`
+# folder so it is never published to the public repo. Run it locally
+# with `jupytext --to notebook homework_solution.py` to verify grading.
+#
 # Running all cells top-to-bottom should score **7 / 7**.
 
 # %%
