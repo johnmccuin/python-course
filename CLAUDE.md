@@ -153,7 +153,7 @@ Every homework notebook follows this exact structure, in order:
 # When you're done, run the **Final Score** cell, then the **Submit** cell.
 ```
 
-### 2. Setup cell (instructor fills in SUBMIT_URL before publishing)
+### 2. Setup cell (update the two week numbers — SUBMIT_URL is already set)
 ```python
 # %%
 # Setup — DO NOT EDIT THIS CELL
@@ -162,7 +162,7 @@ import urllib.request, pathlib, sys
 _BASE = "https://raw.githubusercontent.com/johnmccuin/python-course/main"
 _FILES = {
     "grader.py": f"{_BASE}/grader/grader.py",
-    "checks.py": f"{_BASE}/week-0N/checks.py",   # ← update N for each week
+    "checks.py": f"{_BASE}/week-0N/checks.py",   # ← update N
 }
 for _name, _url in _FILES.items():
     _dest = pathlib.Path(_name)
@@ -177,7 +177,7 @@ if str(pathlib.Path(".").resolve()) not in sys.path:
 
 from grader import Grader
 import checks
-grader = Grader("Week N Homework")   # ← update N for each week
+grader = Grader("Week N Homework")   # ← update N
 
 SUBMIT_URL = "https://script.google.com/macros/s/AKfycbxmZUvgnvH3-rWYfr3ZV9vMcK8mpKvoStmjsoF0iRNLPCb_wuPNzj-MENyzRs44CwdXkQ/exec"
 
@@ -310,6 +310,14 @@ Sheet via a Google Apps Script web app:
 
 The Apps Script source is in `grader/gradebook.js`.
 Setup instructions are in `grader/GRADEBOOK_SETUP.md`.
+
+**Important operational notes:**
+- If `gradebook.js` is ever changed, the Apps Script deployment must be
+  updated: Deploy → Manage deployments → Edit → New version → Deploy.
+  The URL stays the same after redeployment.
+- Colab caches `grader.py` and `checks.py` for the lifetime of a session.
+  If either file is updated on GitHub, students (and you) must do
+  **Runtime → Restart session** in Colab before the new version takes effect.
 
 **SUBMIT_URL** (same for all weeks):
 ```
