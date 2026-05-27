@@ -76,11 +76,11 @@ print("hello, python")
 # %%
 10 / (2 + 3)
 
-# %%
-"hello"
-
 # %% [markdown]
 # Strings can be added together.
+
+# %%
+"hello"
 
 # %%
 "hello" + " " + "world"
@@ -91,8 +91,13 @@ print("hello, python")
 # %%
 "ha" * 3
 
+# %% [markdown]
+# Comparisons give boolean True/False values.
+
 # %%
 5 > 3
+5 < 3
+5 != 3  # != is NOT EQUAL TO
 
 # %% [markdown]
 # Double-equals (`==`) tests if two values are equal.
@@ -151,10 +156,9 @@ x + 3
 # Predict what `x` will be **before** you run the next cell.
 
 # %%
-x = x + 1
-
-# %%
-x
+x = 3
+x = x + 2
+print(x)
 
 # %%
 student_name = "Alex"
@@ -225,7 +229,7 @@ type("5")
 type(True)
 
 # %% [markdown]
-# What do you think this will produce?
+# What do you think each of these will output?
 
 # %%
 "5" + "3"
@@ -264,7 +268,7 @@ age = input("Your age? ")
 type(age)
 
 # %% [markdown]
-# Let's fix that — wrap `input()` in `int()` to convert right away.
+# Input saves what is input as a string.  Let's fix that — wrap `input()` in `int()` to convert right away.
 
 # %%
 age = int(input("Your age? "))
