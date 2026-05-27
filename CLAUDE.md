@@ -110,6 +110,64 @@ the generated files is simpler and keeps everything self-contained.
 4. Commit with a clear message.
 5. Push.
 
+**Note on jupytext cell IDs:** jupytext assigns new random cell UUIDs on
+every conversion run, so `dist/` files will always appear modified after a
+rebuild even if content is unchanged. This is normal — just commit them
+alongside the source changes. (Using `jupytext --update` instead of
+`--to notebook` would preserve IDs; left as a future improvement.)
+
+---
+
+## Branch and repo conventions
+
+- **Work directly on `main`** for all course content. There is no need for
+  feature branches in a course repo — the deliverable is notebooks, not
+  production code, and students + Colab links always point at `main`.
+- **Never use branch names containing `/`** for anything student-facing.
+  Colab parses the GitHub URL by splitting on `/`, so a branch like
+  `feature/foo` is misread as branch=`feature`, path=`foo/…` — resulting
+  in a 404.
+- The repo **must be public** on GitHub. Colab and every Blackboard link
+  students open fetch raw files without authentication; GitHub returns 404
+  for unauthenticated requests to private repos.
+
+---
+
+## Colab URL pattern
+
+The canonical URL for any notebook in this repo is:
+
+```
+https://colab.research.google.com/github/johnmccuin/python-course/blob/main/dist/<folder>/<notebook>.ipynb
+```
+
+Examples:
+- Test grader: `.../dist/grader/test_grader.ipynb`
+- Week 1 homework: `.../dist/week-01/homework.ipynb`
+
+Use these URLs in Blackboard. They resolve to the latest commit on `main`
+automatically — no URL update needed after pushing new content.
+
+---
+
+## How homework notebooks load the Grader
+
+Each homework notebook downloads `grader.py` from the raw GitHub URL at
+the top of the notebook — no cloning, no pip install:
+
+```python
+import urllib.request, pathlib, sys
+
+urllib.request.urlretrieve(
+    "https://raw.githubusercontent.com/johnmccuin/python-course/main/grader/grader.py",
+    "grader.py"
+)
+sys.path.insert(0, str(pathlib.Path(".").resolve()))
+from grader import Grader
+```
+
+This is the standard pattern to copy into every homework `.py` source.
+
 ---
 
 ## Requirements
