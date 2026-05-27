@@ -26,6 +26,7 @@ class Grader:
         # ... more exercises ...
 
         grader.report()
+        grader.submit("Ada Lovelace", SUBMIT_URL)
     """
 
     def __init__(self, title: str):
@@ -137,3 +138,92 @@ class Grader:
         else:
             pct = round(100 * passed_count / total)
             print(f"Score: {passed_count} / {total}  ({pct}%)")
+
+    def submit(self, student_name: str, url: str) -> None:
+        """POST the current score to the course gradebook.
+
+        Parameters
+        ----------
+        student_name : str
+            The student's name exactly as it appears on the course roster.
+        url : str
+            The Google Apps Script web-app URL provided by the instructor.
+
+        The payload is JSON with keys: student_name, assignment, score,
+        total, pct, timestamp (UTC ISO-8601).  The server is expected to
+        return ``{"status": "ok"}`` on success.
+
+        Students may submit as many times as they like; the gradebook
+        keeps every submission and the instructor's Sheet formula picks
+        the highest score per student.
+        """
+        import json
+        import datetime
+        import urllib.request
+        import urllib.error
+
+        # ── Validate inputs ────────────────────────────────────────────
+        name = student_name.strip() if isinstance(student_name, str) else ""
+        if not name or name.lower() == "your name here":
+            print("✗ Please set student_name to your real name before submitting.")
+            return
+
+        if not self._results:
+            print("✗ No checks recorded yet — run all exercise cells first.")
+            return
+
+        if not url or "YOUR_SCRIPT_ID" in url:
+            print("✗ SUBMIT_URL has not been configured. Ask your instructor.")
+            return
+
+        # ── Build payload ──────────────────────────────────────────────
+        passed = sum(1 for p, _ in self._results.values() if p)
+        total = len(self._results)
+        pct = round(100 * passed / total) if total else 0
+
+        payload = json.dumps({
+            "student_name": name,
+            "assignment":   self.title,
+            "score":        passed,
+            "total":        total,
+            "pct":          pct,
+            "timestamp":    datetime.datetime.utcnow().isoformat() + "Z",
+        }).encode("utf-8")
+
+        # ── POST with redirect-safe handler ────────────────────────────
+        # Google Apps Script exec URLs sometimes return a 302 redirect.
+        # Python's default urllib handler converts POST→GET on redirect,
+        # dropping the body.  This handler preserves the POST method.
+        class _KeepPostRedirect(urllib.request.HTTPRedirectHandler):
+            def redirect_request(self, req, fp, code, msg, headers, newurl):
+                return urllib.request.Request(
+                    newurl,
+                    data=req.data,
+                    headers=dict(req.headers),
+                    method="POST",
+                )
+
+        opener = urllib.request.build_opener(_KeepPostRedirect)
+        req = urllib.request.Request(
+            url,
+            data=payload,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+
+        # ── Send and report ────────────────────────────────────────────
+        try:
+            with opener.open(req, timeout=10) as resp:
+                body = resp.read().decode("utf-8")
+            result = json.loads(body)
+            if result.get("status") == "ok":
+                print(f"✓ Score submitted for {name}: {passed}/{total} ({pct}%)")
+                print("  You can re-submit any time — only your highest score is kept.")
+            else:
+                print(f"✗ Server returned an unexpected response: {body}")
+        except urllib.error.HTTPError as exc:
+            print(f"✗ Submission failed (HTTP {exc.code} {exc.reason}).")
+            print("  Double-check that SUBMIT_URL is correct.")
+        except OSError as exc:
+            print(f"✗ Submission failed: {exc}")
+            print("  Check your internet connection and that SUBMIT_URL is correct.")

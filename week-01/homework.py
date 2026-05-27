@@ -3,7 +3,7 @@
 #
 # Work through each exercise in order.
 # After finishing an exercise, run its **check cell** to see if your answer is correct.
-# When you're done, run the **Final Score** cell at the bottom.
+# When you're done, run the **Final Score** cell, then the **Submit** cell.
 
 # %%
 # Setup — don't edit this cell
@@ -28,7 +28,20 @@ if str(pathlib.Path(".").resolve()) not in sys.path:
 from grader import Grader
 import checks
 grader = Grader("Week 1 Homework")
+
+SUBMIT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"
+
 print("Ready!")
+
+# %% [markdown]
+# ## Before you begin
+#
+# Enter your name in the cell below **exactly as it appears on the course
+# roster** — spelling and capitalization matter. This is used to record
+# your score in the gradebook.
+
+# %%
+student_name = "Your Name Here"
 
 # %% [markdown]
 # ---
@@ -153,3 +166,14 @@ grader.check("ex7_fizz_or_buzz_lite", lambda: checks.check_ex7(result))
 
 # %%
 grader.report()
+
+# %% [markdown]
+# ---
+# ## Submit
+#
+# Run the cell below to send your score to the gradebook.
+# You can re-submit as many times as you like — only your highest score
+# is kept.
+
+# %%
+grader.submit(student_name, SUBMIT_URL)
