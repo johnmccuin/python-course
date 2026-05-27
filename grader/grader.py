@@ -190,22 +190,25 @@ class Grader:
             "timestamp":    datetime.datetime.utcnow().isoformat() + "Z",
         }).encode("utf-8")
 
-        # ── POST ───────────────────────────────────────────────────────
-        # Google Apps Script processes the POST immediately, then returns
-        # a 302 to a googleusercontent.com CDN URL that serves the cached
-        # response.  That CDN URL only accepts GET, so we let Python's
-        # default urllib behaviour handle the redirect (POST → GET), which
-        # is exactly what Google expects.
-        req = urllib.request.Request(
-            url,
-            data=payload,
-            headers={"Content-Type": "application/json"},
-            method="POST",
-        )
+        # ── GET with query parameters ──────────────────────────────────
+        # Google Apps Script reliably handles GET requests; POST requests
+        # from non-browser clients hit infrastructure-level 405 errors
+        # regardless of redirect handling.  Query parameters are fine for
+        # homework scores — there is nothing sensitive in the payload.
+        import urllib.parse
+        query = urllib.parse.urlencode({
+            "student_name": name,
+            "assignment":   self.title,
+            "score":        passed,
+            "total":        total,
+            "pct":          pct,
+            "timestamp":    datetime.datetime.utcnow().isoformat() + "Z",
+        })
+        full_url = f"{url}?{query}"
 
         # ── Send and report ────────────────────────────────────────────
         try:
-            with urllib.request.urlopen(req, timeout=10) as resp:
+            with urllib.request.urlopen(full_url, timeout=10) as resp:
                 body = resp.read().decode("utf-8")
             result = json.loads(body)
             if result.get("status") == "ok":

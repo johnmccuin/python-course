@@ -5,15 +5,8 @@
  * (Extensions → Apps Script), then deploy it as a web app.
  * See grader/GRADEBOOK_SETUP.md for step-by-step instructions.
  *
- * Expected JSON payload (POST body):
- *   {
- *     "student_name": "Ada Lovelace",
- *     "assignment":   "Week 1 Homework",
- *     "score":        6,
- *     "total":        7,
- *     "pct":          86,
- *     "timestamp":    "2026-05-27T02:14:00Z"
- *   }
+ * Submissions arrive as GET requests with query parameters:
+ *   student_name, assignment, score, total, pct, timestamp
  *
  * The script appends one row per submission.  Use the MAXIFS formula
  * in a summary sheet to compute each student's highest score per
@@ -36,19 +29,27 @@ var HEADERS = [
 
 // ---------------------------------------------------------------------------
 
-function doPost(e) {
+// Primary handler — called by grader.submit() via GET + query parameters.
+function doGet(e) {
+  // If there are no parameters this is just a browser visit — return info.
+  if (!e.parameter || !e.parameter.student_name) {
+    return ContentService
+      .createTextOutput("This endpoint accepts submissions from course homework notebooks.")
+      .setMimeType(ContentService.MimeType.TEXT);
+  }
+
   try {
     var sheet = _getOrCreateSheet(SUBMISSIONS_SHEET);
-    var data  = JSON.parse(e.postData.contents);
+    var p = e.parameter;
 
     sheet.appendRow([
-      data.timestamp || "",                         // A: timestamp from client
-      new Date(),                                   // B: server receipt time
-      (data.student_name || "").trim(),             // C: student name
-      data.assignment    || "",                     // D: assignment title
-      data.score         ?? "",                     // E: exercises passed
-      data.total         ?? "",                     // F: total exercises
-      data.pct != null ? data.pct + "%" : "",       // G: percentage string
+      p.timestamp  || "",                              // A: timestamp from client
+      new Date(),                                      // B: server receipt time
+      (p.student_name || "").trim(),                   // C: student name
+      p.assignment || "",                              // D: assignment title
+      p.score  !== undefined ? Number(p.score)  : "", // E: exercises passed
+      p.total  !== undefined ? Number(p.total)  : "", // F: total exercises
+      p.pct    !== undefined ? p.pct + "%"      : "", // G: percentage string
     ]);
 
     return _json({ status: "ok" });
@@ -56,13 +57,6 @@ function doPost(e) {
   } catch (err) {
     return _json({ status: "error", message: err.toString() });
   }
-}
-
-// Friendly message if someone opens the URL in a browser.
-function doGet(e) {
-  return ContentService
-    .createTextOutput("This endpoint accepts POST requests from course homework notebooks.")
-    .setMimeType(ContentService.MimeType.TEXT);
 }
 
 // ---------------------------------------------------------------------------
@@ -80,8 +74,6 @@ function _getOrCreateSheet(name) {
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(HEADERS);
     sheet.setFrozenRows(1);
-
-    // Bold the header row.
     sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight("bold");
   }
 
