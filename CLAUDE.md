@@ -109,6 +109,13 @@ students cannot find it by browsing GitHub.
 
 Run `build.sh` after any edit to a `.py` source before committing.
 
+**Branch-aware URL patching:** `build.sh` detects the current git branch.
+On a feature branch it rewrites every `python-course/main` URL in the
+generated `.ipynb` files to `python-course/<branch-name>`, so the setup
+cell's `urllib` downloads resolve correctly when testing in Colab before
+a merge. On `main` the patch is a no-op. Source `.py` files always
+contain `main` — never change them to a branch name manually.
+
 ---
 
 ## The `.ipynb`-files-are-checked-in convention
@@ -134,12 +141,18 @@ alongside the source changes.
 
 ## Branch and repo conventions
 
-- **Work directly on `main`** for all course content. There is no need for
-  feature branches — the deliverable is notebooks, and students + Colab
-  links always point at `main`.
+- **Intended workflow: merge to `main` before students use the content.**
+  Colab and Blackboard links always point at `main`, so notebooks must
+  be on `main` to be accessible to students.
+- **Claude Code on the web always creates a `claude/...` feature branch.**
+  This is fine — use it for development, test in Colab (the branch URL
+  patching in `build.sh` makes this work), then merge to `main` via a PR
+  before sharing links with students.
 - **Never use branch names containing `/`** for anything student-facing.
   Colab parses the GitHub URL by splitting on `/`, so a branch like
   `feature/foo` is misread as branch=`feature`, path=`foo/…` — 404.
+  (The `claude/...` branches are never in student-facing URLs, so the
+  slash in those names is harmless.)
 - The repo **must be public** on GitHub. Colab and every Blackboard link
   fetch raw files without authentication.
 
@@ -262,6 +275,49 @@ grader.check("exN_<short_name>", lambda: checks.check_exN(answer_var))
 - Use LaTeX `$$...$$` for any mathematical formulas in the prompt.
   Example: `# $$F = C \times \frac{9}{5} + 32$$`
 
+**Two exercise patterns depending on the task:**
+
+*Pattern A — expression answer* (Week 1 style): the student replaces `...`
+with a value or expression. Use when the answer is a single assignment.
+```python
+# %%
+n = 14
+# Your code here
+is_even = ...
+```
+
+*Pattern B — loop/block answer*: pre-initialize the result variable to its
+correct starting value and let the student add the loop or if-block below.
+Use when the student must write several lines (while loop, for loop, etc.).
+The check detects "did nothing" by testing whether the variable still holds
+its initial value.
+```python
+# %%
+limit = 15
+total = 0
+# Your code here — use a while loop
+```
+
+**Multi-concept weeks:** when a homework spans more than one concept
+(e.g., if/elif AND while loops AND for loops), group exercises under
+`## Part N — <Concept>` section headers instead of a single `## Exercises`
+header. Open each Part with a brief generic reminder code block — generic
+enough that it does not give away the solution.  Example:
+```python
+# %% [markdown]
+# ---
+# ## Part 2 — While Loops
+#
+# Quick reminder: ...
+#
+# ```python
+# n = 10          # starting value
+# while n > 0:    # condition
+#     print(n)    # do some work
+#     n -= 1      # change
+# ```
+```
+
 ### 6. Final Score cell
 ```python
 # %% [markdown]
@@ -308,6 +364,13 @@ def check_ex1(variable_name):
 def check_ex2(var1, var2):
     ...
 ```
+
+**Hint writing rules:**
+- Name the **symptom**, never the fix. ✓ "Got 0 — check that you're updating `total` inside the loop." ✗ "Add `total += i` inside the loop."
+- For wrong numeric answers, call out the specific value and what it suggests: "Got 105 — that's 1+2+…+14, so your loop stopped one step early."
+- For the `= ...` (Ellipsis) pattern, add `if answer is ...: return "You haven't filled this in yet."` as the first check.
+- For pre-initialized variables (Pattern B), check whether the variable still holds its starting value: `if total == 0: return "total is still 0 — ..."`.
+- Always verify the checks file before committing: run `python3` and call each `check_exN` with the correct answer (expect `True`) and several common wrong answers (expect a hint string).
 
 `checks-XX.py` is:
 - Fetched by the homework notebook at runtime and saved locally as `checks.py`
@@ -363,19 +426,25 @@ https://script.google.com/macros/s/AKfycbxmZUvgnvH3-rWYfr3ZV9vMcK8mpKvoStmjsoF0i
 
 ## Checklist for building a new week's homework
 
+- [ ] Read `week-0N/lecture-0N.py` first — only test concepts actually demonstrated there
 - [ ] Create `week-0N/checks-0N.py` — one `check_exK` function per exercise
 - [ ] Create `week-0N/homework-0N.py` — follow the structure above exactly;
       update the `checks-0N.py` URL (both the folder and filename) and
       `grader = Grader("Week N Homework")`
 - [ ] Create `week-0N/homework_solution-0N.py` — correct answers filled in,
       `student_name = "Instructor"`
+- [ ] Verify checks: run each `check_exN` with the correct answer (must return `True`)
+      and several wrong answers (must return hint strings, not crash)
 - [ ] Run `bash build.sh`
 - [ ] Verify `dist/week-0N/homework-0N.ipynb` was created
 - [ ] Verify `week-0N/homework_solution-0N.ipynb` was created (in-place, not dist/)
 - [ ] Verify `week-0N/homework_solution-0N.ipynb` does **not** appear in `git status`
-- [ ] `git add` sources + dist/ files; commit and push to `main`
-- [ ] Test the student notebook in Colab (setup cell, exercises, submit)
-- [ ] Test the solution notebook locally (should score N/N)
+- [ ] `git add` sources + dist/ files; commit and push to the feature branch
+- [ ] Test the student notebook in Colab — the branch URL patching means it
+      works before merging to `main`; the setup cell downloads from the branch
+- [ ] Merge to `main` via PR when satisfied
+- [ ] Confirm final notebooks on `main` use `main` URLs (run `build.sh` on main
+      after merge and push, or verify the PR merge triggered a clean rebuild)
 
 ---
 
