@@ -54,6 +54,22 @@ done < <(find "$REPO_ROOT" -maxdepth 2 -path "*/week-[0-9][0-9]/*.py" \
     -not -name "homework_solution.py" \
     -print0 2>/dev/null | sort -z)
 
+# homework_solution.py — built in-place (next to source, not in dist/)
+# The resulting .ipynb is git-ignored so it never reaches the public repo.
+while IFS= read -r -d '' file; do
+    local_dir="$(dirname "$file")"
+    local_base="$(basename "$file" .py)"
+    local_out="$local_dir/$local_base.ipynb"
+    local_rel="${file#"$REPO_ROOT/"}"
+    if jupytext --to notebook --output "$local_out" "$file" 2>/dev/null; then
+        echo "  ✓  $local_rel  →  ${local_out#"$REPO_ROOT/"}"
+        ((converted++)) || true
+    else
+        echo "  ✗  $local_rel  (conversion failed)" >&2
+        ((errors++)) || true
+    fi
+done < <(find "$REPO_ROOT" -maxdepth 2 -path "*/week-[0-9][0-9]/homework_solution.py" -print0 2>/dev/null | sort -z)
+
 echo ""
 echo "Done: $converted notebook(s) converted, $errors error(s)."
 
