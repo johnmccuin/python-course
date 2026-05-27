@@ -101,7 +101,7 @@ grader.check("ex3_is_even", lambda: checks.check_ex3(is_even))
 # The variable `celsius` is defined below. Assign a variable `fahrenheit`
 # to the temperature converted to Fahrenheit. The formula is:
 #
-#     F = C × 9/5 + 32
+# $$F = C \times \frac{9}{5} + 32$$
 
 # %%
 celsius = 25
