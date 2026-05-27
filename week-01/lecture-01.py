@@ -46,6 +46,36 @@ print("hello, python")
 # %%
 7 % 2
 
+# %% [markdown]
+# ### Order of operations (PEMDAS)
+#
+# Python follows standard math order of operations:
+# **P**arentheses → **E**xponents → **M**ultiplication & **D**ivision → **A**ddition & **S**ubtraction
+#
+# This catches a lot of beginners off guard. When in doubt, use
+# parentheses to make your intent explicit.
+
+# %% [markdown]
+# What does Python calculate here? Predict before you run.
+
+# %%
+2 + 3 * 4
+
+# %% [markdown]
+# Parentheses override the default order.
+
+# %%
+(2 + 3) * 4
+
+# %% [markdown]
+# Another common trap — division happens before addition.
+
+# %%
+10 / 2 + 3
+
+# %%
+10 / (2 + 3)
+
 # %%
 "hello"
 
@@ -246,7 +276,7 @@ type(age)
 # %%
 name = "Alex"
 age = 25
-f"Hello, {name}! You are {age} years old."
+print(f"Hello, {name}! You are {age} years old.")
 
 # %% [markdown]
 # ### Now you try
@@ -308,14 +338,22 @@ else:
     print("adult")
 
 # %% [markdown]
-# **What's wrong here?** Predict the error, then run.
+# ---
+# ### Spot the bug
+#
+# Each cell below has a problem. Predict what will go wrong — or what
+# wrong answer it will produce — **before** you run it.
+
+# %% [markdown]
+# **Bug 1.** What error does this produce, and why?
 
 # %%
 if 5 > 3
     print("yes")
 
 # %% [markdown]
-# **What about this one?**
+# **Bug 2.** This one also crashes. What's the difference between
+# the `=` on line 1 and the `=` on line 2?
 
 # %%
 age = 18
@@ -323,13 +361,31 @@ if age = 18:
     print("happy birthday")
 
 # %% [markdown]
-# **And this one?**
+# **Bug 3.** This one *runs without crashing* — but is the answer correct?
+# It's trying to find the average of three test scores.
 
 # %%
-x = 10
-if x > 5:
-    print("big")
- print("done")
+score1 = 85
+score2 = 92
+score3 = 78
+average = score1 + score2 + score3 / 3
+print("Average:", average)
+
+# %% [markdown]
+# **Bug 4.** This one also runs without crashing, but the output is wrong.
+# It should label scores as A (90+), B (80–89), or C (70–79).
+# Try it with `score = 95`. What prints? What *should* print? Why?
+
+# %%
+score = 95
+if score >= 70:
+    print("C")
+elif score >= 80:
+    print("B")
+elif score >= 90:
+    print("A")
+else:
+    print("failing")
 
 # %% [markdown]
 # ### Now you try
