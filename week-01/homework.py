@@ -29,7 +29,7 @@ from grader import Grader
 import checks
 grader = Grader("Week 1 Homework")
 
-SUBMIT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"
+SUBMIT_URL = "https://script.google.com/macros/s/AKfycbxmZUvgnvH3-rWYfr3ZV9vMcK8mpKvoStmjsoF0iRNLPCb_wuPNzj-MENyzRs44CwdXkQ/exec"
 
 print("Ready!")
 
