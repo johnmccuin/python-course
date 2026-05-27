@@ -8,25 +8,32 @@
 # ---
 # ## Setup
 #
-# Clone the course repo so `grader.py` is importable, then import `Grader`.
+# Download `grader.py` from the course repo into the Colab session, then
+# import `Grader` from it.  Re-running this cell is safe — it skips the
+# download if the file is already present.
+#
+# > **Note:** the course repo must be **public** on GitHub for this URL to
+# > work without authentication.  Students opening homework notebooks from
+# > Blackboard also require the repo to be public.
 
 # %%
-# Step 1 — clone the repo (skip if you've already done this)
-import subprocess, pathlib
+import urllib.request, pathlib, sys
 
-repo_url = "https://github.com/johnmccuin/python-course.git"
-dest = pathlib.Path("python-course")
+GRADER_URL = (
+    "https://raw.githubusercontent.com/johnmccuin/python-course/"
+    "main/grader/grader.py"
+)
+dest = pathlib.Path("grader.py")
+
 if not dest.exists():
-    subprocess.run(["git", "clone", repo_url], check=True)
+    urllib.request.urlretrieve(GRADER_URL, dest)
+    print(f"Downloaded grader.py ({dest.stat().st_size} bytes)")
 else:
-    print("Repo already cloned — skipping.")
+    print("grader.py already present — skipping download.")
 
-# %%
-# Step 2 — add grader/ to the module search path and import
-import sys
-grader_path = str(pathlib.Path("python-course/grader").resolve())
-if grader_path not in sys.path:
-    sys.path.insert(0, grader_path)
+# Add the current directory to sys.path so `import grader` finds the file.
+if str(pathlib.Path(".").resolve()) not in sys.path:
+    sys.path.insert(0, str(pathlib.Path(".").resolve()))
 
 from grader import Grader
 print("Grader imported successfully.")
