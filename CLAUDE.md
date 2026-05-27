@@ -23,7 +23,7 @@ This schedule is the source of truth for what each week covers. Do not infer top
 
 | Week | Topic | AI Use |
 |------|-------|--------|
-| 01 | First Steps: Python setup (Colab), variables, numbers, strings, booleans, expressions, print/input, if/else if time permits | No AI |
+| 01 | First Steps: Python setup (Colab), variables, numbers, strings, booleans, expressions, print/input, if/else | No AI |
 | 02 | Making Decisions and Repeating: if/else, while loops, for loops, lists (motivating loops) | No AI |
 | 03 | Functions and More Data: functions (parameters, return values), dicts, strings in depth, basic file I/O; foreshadow classes via stdlib objects | No AI |
 | 04 | Organizing Code and Handling Problems: modules and imports, error handling, tracebacks, debugging strategies, assertions for verification | No AI |
