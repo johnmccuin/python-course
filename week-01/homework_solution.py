@@ -1,9 +1,9 @@
 # %% [markdown]
-# # Week 1 — Homework
+# # Week 1 — Homework (Reference Solution)
 #
-# Work through each exercise in order.
-# After finishing an exercise, run its **check cell** to see if your answer is correct.
-# When you're done, run the **Final Score** cell at the bottom.
+# **Instructor reference — do not distribute to students.**
+#
+# Running all cells top-to-bottom should score **7 / 7**.
 
 # %%
 # Setup — don't edit this cell
@@ -36,8 +36,7 @@ print("Ready!")
 # in a non-leap year (365 days). Your answer should be an integer.
 
 # %%
-# Your code here
-minutes_in_year = ...
+minutes_in_year = 365 * 24 * 60
 
 # %%
 def _check_ex1():
@@ -63,8 +62,7 @@ grader.check("ex1_minutes_in_year", _check_ex1)
 # %%
 name = "Sam"
 age = 30
-# Your code here
-greeting = ...
+greeting = f"Hello {name}, you are {age} years old."
 
 # %%
 def _check_ex2():
@@ -90,8 +88,7 @@ grader.check("ex2_greeting", _check_ex2)
 
 # %%
 n = 14
-# Your code here
-is_even = ...
+is_even = (n % 2 == 0)
 
 # %%
 def _check_ex3():
@@ -112,8 +109,7 @@ grader.check("ex3_is_even", _check_ex3)
 
 # %%
 celsius = 25
-# Your code here
-fahrenheit = ...
+fahrenheit = celsius * 9/5 + 32
 
 # %%
 def _check_ex4():
@@ -134,8 +130,7 @@ grader.check("ex4_celsius_to_fahrenheit", _check_ex4)
 
 # %%
 s = "42"
-# Your code here
-as_number = ...
+as_number = int(s)
 
 # %%
 def _check_ex5():
@@ -159,8 +154,12 @@ grader.check("ex5_type_practice", _check_ex5)
 
 # %%
 n = 7
-# Your code here
-category = ...
+if n > 0:
+    category = "positive"
+elif n < 0:
+    category = "negative"
+else:
+    category = "zero"
 
 # %%
 def _check_ex6():
@@ -185,8 +184,14 @@ grader.check("ex6_classify_number", _check_ex6)
 
 # %%
 n = 15
-# Your code here
-result = ...
+if n % 15 == 0:
+    result = "both"
+elif n % 3 == 0:
+    result = "fizz"
+elif n % 5 == 0:
+    result = "buzz"
+else:
+    result = "neither"
 
 # %%
 def _check_ex7():
