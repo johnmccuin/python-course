@@ -430,14 +430,14 @@ prompt cell + code cell pair. Include a mix of:
 
 ## Course structure (planned)
 
-| Week | Topic |
-|------|-------|
-| 01   | Variables, types, basic I/O |
-| 02   | Conditionals & loops |
-| 03   | Functions |
-| 04   | Lists & tuples |
-| 05   | Dictionaries & sets |
-| 06   | File I/O & exceptions |
-| 07   | Classes & objects |
-| 08   | Libraries (numpy, pandas intro) |
-| 09   | Mini-project |
+| Week | Topic | AI Use |
+|------|-------|--------|
+| 01 | First Steps: Python setup (Colab), variables, numbers, strings, booleans, expressions, print/input, if/else if time permits | No AI |
+| 02 | Making Decisions and Repeating: if/else, while loops, for loops, lists (motivating loops) | No AI |
+| 03 | Functions and More Data: functions (parameters, return values), dicts, strings in depth, basic file I/O; foreshadow classes via stdlib objects | No AI |
+| 04 | Organizing Code and Handling Problems: modules and imports, error handling, tracebacks, debugging strategies, assertions for verification | No AI |
+| 05 | Working With AI as a Coding Partner: prompting, reading AI output critically, verification loop, AI failure modes, brief pytest intro | AI pivot |
+| 06 | Specs, Decomposition, Architecture, and Classes: writing specs, decomposition, architecture principles, cost of abstraction, intro to classes (`__init__`, methods, instances) | AI allowed |
+| 07 | Connecting to the World: APIs and LLMs: HTTP basics, `requests`, REST/JSON, Anthropic/OpenAI SDK, system prompts, structured output; capstone assigned | AI allowed |
+| 08 | Capstone Build Week: brief opening on scoping and planning, spec due partway through, supervised work time | AI allowed |
+| 09 | Capstone Presentations and Closing: presentations (spec, demo, architecture, reflection on AI), discussion of what to learn next | AI allowed |
