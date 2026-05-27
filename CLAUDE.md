@@ -156,7 +156,7 @@ Every homework notebook follows this exact structure, in order:
 ### 2. Setup cell (instructor fills in SUBMIT_URL before publishing)
 ```python
 # %%
-# Setup — don't edit this cell
+# Setup — DO NOT EDIT THIS CELL
 import urllib.request, pathlib, sys
 
 _BASE = "https://raw.githubusercontent.com/johnmccuin/python-course/main"

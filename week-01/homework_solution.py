@@ -10,7 +10,7 @@
 # Running all cells top-to-bottom should score **7 / 7**.
 
 # %%
-# Setup — don't edit this cell
+# Setup — DO NOT EDIT THIS CELL
 import urllib.request, pathlib, sys
 
 _BASE = "https://raw.githubusercontent.com/johnmccuin/python-course/main"

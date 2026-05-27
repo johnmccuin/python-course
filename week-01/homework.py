@@ -6,7 +6,7 @@
 # When you're done, run the **Final Score** cell, then the **Submit** cell.
 
 # %%
-# Setup — don't edit this cell
+# Setup — DO NOT EDIT THIS CELL
 import urllib.request, pathlib, sys
 
 _BASE = "https://raw.githubusercontent.com/johnmccuin/python-course/main"
