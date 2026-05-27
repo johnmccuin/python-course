@@ -43,10 +43,10 @@ while IFS= read -r -d '' file; do
     convert_file "$file"
 done < <(find "$REPO_ROOT/grader" -maxdepth 1 -name "*.py" -print0 2>/dev/null | sort -z)
 
-# week-XX/
+# week-XX/  (excludes checks.py — plain Python modules, not jupytext notebooks)
 while IFS= read -r -d '' file; do
     convert_file "$file"
-done < <(find "$REPO_ROOT" -maxdepth 2 -path "*/week-[0-9][0-9]/*.py" -print0 2>/dev/null | sort -z)
+done < <(find "$REPO_ROOT" -maxdepth 2 -path "*/week-[0-9][0-9]/*.py" -not -name "checks.py" -print0 2>/dev/null | sort -z)
 
 echo ""
 echo "Done: $converted notebook(s) converted, $errors error(s)."

@@ -9,22 +9,24 @@
 # Setup — don't edit this cell
 import urllib.request, pathlib, sys
 
-GRADER_URL = (
-    "https://raw.githubusercontent.com/johnmccuin/python-course/"
-    "main/grader/grader.py"
-)
-dest = pathlib.Path("grader.py")
-
-if not dest.exists():
-    urllib.request.urlretrieve(GRADER_URL, dest)
-    print(f"Downloaded grader.py ({dest.stat().st_size} bytes)")
-else:
-    print("grader.py already present — skipping download.")
+_BASE = "https://raw.githubusercontent.com/johnmccuin/python-course/main"
+_FILES = {
+    "grader.py": f"{_BASE}/grader/grader.py",
+    "checks.py": f"{_BASE}/week-01/checks.py",
+}
+for _name, _url in _FILES.items():
+    _dest = pathlib.Path(_name)
+    if not _dest.exists():
+        urllib.request.urlretrieve(_url, _dest)
+        print(f"Downloaded {_name} ({_dest.stat().st_size} bytes)")
+    else:
+        print(f"{_name} already present — skipping download.")
 
 if str(pathlib.Path(".").resolve()) not in sys.path:
     sys.path.insert(0, str(pathlib.Path(".").resolve()))
 
 from grader import Grader
+import checks
 grader = Grader("Week 1 Homework")
 print("Ready!")
 
@@ -40,14 +42,7 @@ print("Ready!")
 minutes_in_year = ...
 
 # %%
-def _check_ex1():
-    if not isinstance(minutes_in_year, int):
-        return "Your answer should be an integer, not a float or string."
-    if minutes_in_year != 525600:
-        return "Check your math — 365 days × 24 hours × 60 minutes."
-    return True
-
-grader.check("ex1_minutes_in_year", _check_ex1)
+grader.check("ex1_minutes_in_year", lambda: checks.check_ex1(minutes_in_year))
 
 # %% [markdown]
 # ---
@@ -67,18 +62,7 @@ age = 30
 greeting = ...
 
 # %%
-def _check_ex2():
-    if not isinstance(greeting, str):
-        return "Your answer should be a string."
-    if greeting != "Hello Sam, you are 30 years old.":
-        if "," not in greeting:
-            return "Check your punctuation — is the comma there?"
-        if not greeting.endswith("."):
-            return "Check your punctuation — is there a period at the end?"
-        return "Your string doesn't match exactly. Compare character by character with the expected output."
-    return True
-
-grader.check("ex2_greeting", _check_ex2)
+grader.check("ex2_greeting", lambda: checks.check_ex2(greeting))
 
 # %% [markdown]
 # ---
@@ -94,12 +78,7 @@ n = 14
 is_even = ...
 
 # %%
-def _check_ex3():
-    if is_even is not True:
-        return "Use the modulo operator `%` to check divisibility by 2."
-    return True
-
-grader.check("ex3_is_even", _check_ex3)
+grader.check("ex3_is_even", lambda: checks.check_ex3(is_even))
 
 # %% [markdown]
 # ---
@@ -116,14 +95,7 @@ celsius = 25
 fahrenheit = ...
 
 # %%
-def _check_ex4():
-    if not isinstance(fahrenheit, (int, float)):
-        return "Your answer should be a number."
-    if abs(fahrenheit - 77.0) > 0.01:
-        return "Check the formula: F = C × 9/5 + 32. With celsius = 25, fahrenheit should be 77."
-    return True
-
-grader.check("ex4_celsius_to_fahrenheit", _check_ex4)
+grader.check("ex4_celsius_to_fahrenheit", lambda: checks.check_ex4(fahrenheit))
 
 # %% [markdown]
 # ---
@@ -138,16 +110,7 @@ s = "42"
 as_number = ...
 
 # %%
-def _check_ex5():
-    if isinstance(as_number, str):
-        return "Your answer is still a string. Use int() to convert."
-    if type(as_number) is float:
-        return "Close — that's a float. We need an integer."
-    if as_number != 42:
-        return "Your value isn't 42. Make sure you're converting `s`, not using a different number."
-    return True
-
-grader.check("ex5_type_practice", _check_ex5)
+grader.check("ex5_type_practice", lambda: checks.check_ex5(as_number))
 
 # %% [markdown]
 # ---
@@ -163,14 +126,7 @@ n = 7
 category = ...
 
 # %%
-def _check_ex6():
-    if category not in ("positive", "negative", "zero"):
-        return "Your answer should be one of: 'positive', 'negative', 'zero'. Check your spelling and capitalization."
-    if category != "positive":
-        return "For n=7, category should be 'positive'."
-    return True
-
-grader.check("ex6_classify_number", _check_ex6)
+grader.check("ex6_classify_number", lambda: checks.check_ex6(category))
 
 # %% [markdown]
 # ---
@@ -189,16 +145,7 @@ n = 15
 result = ...
 
 # %%
-def _check_ex7():
-    if result not in ("fizz", "buzz", "both", "neither"):
-        return "Your answer should be one of: 'fizz', 'buzz', 'both', 'neither'."
-    if result == "fizz":
-        return "Check the order of your conditions. 15 is divisible by both 3 and 5 — make sure you handle that case first."
-    if result != "both":
-        return "For n=15, result should be 'both'."
-    return True
-
-grader.check("ex7_fizz_or_buzz_lite", _check_ex7)
+grader.check("ex7_fizz_or_buzz_lite", lambda: checks.check_ex7(result))
 
 # %% [markdown]
 # ---
