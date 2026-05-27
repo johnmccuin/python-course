@@ -1,9 +1,13 @@
 # %% [markdown]
-# # Week 1 — Homework
+# # Week 1 — Homework (Reference Solution)
 #
-# Work through each exercise in order.
-# After finishing an exercise, run its **check cell** to see if your answer is correct.
-# When you're done, run the **Final Score** cell, then the **Submit** cell.
+# **Instructor reference — do not distribute to students.**
+#
+# This file is intentionally excluded from `build.sh` and the `dist/`
+# folder so it is never published to the public repo. Run it locally
+# with `jupytext --to notebook homework_solution-01.py` to verify grading.
+#
+# Running all cells top-to-bottom should score **7 / 7**.
 
 # %%
 # Setup — DO NOT EDIT THIS CELL
@@ -12,7 +16,7 @@ import urllib.request, pathlib, sys
 _BASE = "https://raw.githubusercontent.com/johnmccuin/python-course/main"
 _FILES = {
     "grader.py": f"{_BASE}/grader/grader.py",
-    "checks.py": f"{_BASE}/week-01/checks.py",
+    "checks.py": f"{_BASE}/week-01/checks-01.py",
 }
 for _name, _url in _FILES.items():
     _dest = pathlib.Path(_name)
@@ -29,7 +33,7 @@ from grader import Grader
 import checks
 grader = Grader("Week 1 Homework")
 
-SUBMIT_URL = "https://script.google.com/macros/s/AKfycbxmZUvgnvH3-rWYfr3ZV9vMcK8mpKvoStmjsoF0iRNLPCb_wuPNzj-MENyzRs44CwdXkQ/exec"
+SUBMIT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"
 
 print("Ready!")
 
@@ -41,7 +45,7 @@ print("Ready!")
 # your score in the gradebook.
 
 # %%
-student_name = "Your Name Here"
+student_name = "Instructor"
 
 # %% [markdown]
 # ---
@@ -55,8 +59,7 @@ student_name = "Your Name Here"
 # in a non-leap year (365 days). Your answer should be an integer.
 
 # %%
-# Your code here
-minutes_in_year = ...
+minutes_in_year = 365 * 24 * 60
 
 # %%
 grader.check("ex1_minutes_in_year", lambda: checks.check_ex1(minutes_in_year))
@@ -75,8 +78,7 @@ grader.check("ex1_minutes_in_year", lambda: checks.check_ex1(minutes_in_year))
 # %%
 name = "Sam"
 age = 30
-# Your code here
-greeting = ...
+greeting = f"Hello {name}, you are {age} years old."
 
 # %%
 grader.check("ex2_greeting", lambda: checks.check_ex2(greeting))
@@ -91,8 +93,7 @@ grader.check("ex2_greeting", lambda: checks.check_ex2(greeting))
 
 # %%
 n = 14
-# Your code here
-is_even = ...
+is_even = (n % 2 == 0)
 
 # %%
 grader.check("ex3_is_even", lambda: checks.check_ex3(is_even))
@@ -108,8 +109,7 @@ grader.check("ex3_is_even", lambda: checks.check_ex3(is_even))
 
 # %%
 celsius = 25
-# Your code here
-fahrenheit = ...
+fahrenheit = celsius * 9/5 + 32
 
 # %%
 grader.check("ex4_celsius_to_fahrenheit", lambda: checks.check_ex4(fahrenheit))
@@ -123,8 +123,7 @@ grader.check("ex4_celsius_to_fahrenheit", lambda: checks.check_ex4(fahrenheit))
 
 # %%
 s = "42"
-# Your code here
-as_number = ...
+as_number = int(s)
 
 # %%
 grader.check("ex5_type_practice", lambda: checks.check_ex5(as_number))
@@ -139,8 +138,12 @@ grader.check("ex5_type_practice", lambda: checks.check_ex5(as_number))
 
 # %%
 n = 7
-# Your code here
-category = ...
+if n > 0:
+    category = "positive"
+elif n < 0:
+    category = "negative"
+else:
+    category = "zero"
 
 # %%
 grader.check("ex6_classify_number", lambda: checks.check_ex6(category))
@@ -158,8 +161,14 @@ grader.check("ex6_classify_number", lambda: checks.check_ex6(category))
 
 # %%
 n = 15
-# Your code here
-result = ...
+if n % 15 == 0:
+    result = "both"
+elif n % 3 == 0:
+    result = "fizz"
+elif n % 5 == 0:
+    result = "buzz"
+else:
+    result = "neither"
 
 # %%
 grader.check("ex7_fizz_or_buzz_lite", lambda: checks.check_ex7(result))

@@ -2,4 +2,4 @@
 __pycache__/
 
 # Instructor solution notebooks — built in-place by build.sh, never committed
-week-*/homework_solution.ipynb
+week-*/homework_solution-*.ipynb

@@ -22,29 +22,34 @@ deliverable is a set of well-structured Jupyter notebooks.
 ```
 python-course/
   grader/
-    grader.py             # Grader class (jupytext source) — fetched by notebooks at runtime
-    test_grader.py        # End-to-end test notebook (jupytext source)
-    gradebook.js          # Google Apps Script template (paste into Sheet's script editor)
-    GRADEBOOK_SETUP.md    # Step-by-step instructions for deploying the gradebook
-  week-XX/                # One folder per week (week-01, week-02, …)
-    lecture.py            # Lecture notebook (jupytext source)
-    homework.py           # Homework notebook (jupytext source)
-    homework_solution.py  # Instructor reference solution (jupytext source, NOT in dist/)
-    checks.py             # Autograder check functions (plain Python module, NOT in dist/)
-  dist/                   # Generated .ipynb files — git-tracked (see below)
+    grader.py               # Grader class (jupytext source) — fetched by notebooks at runtime
+    test_grader.py          # End-to-end test notebook (jupytext source)
+    gradebook.js            # Google Apps Script template (paste into Sheet's script editor)
+    GRADEBOOK_SETUP.md      # Step-by-step instructions for deploying the gradebook
+  week-XX/                  # One folder per week (week-01, week-02, …)
+    lecture-XX.py           # Lecture notebook (jupytext source)
+    homework-XX.py          # Homework notebook (jupytext source)
+    homework_solution-XX.py # Instructor reference solution (jupytext source, NOT in dist/)
+    checks-XX.py            # Autograder check functions (plain Python module, NOT in dist/)
+  dist/                     # Generated .ipynb files — git-tracked (see below)
     grader/
       grader.ipynb
       test_grader.ipynb
     week-01/
-      lecture.ipynb
-      homework.ipynb
-      # homework_solution.ipynb is intentionally absent — see below
+      lecture-01.ipynb
+      homework-01.ipynb
+      # homework_solution-01.ipynb is intentionally absent — see below
     …
-  build.sh                # Converts .py sources → .ipynb in dist/
-  requirements.txt        # Pinned Python deps (jupytext, etc.)
+  build.sh                  # Converts .py sources → .ipynb in dist/
+  requirements.txt          # Pinned Python deps (jupytext, etc.)
   README.md
-  CLAUDE.md               # ← you are here
+  CLAUDE.md                 # ← you are here
 ```
+
+**File naming convention:** every week-specific file ends with the zero-padded week
+number: `homework-01.py`, `checks-02.py`, `lecture-03.py`, etc. This makes the week
+immediately obvious from the filename alone, whether you're looking at the source
+folder or the dist folder.
 
 ---
 
@@ -75,12 +80,12 @@ bash build.sh
 | File | Output location | Notes |
 |------|----------------|-------|
 | `grader/*.py` | `dist/grader/` | All `.py` files converted |
-| `week-XX/lecture.py` | `dist/week-XX/` | Converted to dist/ |
-| `week-XX/homework.py` | `dist/week-XX/` | Converted to dist/ |
-| `week-XX/homework_solution.py` | `week-XX/` (in-place) | **Not** in dist/ — instructor only |
-| `week-XX/checks.py` | — | **Skipped** — plain Python module, not a notebook |
+| `week-XX/lecture-XX.py` | `dist/week-XX/` | Converted to dist/ |
+| `week-XX/homework-XX.py` | `dist/week-XX/` | Converted to dist/ |
+| `week-XX/homework_solution-XX.py` | `week-XX/` (in-place) | **Not** in dist/ — instructor only |
+| `week-XX/checks-XX.py` | — | **Skipped** — plain Python module, not a notebook |
 
-**`homework_solution.ipynb` is git-ignored.** It is built locally by
+**`homework_solution-XX.ipynb` is git-ignored.** It is built locally by
 `build.sh` for instructor use but never committed to the public repo so
 students cannot find it by browsing GitHub.
 
@@ -131,8 +136,8 @@ https://colab.research.google.com/github/johnmccuin/python-course/blob/main/dist
 ```
 
 Examples:
-- Week 1 homework: `.../dist/week-01/homework.ipynb`
-- Week 1 lecture: `.../dist/week-01/lecture.ipynb`
+- Week 1 homework: `.../dist/week-01/homework-01.ipynb`
+- Week 1 lecture: `.../dist/week-01/lecture-01.ipynb`
 
 Use these URLs in Blackboard. They always resolve to the latest commit
 on `main` — no URL update needed after pushing new content.
@@ -162,7 +167,7 @@ import urllib.request, pathlib, sys
 _BASE = "https://raw.githubusercontent.com/johnmccuin/python-course/main"
 _FILES = {
     "grader.py": f"{_BASE}/grader/grader.py",
-    "checks.py": f"{_BASE}/week-0N/checks.py",   # ← update N
+    "checks.py": f"{_BASE}/week-0N/checks-0N.py",   # ← update N (both places)
 }
 for _name, _url in _FILES.items():
     _dest = pathlib.Path(_name)
@@ -183,6 +188,10 @@ SUBMIT_URL = "https://script.google.com/macros/s/AKfycbxmZUvgnvH3-rWYfr3ZV9vMcK8
 
 print("Ready!")
 ```
+
+> **Note:** `checks-0N.py` is fetched from GitHub under its week-numbered name
+> but saved locally as `checks.py` so that `import checks` works without issue.
+> Never change the dict key (`"checks.py"`) — only update the URL value.
 
 ### 3. Student name cell
 ```python
@@ -261,9 +270,9 @@ grader.submit(student_name, SUBMIT_URL)
 
 ---
 
-## checks.py — autograder check functions
+## checks-XX.py — autograder check functions
 
-Each `week-XX/checks.py` is a **plain Python module** (no jupytext cell
+Each `week-XX/checks-XX.py` is a **plain Python module** (no jupytext cell
 markers). It contains one function per exercise. Each function:
 
 - Is named `check_exN` (e.g. `check_ex1`, `check_ex2`, …)
@@ -271,7 +280,7 @@ markers). It contains one function per exercise. Each function:
 - Returns `True` if correct, or a hint string if wrong
 
 ```python
-# week-XX/checks.py
+# week-XX/checks-XX.py
 
 def check_ex1(variable_name):
     if <wrong>:
@@ -282,22 +291,23 @@ def check_ex2(var1, var2):
     ...
 ```
 
-`checks.py` is:
-- Fetched by the homework notebook at runtime (from the raw GitHub URL)
+`checks-XX.py` is:
+- Fetched by the homework notebook at runtime and saved locally as `checks.py`
+  (so `import checks` works — dashes are not valid in Python module names)
 - **Excluded from `build.sh`** — not converted to a notebook
 - **Committed to the repo** (it's intentionally opaque — students see only
   one-liner lambda calls, not the logic inside)
 
 ---
 
-## homework_solution.py — instructor reference
+## homework_solution-XX.py — instructor reference
 
 - Contains correct answers filled in (no `...` placeholders)
 - Uses `student_name = "Instructor"`
 - Same `SUBMIT_URL` as the student notebook
 - **Excluded from `build.sh`'s dist/ output** — built in-place to
-  `week-XX/homework_solution.ipynb` instead
-- `week-XX/homework_solution.ipynb` is **git-ignored** — never committed
+  `week-XX/homework_solution-XX.ipynb` instead
+- `week-XX/homework_solution-XX.ipynb` is **git-ignored** — never committed
 - Run `bash build.sh` locally to regenerate it whenever you need to verify
 
 ---
@@ -335,15 +345,16 @@ https://script.google.com/macros/s/AKfycbxmZUvgnvH3-rWYfr3ZV9vMcK8mpKvoStmjsoF0i
 
 ## Checklist for building a new week's homework
 
-- [ ] Create `week-0N/checks.py` — one `check_exK` function per exercise
-- [ ] Create `week-0N/homework.py` — follow the structure above exactly;
-      update the `checks.py` URL and `grader = Grader("Week N Homework")`
-- [ ] Create `week-0N/homework_solution.py` — correct answers filled in,
+- [ ] Create `week-0N/checks-0N.py` — one `check_exK` function per exercise
+- [ ] Create `week-0N/homework-0N.py` — follow the structure above exactly;
+      update the `checks-0N.py` URL (both the folder and filename) and
+      `grader = Grader("Week N Homework")`
+- [ ] Create `week-0N/homework_solution-0N.py` — correct answers filled in,
       `student_name = "Instructor"`
 - [ ] Run `bash build.sh`
-- [ ] Verify `dist/week-0N/homework.ipynb` was created
-- [ ] Verify `week-0N/homework_solution.ipynb` was created (in-place, not dist/)
-- [ ] Verify `week-0N/homework_solution.ipynb` does **not** appear in `git status`
+- [ ] Verify `dist/week-0N/homework-0N.ipynb` was created
+- [ ] Verify `week-0N/homework_solution-0N.ipynb` was created (in-place, not dist/)
+- [ ] Verify `week-0N/homework_solution-0N.ipynb` does **not** appear in `git status`
 - [ ] `git add` sources + dist/ files; commit and push to `main`
 - [ ] Test the student notebook in Colab (setup cell, exercises, submit)
 - [ ] Test the solution notebook locally (should score N/N)

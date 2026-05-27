@@ -45,16 +45,16 @@ done < <(find "$REPO_ROOT/grader" -maxdepth 1 -name "*.py" -print0 2>/dev/null |
 
 # week-XX/
 # Excludes:
-#   checks.py           — plain Python module (not a jupytext notebook)
-#   homework_solution.py — instructor-only; never published to dist/
+#   checks-NN.py            — plain Python module (not a jupytext notebook)
+#   homework_solution-NN.py — instructor-only; never published to dist/
 while IFS= read -r -d '' file; do
     convert_file "$file"
 done < <(find "$REPO_ROOT" -maxdepth 2 -path "*/week-[0-9][0-9]/*.py" \
-    -not -name "checks.py" \
-    -not -name "homework_solution.py" \
+    -not -name "checks-[0-9][0-9].py" \
+    -not -name "homework_solution-[0-9][0-9].py" \
     -print0 2>/dev/null | sort -z)
 
-# homework_solution.py — built in-place (next to source, not in dist/)
+# homework_solution-NN.py — built in-place (next to source, not in dist/)
 # The resulting .ipynb is git-ignored so it never reaches the public repo.
 while IFS= read -r -d '' file; do
     local_dir="$(dirname "$file")"
@@ -68,7 +68,7 @@ while IFS= read -r -d '' file; do
         echo "  ✗  $local_rel  (conversion failed)" >&2
         ((errors++)) || true
     fi
-done < <(find "$REPO_ROOT" -maxdepth 2 -path "*/week-[0-9][0-9]/homework_solution.py" -print0 2>/dev/null | sort -z)
+done < <(find "$REPO_ROOT" -maxdepth 2 -path "*/week-[0-9][0-9]/homework_solution-[0-9][0-9].py" -print0 2>/dev/null | sort -z)
 
 echo ""
 echo "Done: $converted notebook(s) converted, $errors error(s)."
