@@ -197,7 +197,14 @@ print("Ready!")
 student_name = "Your Name Here"
 ```
 
-### 4. Exercises (repeat for each)
+### 4. Exercises section header
+```python
+# %% [markdown]
+# ---
+# ## Exercises
+```
+
+### 5. Exercises (repeat for each)
 
 Each exercise is exactly three cells:
 
@@ -228,7 +235,7 @@ grader.check("exN_<short_name>", lambda: checks.check_exN(answer_var))
 - Use LaTeX `$$...$$` for any mathematical formulas in the prompt.
   Example: `# $$F = C \times \frac{9}{5} + 32$$`
 
-### 5. Final Score cell
+### 6. Final Score cell
 ```python
 # %% [markdown]
 # ---
@@ -238,7 +245,7 @@ grader.check("exN_<short_name>", lambda: checks.check_exN(answer_var))
 grader.report()
 ```
 
-### 6. Submit cell
+### 7. Submit cell
 ```python
 # %% [markdown]
 # ---

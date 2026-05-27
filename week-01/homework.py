@@ -45,6 +45,10 @@ student_name = "Your Name Here"
 
 # %% [markdown]
 # ---
+# ## Exercises
+
+# %% [markdown]
+# ---
 # ### Exercise 1: minutes_in_year
 #
 # Assign a variable named `minutes_in_year` to the total number of minutes
