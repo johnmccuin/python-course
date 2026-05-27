@@ -1,9 +1,9 @@
 # %% [markdown]
-# # Week 1 — Homework
+# # Week 1 — Homework (Reference Solution)
 #
-# Work through each exercise in order.
-# After finishing an exercise, run its **check cell** to see if your answer is correct.
-# When you're done, run the **Final Score** cell at the bottom.
+# **Instructor reference — do not distribute to students.**
+#
+# Running all cells top-to-bottom should score **7 / 7**.
 
 # %%
 # Setup — don't edit this cell
@@ -38,8 +38,7 @@ print("Ready!")
 # in a non-leap year (365 days). Your answer should be an integer.
 
 # %%
-# Your code here
-minutes_in_year = ...
+minutes_in_year = 365 * 24 * 60
 
 # %%
 grader.check("ex1_minutes_in_year", lambda: checks.check_ex1(minutes_in_year))
@@ -58,8 +57,7 @@ grader.check("ex1_minutes_in_year", lambda: checks.check_ex1(minutes_in_year))
 # %%
 name = "Sam"
 age = 30
-# Your code here
-greeting = ...
+greeting = f"Hello {name}, you are {age} years old."
 
 # %%
 grader.check("ex2_greeting", lambda: checks.check_ex2(greeting))
@@ -74,8 +72,7 @@ grader.check("ex2_greeting", lambda: checks.check_ex2(greeting))
 
 # %%
 n = 14
-# Your code here
-is_even = ...
+is_even = (n % 2 == 0)
 
 # %%
 grader.check("ex3_is_even", lambda: checks.check_ex3(is_even))
@@ -91,8 +88,7 @@ grader.check("ex3_is_even", lambda: checks.check_ex3(is_even))
 
 # %%
 celsius = 25
-# Your code here
-fahrenheit = ...
+fahrenheit = celsius * 9/5 + 32
 
 # %%
 grader.check("ex4_celsius_to_fahrenheit", lambda: checks.check_ex4(fahrenheit))
@@ -106,8 +102,7 @@ grader.check("ex4_celsius_to_fahrenheit", lambda: checks.check_ex4(fahrenheit))
 
 # %%
 s = "42"
-# Your code here
-as_number = ...
+as_number = int(s)
 
 # %%
 grader.check("ex5_type_practice", lambda: checks.check_ex5(as_number))
@@ -122,8 +117,12 @@ grader.check("ex5_type_practice", lambda: checks.check_ex5(as_number))
 
 # %%
 n = 7
-# Your code here
-category = ...
+if n > 0:
+    category = "positive"
+elif n < 0:
+    category = "negative"
+else:
+    category = "zero"
 
 # %%
 grader.check("ex6_classify_number", lambda: checks.check_ex6(category))
@@ -141,8 +140,14 @@ grader.check("ex6_classify_number", lambda: checks.check_ex6(category))
 
 # %%
 n = 15
-# Your code here
-result = ...
+if n % 15 == 0:
+    result = "both"
+elif n % 3 == 0:
+    result = "fizz"
+elif n % 5 == 0:
+    result = "buzz"
+else:
+    result = "neither"
 
 # %%
 grader.check("ex7_fizz_or_buzz_lite", lambda: checks.check_ex7(result))
