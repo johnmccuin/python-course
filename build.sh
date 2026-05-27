@@ -12,8 +12,25 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DIST="$REPO_ROOT/dist"
 
+# Detect current branch so notebooks fetched during Colab testing
+# resolve to the right raw-file URLs.  Sources always contain "main";
+# on a feature branch we rewrite the generated .ipynb files in place.
+CURRENT_BRANCH="$(git -C "$REPO_ROOT" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "main")"
+if [[ "$CURRENT_BRANCH" == "HEAD" ]]; then
+    CURRENT_BRANCH="main"   # detached HEAD (e.g. CI checkout) → use main
+fi
+
 converted=0
 errors=0
+
+# Rewrite /python-course/main → /python-course/<branch> in a generated
+# notebook when we are not on main.  No-op on main.
+patch_branch_url() {
+    local file="$1"
+    if [[ "$CURRENT_BRANCH" != "main" ]]; then
+        sed -i "s|/python-course/main|/python-course/$CURRENT_BRANCH|g" "$file"
+    fi
+}
 
 convert_file() {
     local src="$1"                          # e.g. grader/grader.py
@@ -27,6 +44,7 @@ convert_file() {
     mkdir -p "$DIST/$dir"
 
     if jupytext --to notebook --output "$out" "$src" 2>/dev/null; then
+        patch_branch_url "$out"
         echo "  ✓  $rel  →  dist/$dir/$base.ipynb"
         ((converted++)) || true
     else
@@ -35,7 +53,10 @@ convert_file() {
     fi
 }
 
-echo "Building notebooks..."
+echo "Building notebooks (branch: $CURRENT_BRANCH)..."
+if [[ "$CURRENT_BRANCH" != "main" ]]; then
+    echo "  Note: raw-file URLs will point to '$CURRENT_BRANCH' instead of 'main'."
+fi
 echo ""
 
 # grader/
@@ -62,6 +83,7 @@ while IFS= read -r -d '' file; do
     local_out="$local_dir/$local_base.ipynb"
     local_rel="${file#"$REPO_ROOT/"}"
     if jupytext --to notebook --output "$local_out" "$file" 2>/dev/null; then
+        patch_branch_url "$local_out"
         echo "  ✓  $local_rel  →  ${local_out#"$REPO_ROOT/"}"
         ((converted++)) || true
     else
