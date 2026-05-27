@@ -369,6 +369,65 @@ https://script.google.com/macros/s/AKfycbxmZUvgnvH3-rWYfr3ZV9vMcK8mpKvoStmjsoF0i
 
 ---
 
+## Lecture notebook conventions
+
+These rules apply to every `lecture-XX.py` file.
+
+### File naming
+Lecture sources are named `lecture-XX.py` where `XX` matches the week number
+(e.g. `week-01/lecture-01.py` → `dist/week-01/lecture-01.ipynb`).
+
+### Purpose
+Lecture notebooks are the script for a live class session. Students copy them
+to their Drive and follow along. They are **not** autograded.
+
+- **No `grader.py` import.** The notebook stands alone.
+- **No solution cells.** Leave exercise code cells empty; the instructor
+  produces solutions live on the projected screen.
+
+### Block structure
+Each lecture has four topic blocks. Each block follows this rhythm:
+
+1. A markdown heading + concept explanation.
+2. Short prebuilt demo code cells (1–3 lines each) the instructor runs live,
+   each preceded by a brief markdown note about what to notice.
+3. A `### Now you try` markdown divider, followed by exercises.
+
+The notebook ends after the last exercise's empty code cell. Do **not**
+add a break marker, a "15-minute break" cell, a closing "That's it for
+tonight!" cell, or any other housekeeping text — the instructor manages
+pacing and wrap-up live.
+
+### Exercise pairing rule (critical)
+Every individual exercise gets **its own instruction markdown cell immediately
+followed by its own empty code cell**. Never group multiple exercises under
+one instruction cell.
+
+```
+# %% [markdown]
+# **Exercise 1.** Description of exercise 1.
+
+# %%
+# Your code here
+
+# %% [markdown]
+# **Exercise 2.** Description of exercise 2.
+
+# %%
+# Your code here
+```
+
+### Bug-demo cells
+When showing intentionally broken code, each bug gets its own markdown
+prompt cell + code cell pair. Include a mix of:
+- **Syntax errors** (missing colon, `=` vs `==`) — these crash with an
+  error message students can read.
+- **Logic errors** (PEMDAS mistakes, wrong `if/elif` order, type confusion)
+  — these run without crashing but produce wrong answers, which is often
+  harder to spot and more important to teach.
+
+---
+
 ## Course structure (planned)
 
 | Week | Topic |
