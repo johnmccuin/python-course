@@ -190,20 +190,12 @@ class Grader:
             "timestamp":    datetime.datetime.utcnow().isoformat() + "Z",
         }).encode("utf-8")
 
-        # ── POST with redirect-safe handler ────────────────────────────
-        # Google Apps Script exec URLs sometimes return a 302 redirect.
-        # Python's default urllib handler converts POST→GET on redirect,
-        # dropping the body.  This handler preserves the POST method.
-        class _KeepPostRedirect(urllib.request.HTTPRedirectHandler):
-            def redirect_request(self, req, fp, code, msg, headers, newurl):
-                return urllib.request.Request(
-                    newurl,
-                    data=req.data,
-                    headers=dict(req.headers),
-                    method="POST",
-                )
-
-        opener = urllib.request.build_opener(_KeepPostRedirect)
+        # ── POST ───────────────────────────────────────────────────────
+        # Google Apps Script processes the POST immediately, then returns
+        # a 302 to a googleusercontent.com CDN URL that serves the cached
+        # response.  That CDN URL only accepts GET, so we let Python's
+        # default urllib behaviour handle the redirect (POST → GET), which
+        # is exactly what Google expects.
         req = urllib.request.Request(
             url,
             data=payload,
@@ -213,7 +205,7 @@ class Grader:
 
         # ── Send and report ────────────────────────────────────────────
         try:
-            with opener.open(req, timeout=10) as resp:
+            with urllib.request.urlopen(req, timeout=10) as resp:
                 body = resp.read().decode("utf-8")
             result = json.loads(body)
             if result.get("status") == "ok":
