@@ -12,8 +12,8 @@ Students open `.ipynb` links from Blackboard; each link points at a file
 inside the `dist/` folder of this GitHub repo.
 
 This is **not** a typical software project. There are no servers, no
-deployments, no test runners to invoke in CI (yet). The primary
-deliverable is a set of well-structured Jupyter notebooks.
+deployments, and no automated test runners. The primary deliverable is a
+set of well-structured Jupyter notebooks.
 
 ---
 
@@ -32,6 +32,42 @@ This schedule is the source of truth for what each week covers. Do not infer top
 | 07 | Connecting to the World: APIs and LLMs: HTTP basics, `requests`, REST/JSON, Anthropic/OpenAI SDK, system prompts, structured output; capstone assigned | AI allowed |
 | 08 | Capstone Build Week: brief opening on scoping and planning, spec due partway through, supervised work time | AI allowed |
 | 09 | Capstone Presentations and Closing: presentations (spec, demo, architecture, reflection on AI), discussion of what to learn next | AI allowed |
+
+**Note:** Week 3 is intentionally wide — the lecture covers functions, dicts,
+strings in depth, and basic file I/O at survey depth. Later weeks revisit
+each topic in depth. The class-foreshadowing moment (using `Path`, file
+objects, or `datetime` as examples of "instances of a class") belongs in
+Week 3 with a note pointing to Week 7.
+
+---
+
+## Git workflow — main only
+
+**Always work directly on `main`. No feature branches.**
+
+Every session:
+1. `git pull origin main` — get the latest before touching anything
+2. Make changes to `.py` source files
+3. `bash build.sh` — regenerate the `.ipynb` files in `dist/`
+4. `git add` the changed `.py` and `dist/` files
+5. `git commit -m "clear message"`
+6. `git push origin main`
+
+**Why main-only?** Feature branches caused merge conflicts because the
+session container's local clone was sometimes stale. Since there is one
+instructor, no automated tests, and git history on main is a complete
+safety net, branches add friction without benefit.
+
+**Rolling back a single file** is safe and does not affect anything else:
+```bash
+git log --oneline -- week-03/lecture-03.py   # find the version you want
+git show <hash>:week-03/lecture-03.py        # preview it
+git checkout <hash> -- week-03/lecture-03.py # restore just that file
+bash build.sh
+git add week-03/lecture-03.py dist/week-03/lecture-03.ipynb
+git commit -m "Restore lecture-03 to <date> version"
+git push origin main
+```
 
 ---
 
@@ -68,6 +104,16 @@ python-course/
 number: `homework-01.py`, `checks-02.py`, `lecture-03.py`, etc. This makes the week
 immediately obvious from the filename alone, whether you're looking at the source
 folder or the dist folder.
+
+### Three-file pattern per week
+
+Every homework week has three source files in `week-XX/`:
+
+| File | Purpose | In `dist/`? |
+|---|---|---|
+| `homework-XX.py` | Student-facing notebook | Yes |
+| `checks-XX.py` | Check functions — downloaded at runtime by the notebook; students never see the source | Yes |
+| `homework_solution-XX.py` | Reference solution (instructor only) | Yes (but URL not shared) |
 
 ---
 
@@ -134,14 +180,11 @@ alongside the source changes.
 
 ## Branch and repo conventions
 
-- **Work directly on `main`** for all course content. There is no need for
-  feature branches — the deliverable is notebooks, and students + Colab
-  links always point at `main`.
+- The repo **must be public** on GitHub. Colab and every Blackboard link
+  fetch raw files without authentication.
 - **Never use branch names containing `/`** for anything student-facing.
   Colab parses the GitHub URL by splitting on `/`, so a branch like
   `feature/foo` is misread as branch=`feature`, path=`foo/…` — 404.
-- The repo **must be public** on GitHub. Colab and every Blackboard link
-  fetch raw files without authentication.
 
 ---
 
@@ -262,6 +305,49 @@ grader.check("exN_<short_name>", lambda: checks.check_exN(answer_var))
 - Use LaTeX `$$...$$` for any mathematical formulas in the prompt.
   Example: `# $$F = C \times \frac{9}{5} + 32$$`
 
+**Two exercise patterns depending on the task:**
+
+*Pattern A — expression answer* (Week 1 style): the student replaces `...`
+with a value or expression. Use when the answer is a single assignment.
+```python
+# %%
+n = 14
+# Your code here
+is_even = ...
+```
+
+*Pattern B — loop/block answer*: pre-initialize the result variable to its
+correct starting value and let the student add the loop or if-block below.
+Use when the student must write several lines (while loop, for loop, etc.).
+The check detects "did nothing" by testing whether the variable still holds
+its initial value.
+```python
+# %%
+limit = 15
+total = 0
+# Your code here — use a while loop
+```
+
+**Multi-concept weeks:** when a homework spans more than one concept
+(e.g., if/elif AND while loops AND for loops), group exercises under
+`## Part N — <Concept>` section headers instead of a single `## Exercises`
+header. Open each Part with a brief generic reminder code block — generic
+enough that it does not give away the solution. Example:
+```python
+# %% [markdown]
+# ---
+# ## Part 2 — While Loops
+#
+# Quick reminder: ...
+#
+# ```python
+# n = 10          # starting value
+# while n > 0:    # condition
+#     print(n)    # do some work
+#     n -= 1      # change
+# ```
+```
+
 ### 6. Final Score cell
 ```python
 # %% [markdown]
@@ -309,6 +395,13 @@ def check_ex2(var1, var2):
     ...
 ```
 
+**Hint writing rules:**
+- Name the **symptom**, never the fix. ✓ "Got 0 — check that you're updating `total` inside the loop." ✗ "Add `total += i` inside the loop."
+- For wrong numeric answers, call out the specific value and what it suggests: "Got 105 — that's 1+2+…+14, so your loop stopped one step early."
+- For the `= ...` (Ellipsis) pattern, add `if answer is ...: return "You haven't filled this in yet."` as the first check.
+- For pre-initialized variables (Pattern B), check whether the variable still holds its starting value: `if total == 0: return "total is still 0 — ..."`.
+- Always verify the checks file before committing: run `python3` and call each `check_exN` with the correct answer (expect `True`) and several common wrong answers (expect a hint string).
+
 `checks-XX.py` is:
 - Fetched by the homework notebook at runtime and saved locally as `checks.py`
   (so `import checks` works — dashes are not valid in Python module names)
@@ -327,6 +420,27 @@ def check_ex2(var1, var2):
   `week-XX/homework_solution-XX.ipynb` instead
 - `week-XX/homework_solution-XX.ipynb` is **git-ignored** — never committed
 - Run `bash build.sh` locally to regenerate it whenever you need to verify
+
+### Testing homework solutions locally
+
+Because the homework notebooks download `grader.py` and `checks.py` from
+GitHub at runtime, testing them locally requires those files to be present
+in the working directory. The solution script will grade all exercises and
+then call `grader.submit(student_name, SUBMIT_URL)` which posts the score
+to the Google Sheet under `student_name = "Instructor"`.
+
+```bash
+mkdir -p /tmp/hw_test
+cp grader/grader.py /tmp/hw_test/
+cp week-0N/checks-0N.py /tmp/hw_test/checks.py   # ← update N
+cd /tmp/hw_test && python /path/to/week-0N/homework_solution-0N.py
+```
+
+The download cells skip if the files are already present, so the script
+runs the local copies rather than fetching from GitHub. The final submit
+call will still hit the live `SUBMIT_URL` and record the instructor score
+in the gradebook — this is expected and harmless (the sheet stores all
+submissions; the MAXIFS formula keeps the highest per student per week).
 
 ---
 
@@ -363,19 +477,22 @@ https://script.google.com/macros/s/AKfycbxmZUvgnvH3-rWYfr3ZV9vMcK8mpKvoStmjsoF0i
 
 ## Checklist for building a new week's homework
 
+- [ ] Read `week-0N/lecture-0N.py` first — only test concepts actually demonstrated there
 - [ ] Create `week-0N/checks-0N.py` — one `check_exK` function per exercise
 - [ ] Create `week-0N/homework-0N.py` — follow the structure above exactly;
       update the `checks-0N.py` URL (both the folder and filename) and
       `grader = Grader("Week N Homework")`
 - [ ] Create `week-0N/homework_solution-0N.py` — correct answers filled in,
       `student_name = "Instructor"`
+- [ ] Verify checks: run each `check_exN` with the correct answer (must return `True`)
+      and several wrong answers (must return hint strings, not crash)
 - [ ] Run `bash build.sh`
 - [ ] Verify `dist/week-0N/homework-0N.ipynb` was created
 - [ ] Verify `week-0N/homework_solution-0N.ipynb` was created (in-place, not dist/)
 - [ ] Verify `week-0N/homework_solution-0N.ipynb` does **not** appear in `git status`
+- [ ] Test the solution locally (see "Testing homework solutions locally" above) — confirm it scores N/N and posts to the gradebook
 - [ ] `git add` sources + dist/ files; commit and push to `main`
 - [ ] Test the student notebook in Colab (setup cell, exercises, submit)
-- [ ] Test the solution notebook locally (should score N/N)
 
 ---
 
