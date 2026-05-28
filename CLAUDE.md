@@ -1,23 +1,18 @@
 # CLAUDE.md — Repo Conventions
 
-This file is read by Claude at the start of every session.
-Follow these conventions for all work in this repository.
+This file is read by Claude at the start of every session. Follow these conventions for all work in this repository.
 
 ---
 
-## What this repo is
+## What This Repo Is
 
-A 9-week introductory Python course delivered via Google Colab.
-Students open `.ipynb` links from Blackboard; each link points at a file
-inside the `dist/` folder of this GitHub repo.
+A 9-week introductory Python course delivered via Google Colab. Students open `.ipynb` links from Blackboard; each link points to a file inside the `dist/` folder of this GitHub repo.
 
-This is **not** a typical software project. There are no servers, no
-deployments, and no automated test runners. The primary deliverable is a
-set of well-structured Jupyter notebooks.
+This is **not** a typical software project — no servers, no deployments. The primary deliverable is a set of well-structured Jupyter notebooks.
 
 ---
 
-## Course structure (planned)
+## Course Structure
 
 This schedule is the source of truth for what each week covers. Do not infer topic order from filenames or generic intro-Python conventions.
 
@@ -33,15 +28,11 @@ This schedule is the source of truth for what each week covers. Do not infer top
 | 08 | Capstone Build Week: brief opening on scoping and planning, spec due partway through, supervised work time | AI allowed |
 | 09 | Capstone Presentations and Closing: presentations (spec, demo, architecture, reflection on AI), discussion of what to learn next | AI allowed |
 
-**Note:** Week 3 is intentionally wide — the lecture covers functions, dicts,
-strings in depth, and basic file I/O at survey depth. Later weeks revisit
-each topic in depth. The class-foreshadowing moment (using `Path`, file
-objects, or `datetime` as examples of "instances of a class") belongs in
-Week 3 with a note pointing to Week 7.
+**Note:** Week 3 is intentionally wide — the lecture covers functions, dicts, strings in depth, and basic file I/O at survey depth. Later weeks revisit each topic in depth. The class-foreshadowing moment (using `Path`, file objects, or `datetime` as examples of "instances of a class") belongs in Week 3 with a note pointing to Week 7.
 
 ---
 
-## Git workflow — main only
+## Git Workflow — Main Only
 
 **Always work directly on `main`. No feature branches.**
 
@@ -53,10 +44,7 @@ Every session:
 5. `git commit -m "clear message"`
 6. `git push origin main`
 
-**Why main-only?** Feature branches caused merge conflicts because the
-session container's local clone was sometimes stale. Since there is one
-instructor, no automated tests, and git history on main is a complete
-safety net, branches add friction without benefit.
+**Why main-only?** Feature branches caused merge conflicts because the session container's local clone was sometimes stale. Since there is one instructor, no automated tests, and git history on main is a complete safety net, branches add friction without benefit.
 
 **Rolling back a single file** is safe and does not affect anything else:
 ```bash
@@ -69,9 +57,11 @@ git commit -m "Restore lecture-03 to <date> version"
 git push origin main
 ```
 
+**Repo must be public.** Colab and every Blackboard link fetch raw files without authentication. Never use branch names containing `/` for anything student-facing — Colab parses the GitHub URL by splitting on `/` and will 404.
+
 ---
 
-## Folder layout
+## Folder Layout
 
 ```
 python-course/
@@ -85,14 +75,14 @@ python-course/
     homework-XX.py          # Homework notebook (jupytext source)
     homework_solution-XX.py # Instructor reference solution (jupytext source, NOT in dist/)
     checks-XX.py            # Autograder check functions (plain Python module, NOT in dist/)
-  dist/                     # Generated .ipynb files — git-tracked (see below)
+  dist/                     # Generated .ipynb files — git-tracked
     grader/
       grader.ipynb
       test_grader.ipynb
     week-01/
       lecture-01.ipynb
       homework-01.ipynb
-      # homework_solution-01.ipynb is intentionally absent — see below
+      # homework_solution-01.ipynb is intentionally absent
     …
   build.sh                  # Converts .py sources → .ipynb in dist/
   requirements.txt          # Pinned Python deps (jupytext, etc.)
@@ -100,46 +90,38 @@ python-course/
   CLAUDE.md                 # ← you are here
 ```
 
-**File naming convention:** every week-specific file ends with the zero-padded week
-number: `homework-01.py`, `checks-02.py`, `lecture-03.py`, etc. This makes the week
-immediately obvious from the filename alone, whether you're looking at the source
-folder or the dist folder.
+**File naming:** every week-specific file ends with the zero-padded week number: `homework-01.py`, `checks-02.py`, `lecture-03.py`, etc.
 
-### Three-file pattern per week
-
-Every homework week has three source files in `week-XX/`:
+**Three files per homework week** in `week-XX/`:
 
 | File | Purpose | In `dist/`? |
-|---|---|---|
+|------|---------|-------------|
 | `homework-XX.py` | Student-facing notebook | Yes |
-| `checks-XX.py` | Check functions — downloaded at runtime by the notebook; students never see the source | Yes |
+| `checks-XX.py` | Check functions — downloaded at runtime; students never see the source | Yes |
 | `homework_solution-XX.py` | Reference solution (instructor only) | Yes (but URL not shared) |
 
 ---
 
-## Notebook authoring: jupytext percent-format
+## Notebook Authoring: jupytext Percent-Format
 
-Every `.py` source file that becomes a student notebook is a
-**jupytext percent-format** notebook.
+Every `.py` source file is a **jupytext percent-format** notebook:
 
-- Code cells are delimited by `# %%`
-- Markdown cells are delimited by `# %% [markdown]`
+- `# %%` — opens a code cell
+- `# %% [markdown]` — opens a markdown cell
+- Regular `#` comments inside a cell are just Python comments, not cell delimiters
 - The first cell should be a markdown cell with the notebook title
-- Regular Python comments inside a cell are just `#` — only `# %%` at the
-  start of a line opens a new cell
 
-**Never hand-edit `.ipynb` files.** Always edit the `.py` source and
-regenerate via `build.sh`.
+**Never hand-edit `.ipynb` files.** Always edit the `.py` source and regenerate via `build.sh`.
 
 ---
 
-## Building notebooks: build.sh
+## Building and Committing: build.sh
 
 ```bash
 bash build.sh
 ```
 
-`build.sh` converts `.py` sources to `.ipynb` files with these rules:
+`build.sh` converts `.py` sources to `.ipynb` with these rules:
 
 | File | Output location | Notes |
 |------|----------------|-------|
@@ -149,63 +131,29 @@ bash build.sh
 | `week-XX/homework_solution-XX.py` | `week-XX/` (in-place) | **Not** in dist/ — instructor only |
 | `week-XX/checks-XX.py` | — | **Skipped** — plain Python module, not a notebook |
 
-**`homework_solution-XX.ipynb` is git-ignored.** It is built locally by
-`build.sh` for instructor use but never committed to the public repo so
-students cannot find it by browsing GitHub.
+`homework_solution-XX.ipynb` is **git-ignored** — built locally for instructor use but never committed so students can't find it on GitHub.
 
-Run `build.sh` after any edit to a `.py` source before committing.
+**The `dist/` folder is fully git-tracked.** Colab fetches notebooks via raw GitHub URLs, so generated files must be committed. Run `build.sh` after every source edit, then commit both the `.py` and the generated `.ipynb` together.
 
----
-
-## The `.ipynb`-files-are-checked-in convention
-
-The `dist/` folder is **fully git-tracked**.
-Rationale: Colab opens notebooks by fetching a raw GitHub URL. That URL
-must resolve to a real file on the default branch.
-
-**Workflow every time you touch a source file:**
-
-1. Edit the `.py` source.
-2. Run `bash build.sh`.
-3. `git add` the `.py` source and all modified files under `dist/`.
-4. Commit with a clear message.
-5. Push.
-
-**Note on jupytext cell IDs:** jupytext assigns new random cell UUIDs on
-every conversion run, so `dist/` files will always appear modified after a
-rebuild even if content is unchanged. This is normal — commit them
-alongside the source changes.
+**Note on jupytext cell IDs:** jupytext assigns new random cell UUIDs on every conversion run, so `dist/` files will always appear modified after a rebuild even if content is unchanged. This is normal — commit them alongside the source changes.
 
 ---
 
-## Branch and repo conventions
-
-- The repo **must be public** on GitHub. Colab and every Blackboard link
-  fetch raw files without authentication.
-- **Never use branch names containing `/`** for anything student-facing.
-  Colab parses the GitHub URL by splitting on `/`, so a branch like
-  `feature/foo` is misread as branch=`feature`, path=`foo/…` — 404.
-
----
-
-## Colab URL pattern
-
-The canonical URL for any student notebook is:
+## Colab URL Pattern
 
 ```
 https://colab.research.google.com/github/johnmccuin/python-course/blob/main/dist/<folder>/<notebook>.ipynb
 ```
 
 Examples:
-- Week 1 homework: `.../dist/week-01/homework-01.ipynb`
 - Week 1 lecture: `.../dist/week-01/lecture-01.ipynb`
+- Week 1 homework: `.../dist/week-01/homework-01.ipynb`
 
-Use these URLs in Blackboard. They always resolve to the latest commit
-on `main` — no URL update needed after pushing new content.
+Use these URLs in Blackboard. They always resolve to the latest commit on `main` — no URL update needed after pushing.
 
 ---
 
-## Homework notebook structure
+## Homework Notebook Structure
 
 Every homework notebook follows this exact structure, in order:
 
@@ -219,7 +167,7 @@ Every homework notebook follows this exact structure, in order:
 # When you're done, run the **Final Score** cell, then the **Submit** cell.
 ```
 
-### 2. Student name cell (comes BEFORE setup — very first interactive cell)
+### 2. Student name cell (BEFORE setup — very first interactive cell)
 ```python
 # %% [markdown]
 # **Enter your name below exactly as it appears on the course roster —
@@ -263,9 +211,7 @@ SUBMIT_URL = "https://script.google.com/macros/s/AKfycbxmZUvgnvH3-rWYfr3ZV9vMcK8
 print("Ready!")
 ```
 
-> **Note:** `checks-0N.py` is fetched from GitHub under its week-numbered name
-> but saved locally as `checks.py` so that `import checks` works without issue.
-> Never change the dict key (`"checks.py"`) — only update the URL value.
+> **Note:** `checks-0N.py` is fetched from GitHub under its week-numbered name but saved locally as `checks.py` so that `import checks` works. Never change the dict key (`"checks.py"`) — only update the URL value.
 
 ### 4. Exercises section header
 ```python
@@ -288,7 +234,7 @@ Each exercise is exactly three cells:
 # $$<formula in LaTeX if needed>$$
 
 # %%
-prefilled_var = <value>     # any prefilled variables come FIRST
+prefilled_var = <value>     # prefilled variables come FIRST
 # Your code here
 answer_var = ...            # student fills this in
 
@@ -296,19 +242,14 @@ answer_var = ...            # student fills this in
 grader.check("exN_<short_name>", lambda: checks.check_exN(answer_var))
 ```
 
-- The check cell is always a **single line** — a lambda that passes the
-  student's variable into the corresponding function in `checks.py`.
+- The check cell is always a **single line** — a lambda passing the student's variable to `checks.py`.
 - Never put check logic in the notebook itself. Students can read it.
-- Prefilled variables (e.g. `n = 14`, `name = "Sam"`) go **above**
-  `# Your code here`. The student's answer variable goes below it with
-  `= ...` as the placeholder.
-- Use LaTeX `$$...$$` for any mathematical formulas in the prompt.
-  Example: `# $$F = C \times \frac{9}{5} + 32$$`
+- Prefilled variables go **above** `# Your code here`; the student's answer variable goes below with `= ...` as the placeholder.
+- Use LaTeX `$$...$$` for mathematical formulas. Example: `# $$F = C \times \frac{9}{5} + 32$$`
 
-**Two exercise patterns depending on the task:**
+**Two exercise patterns:**
 
-*Pattern A — expression answer* (Week 1 style): the student replaces `...`
-with a value or expression. Use when the answer is a single assignment.
+*Pattern A — expression answer:* student replaces `...` with a value or expression. Use when the answer is a single assignment.
 ```python
 # %%
 n = 14
@@ -316,11 +257,7 @@ n = 14
 is_even = ...
 ```
 
-*Pattern B — loop/block answer*: pre-initialize the result variable to its
-correct starting value and let the student add the loop or if-block below.
-Use when the student must write several lines (while loop, for loop, etc.).
-The check detects "did nothing" by testing whether the variable still holds
-its initial value.
+*Pattern B — loop/block answer:* pre-initialize the result variable and let the student add the loop or block below. The check detects "did nothing" by testing whether the variable still holds its initial value.
 ```python
 # %%
 limit = 15
@@ -328,11 +265,7 @@ total = 0
 # Your code here — use a while loop
 ```
 
-**Multi-concept weeks:** when a homework spans more than one concept
-(e.g., if/elif AND while loops AND for loops), group exercises under
-`## Part N — <Concept>` section headers instead of a single `## Exercises`
-header. Open each Part with a brief generic reminder code block — generic
-enough that it does not give away the solution. Example:
+**Multi-concept weeks:** group exercises under `## Part N — <Concept>` headers instead of a single `## Exercises` header. Open each part with a brief generic reminder code block — generic enough that it does not give away the solution:
 ```python
 # %% [markdown]
 # ---
@@ -365,8 +298,7 @@ grader.report()
 # ## Submit
 #
 # Run the cell below to send your score to the gradebook.
-# You can re-submit as many times as you like — only your highest score
-# is kept.
+# You can re-submit as many times as you like — only your highest score is kept.
 
 # %%
 grader.submit(student_name, SUBMIT_URL)
@@ -374,60 +306,41 @@ grader.submit(student_name, SUBMIT_URL)
 
 ---
 
-## checks-XX.py — autograder check functions
+## checks-XX.py — Autograder Check Functions
 
-Each `week-XX/checks-XX.py` is a **plain Python module** (no jupytext cell
-markers). It contains one function per exercise. Each function:
+Each `week-XX/checks-XX.py` is a **plain Python module** (no jupytext markers). One function per exercise:
 
-- Is named `check_exN` (e.g. `check_ex1`, `check_ex2`, …)
-- Accepts the student's answer variable(s) as argument(s)
+- Named `check_exN` (e.g. `check_ex1`, `check_ex2`, …)
+- Accepts the student's answer variable(s) as arguments
 - Returns `True` if correct, or a hint string if wrong
 
 ```python
-# week-XX/checks-XX.py
-
-def check_ex1(variable_name):
+def check_ex1(answer):
     if <wrong>:
         return "Hint message shown to student."
     return True
-
-def check_ex2(var1, var2):
-    ...
 ```
 
 **Hint writing rules:**
 - Name the **symptom**, never the fix. ✓ "Got 0 — check that you're updating `total` inside the loop." ✗ "Add `total += i` inside the loop."
-- For wrong numeric answers, call out the specific value and what it suggests: "Got 105 — that's 1+2+…+14, so your loop stopped one step early."
-- For the `= ...` (Ellipsis) pattern, add `if answer is ...: return "You haven't filled this in yet."` as the first check.
-- For pre-initialized variables (Pattern B), check whether the variable still holds its starting value: `if total == 0: return "total is still 0 — ..."`.
-- Always verify the checks file before committing: run `python3` and call each `check_exN` with the correct answer (expect `True`) and several common wrong answers (expect a hint string).
+- For wrong numeric answers, call out the value and what it suggests: "Got 105 — that's 1+2+…+14, so your loop stopped one step early."
+- For Pattern A (`= ...`), add `if answer is ...: return "You haven't filled this in yet."` as the first check.
+- For Pattern B (pre-initialized), check whether the variable still holds its starting value: `if total == 0: return "total is still 0 — ..."`.
+- Always verify before committing: call each `check_exN` with the correct answer (expect `True`) and several wrong answers (expect hint strings).
 
-`checks-XX.py` is:
-- Fetched by the homework notebook at runtime and saved locally as `checks.py`
-  (so `import checks` works — dashes are not valid in Python module names)
-- **Excluded from `build.sh`** — not converted to a notebook
-- **Committed to the repo** (it's intentionally opaque — students see only
-  one-liner lambda calls, not the logic inside)
+`checks-XX.py` is fetched at runtime and saved locally as `checks.py` (so `import checks` works — dashes aren't valid in module names). It is excluded from `build.sh` and committed to the repo as-is (students see only the one-liner lambda calls, not the logic inside).
 
 ---
 
-## homework_solution-XX.py — instructor reference
+## homework_solution-XX.py — Instructor Reference
 
 - Contains correct answers filled in (no `...` placeholders)
 - Uses `student_name = "Instructor"`
 - Same `SUBMIT_URL` as the student notebook
-- **Excluded from `build.sh`'s dist/ output** — built in-place to
-  `week-XX/homework_solution-XX.ipynb` instead
+- Built in-place to `week-XX/homework_solution-XX.ipynb` — **not** in `dist/`
 - `week-XX/homework_solution-XX.ipynb` is **git-ignored** — never committed
-- Run `bash build.sh` locally to regenerate it whenever you need to verify
 
-### Testing homework solutions locally
-
-Because the homework notebooks download `grader.py` and `checks.py` from
-GitHub at runtime, testing them locally requires those files to be present
-in the working directory. The solution script will grade all exercises and
-then call `grader.submit(student_name, SUBMIT_URL)` which posts the score
-to the Google Sheet under `student_name = "Instructor"`.
+**Testing locally:** because notebooks download `grader.py` and `checks.py` from GitHub at runtime, copy them first:
 
 ```bash
 mkdir -p /tmp/hw_test
@@ -436,37 +349,24 @@ cp week-0N/checks-0N.py /tmp/hw_test/checks.py   # ← update N
 cd /tmp/hw_test && python /path/to/week-0N/homework_solution-0N.py
 ```
 
-The download cells skip if the files are already present, so the script
-runs the local copies rather than fetching from GitHub. The final submit
-call will still hit the live `SUBMIT_URL` and record the instructor score
-in the gradebook — this is expected and harmless (the sheet stores all
-submissions; the MAXIFS formula keeps the highest per student per week).
+The download cells skip if files are already present, so local copies are used. The submit call will still post to the live gradebook under `"Instructor"` — this is expected and harmless.
 
 ---
 
-## Score submission: how it works
+## Score Submission
 
-`grader.submit(student_name, SUBMIT_URL)` sends the score to a Google
-Sheet via a Google Apps Script web app:
+`grader.submit(student_name, SUBMIT_URL)` sends scores to a Google Sheet via Google Apps Script:
 
-- Uses a **GET request with URL query parameters** (not POST — Google's
-  Apps Script infrastructure rejects POST from non-browser clients with 405)
+- Uses a **GET request** (not POST — Apps Script rejects POST from non-browser clients with 405)
 - Parameters: `student_name`, `assignment`, `score`, `total`, `pct`, `timestamp`
-- The same `SUBMIT_URL` is used for **every week** — the `assignment` field
-  (`"Week 1 Homework"`, `"Week 2 Homework"`, etc.) separates them in the Sheet
-- Students may submit multiple times; the Sheet stores all submissions and
-  a MAXIFS formula picks the highest score per student per assignment
+- The same `SUBMIT_URL` is used every week — the `assignment` field (`"Week 1 Homework"`, etc.) separates them in the Sheet
+- Students may submit multiple times; a MAXIFS formula keeps the highest score per student per assignment
 
-The Apps Script source is in `grader/gradebook.js`.
-Setup instructions are in `grader/GRADEBOOK_SETUP.md`.
+Source: `grader/gradebook.js`. Setup: `grader/GRADEBOOK_SETUP.md`.
 
-**Important operational notes:**
-- If `gradebook.js` is ever changed, the Apps Script deployment must be
-  updated: Deploy → Manage deployments → Edit → New version → Deploy.
-  The URL stays the same after redeployment.
-- Colab caches `grader.py` and `checks.py` for the lifetime of a session.
-  If either file is updated on GitHub, students (and you) must do
-  **Runtime → Restart session** in Colab before the new version takes effect.
+**If `gradebook.js` is changed**, redeploy: Deploy → Manage deployments → Edit → New version → Deploy. URL stays the same.
+
+**If `grader.py` or `checks.py` is updated on GitHub**, students must do **Runtime → Restart session** in Colab before the new version takes effect.
 
 **SUBMIT_URL** (same for all weeks):
 ```
@@ -475,68 +375,43 @@ https://script.google.com/macros/s/AKfycbxmZUvgnvH3-rWYfr3ZV9vMcK8mpKvoStmjsoF0i
 
 ---
 
-## Checklist for building a new week's homework
+## Checklist: Building a New Week's Homework
 
 - [ ] Read `week-0N/lecture-0N.py` first — only test concepts actually demonstrated there
 - [ ] Create `week-0N/checks-0N.py` — one `check_exK` function per exercise
-- [ ] Create `week-0N/homework-0N.py` — follow the structure above exactly;
-      update the `checks-0N.py` URL (both the folder and filename) and
-      `grader = Grader("Week N Homework")`
-- [ ] Create `week-0N/homework_solution-0N.py` — correct answers filled in,
-      `student_name = "Instructor"`
-- [ ] Verify checks: run each `check_exN` with the correct answer (must return `True`)
-      and several wrong answers (must return hint strings, not crash)
+- [ ] Create `week-0N/homework-0N.py` — follow the structure above; update the `checks-0N.py` URL and `grader = Grader("Week N Homework")`
+- [ ] Create `week-0N/homework_solution-0N.py` — correct answers filled in, `student_name = "Instructor"`
+- [ ] Verify checks: each `check_exN` returns `True` for the correct answer and hint strings for wrong answers
 - [ ] Run `bash build.sh`
 - [ ] Verify `dist/week-0N/homework-0N.ipynb` was created
-- [ ] Verify `week-0N/homework_solution-0N.ipynb` was created (in-place, not dist/)
+- [ ] Verify `week-0N/homework_solution-0N.ipynb` was created (in-place, not in dist/)
 - [ ] Verify `week-0N/homework_solution-0N.ipynb` does **not** appear in `git status`
-- [ ] Test the solution locally (see "Testing homework solutions locally" above) — confirm it scores N/N and posts to the gradebook
+- [ ] Test the solution locally — confirm it scores N/N and posts to the gradebook
 - [ ] `git add` sources + dist/ files; commit and push to `main`
 - [ ] Test the student notebook in Colab (setup cell, exercises, submit)
 
 ---
 
-## Requirements
+## Lecture Notebook Conventions
 
-- `jupytext` (pinned in `requirements.txt`) — the only hard dependency for
-  the build step. Install with `pip install -r requirements.txt`.
-- Students need no local setup; they use Google Colab.
+### Purpose and rules
+Lecture notebooks are the script for a live class session. Students copy them to their Drive and follow along. They are **not** autograded.
 
----
-
-## Lecture notebook conventions
-
-These rules apply to every `lecture-XX.py` file.
-
-### File naming
-Lecture sources are named `lecture-XX.py` where `XX` matches the week number
-(e.g. `week-01/lecture-01.py` → `dist/week-01/lecture-01.ipynb`).
-
-### Purpose
-Lecture notebooks are the script for a live class session. Students copy them
-to their Drive and follow along. They are **not** autograded.
-
-- **No `grader.py` import.** The notebook stands alone.
-- **No solution cells.** Leave exercise code cells empty; the instructor
-  produces solutions live on the projected screen.
+- No `grader.py` import — the notebook stands alone.
+- No solution cells — leave exercise code cells empty; the instructor fills them in live.
+- Named `lecture-XX.py` matching the week number (`week-01/lecture-01.py` → `dist/week-01/lecture-01.ipynb`).
 
 ### Block structure
 Each lecture has four topic blocks. Each block follows this rhythm:
 
 1. A markdown heading + concept explanation.
-2. Short prebuilt demo code cells (1–3 lines each) the instructor runs live,
-   each preceded by a brief markdown note about what to notice.
+2. Short prebuilt demo code cells (1–3 lines each) the instructor runs live, each preceded by a brief markdown note about what to notice.
 3. A `### Now you try` markdown divider, followed by exercises.
 
-The notebook ends after the last exercise's empty code cell. Do **not**
-add a break marker, a "15-minute break" cell, a closing "That's it for
-tonight!" cell, or any other housekeeping text — the instructor manages
-pacing and wrap-up live.
+The notebook ends after the last exercise's empty code cell. Do **not** add a break marker, closing cell, or any housekeeping text — the instructor manages pacing live.
 
 ### Exercise pairing rule (critical)
-Every individual exercise gets **its own instruction markdown cell immediately
-followed by its own empty code cell**. Never group multiple exercises under
-one instruction cell.
+Every exercise gets **its own instruction markdown cell immediately followed by its own empty code cell**. Never group multiple exercises under one instruction cell.
 
 ```
 # %% [markdown]
@@ -553,10 +428,18 @@ one instruction cell.
 ```
 
 ### Bug-demo cells
-When showing intentionally broken code, each bug gets its own markdown
-prompt cell + code cell pair. Include a mix of:
-- **Syntax errors** (missing colon, `=` vs `==`) — these crash with an
-  error message students can read.
-- **Logic errors** (PEMDAS mistakes, wrong `if/elif` order, type confusion)
-  — these run without crashing but produce wrong answers, which is often
-  harder to spot and more important to teach.
+Each bug gets its own markdown prompt cell + code cell pair. Include a mix of:
+- **Syntax errors** (missing colon, `=` vs `==`) — crash with a readable error message.
+- **Logic errors** (PEMDAS mistakes, wrong `if/elif` order, type confusion) — run without crashing but produce wrong answers, which is harder to spot and more important to teach.
+
+---
+
+## Requirements
+
+`jupytext` is the only hard dependency for the build step. Install with:
+
+```bash
+pip install -r requirements.txt
+```
+
+Students need no local setup — they use Google Colab.
