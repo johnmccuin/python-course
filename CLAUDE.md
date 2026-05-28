@@ -22,12 +22,14 @@ deliverable is a set of well-structured Jupyter notebooks.
 ```
 python-course/
   grader/
-    grader.py           # Grader class (jupytext source)
-    test_grader.py      # End-to-end test notebook (jupytext source)
-  week-XX/              # One folder per week (week-01, week-02, …)
-    lecture-XX.py       # Lecture notebook (jupytext source)
-    homework-XX.py      # Homework notebook (jupytext source)
-  dist/                 # Generated .ipynb files — git-tracked (see below)
+    grader.py               # Grader class (jupytext source)
+    test_grader.py          # End-to-end test notebook (jupytext source)
+  week-XX/                  # One folder per week (week-01, week-02, …)
+    lecture-XX.py           # Lecture notebook (jupytext source)
+    homework-XX.py          # Homework notebook (jupytext source)
+    homework_solution-XX.py # Reference solution — instructor only, not in dist/
+    checks-XX.py            # Autograder check functions — downloaded at runtime
+  dist/                     # Generated .ipynb files — git-tracked (see below)
     grader/
       grader.ipynb
       test_grader.ipynb
@@ -35,11 +37,58 @@ python-course/
       lecture-01.ipynb
       homework-01.ipynb
     …
-  build.sh              # Converts .py sources → .ipynb in dist/
-  requirements.txt      # Pinned Python deps (jupytext, etc.)
+  build.sh                  # Converts .py sources → .ipynb in dist/
+  requirements.txt          # Pinned Python deps (jupytext, etc.)
   README.md
-  CLAUDE.md             # ← you are here
+  CLAUDE.md                 # ← you are here
 ```
+
+**File naming:** all week-level source files use the suffix `-NN` (e.g.
+`homework-03.py`, `checks-03.py`).  The `XX` above is a two-digit
+zero-padded week number.
+
+### Three-file pattern per week
+
+Every homework week has three source files in `week-XX/`:
+
+| File | Purpose | In `dist/`? |
+|---|---|---|
+| `homework-XX.py` | Student-facing notebook | Yes |
+| `checks-XX.py` | Check functions — downloaded at runtime by the notebook; students never see the source | Yes |
+| `homework_solution-XX.py` | Reference solution (instructor only) | Yes (but URL not shared) |
+
+The homework notebook downloads **both** `grader.py` and `checks.py` at
+runtime so students can't read the check logic ahead of time:
+
+```python
+_FILES = {
+    "grader.py": f"{_BASE}/grader/grader.py",
+    "checks.py": f"{_BASE}/week-03/checks-03.py",
+}
+```
+
+Each exercise in the homework calls:
+```python
+grader.check("ex1_function_name", lambda: checks.check_ex1(student_variable_or_fn))
+```
+
+And `checks-XX.py` defines `check_ex1(val)` → returns `True` on pass or
+a hint string on failure.
+
+### Getting source files that exist only on `main`
+
+This repo uses feature branches. When starting a session on a non-main
+branch, source files for existing weeks may be absent locally. Always
+fetch them first:
+
+```bash
+git fetch origin main
+git show origin/main:week-02/homework-02.py   # read without checking out
+git ls-tree -r origin/main --name-only        # list all files on main
+```
+
+Do **not** assume a file doesn't exist just because it isn't visible in
+the working tree — check `origin/main` first.
 
 ---
 
@@ -126,10 +175,32 @@ the generated files is simpler and keeps everything self-contained.
 |------|-------|
 | 01   | Variables, types, basic I/O |
 | 02   | Conditionals & loops |
-| 03   | Functions |
+| 03   | Functions, strings in depth, dicts, file I/O (overview) |
 | 04   | Lists & tuples |
-| 05   | Dictionaries & sets |
-| 06   | File I/O & exceptions |
+| 05   | Dictionaries & sets (deep dive) |
+| 06   | File I/O & exceptions (deep dive) |
 | 07   | Classes & objects |
 | 08   | Libraries (numpy, pandas intro) |
 | 09   | Mini-project |
+
+**Note:** Week 3 is intentionally wide — the lecture (`week-03/lecture-03.py`)
+covers all four topics at survey depth. Weeks 4–6 revisit each in depth.
+The class-foreshadowing moment (using `Path`, file objects, or `datetime` as
+examples of "instances of a class") belongs in Week 3 with a note pointing
+to Week 7.
+
+### Testing homework solutions locally
+
+Because the homework notebooks download `grader.py` and `checks.py` from
+GitHub at runtime, testing them locally requires copying those files into
+a scratch directory before running the solution as a plain Python script:
+
+```bash
+mkdir -p /tmp/hw_test
+cp grader/grader.py /tmp/hw_test/
+cp week-03/checks-03.py /tmp/hw_test/checks.py
+cd /tmp/hw_test && python /path/to/homework_solution-03.py
+```
+
+The download cells skip if the files are already present, so the script
+runs entirely offline against the local copies.
