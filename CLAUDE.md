@@ -12,8 +12,38 @@ Students open `.ipynb` links from Blackboard; each link points at a file
 inside the `dist/` folder of this GitHub repo.
 
 This is **not** a typical software project. There are no servers, no
-deployments, no test runners to invoke in CI (yet). The primary
-deliverable is a set of well-structured Jupyter notebooks.
+deployments, and no automated test runners. The primary deliverable is a
+set of well-structured Jupyter notebooks.
+
+---
+
+## Git workflow — main only
+
+**Always work directly on `main`. No feature branches.**
+
+Every session:
+1. `git pull origin main` — get the latest before touching anything
+2. Make changes to `.py` source files
+3. `bash build.sh` — regenerate the `.ipynb` files in `dist/`
+4. `git add` the changed `.py` and `dist/` files
+5. `git commit -m "clear message"`
+6. `git push origin main`
+
+**Why main-only?** Feature branches caused merge conflicts because the
+session container's local clone was sometimes stale. Since there is one
+instructor, no automated tests, and git history on main is a complete
+safety net, branches add friction without benefit.
+
+**Rolling back a single file** is safe and does not affect anything else:
+```bash
+git log --oneline -- week-03/lecture-03.py   # find the version you want
+git show <hash>:week-03/lecture-03.py        # preview it
+git checkout <hash> -- week-03/lecture-03.py # restore just that file
+bash build.sh
+git add week-03/lecture-03.py dist/week-03/lecture-03.ipynb
+git commit -m "Restore lecture-03 to <date> version"
+git push origin main
+```
 
 ---
 
@@ -74,21 +104,6 @@ grader.check("ex1_function_name", lambda: checks.check_ex1(student_variable_or_f
 
 And `checks-XX.py` defines `check_ex1(val)` → returns `True` on pass or
 a hint string on failure.
-
-### Getting source files that exist only on `main`
-
-This repo uses feature branches. When starting a session on a non-main
-branch, source files for existing weeks may be absent locally. Always
-fetch them first:
-
-```bash
-git fetch origin main
-git show origin/main:week-02/homework-02.py   # read without checking out
-git ls-tree -r origin/main --name-only        # list all files on main
-```
-
-Do **not** assume a file doesn't exist just because it isn't visible in
-the working tree — check `origin/main` first.
 
 ---
 
