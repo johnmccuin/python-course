@@ -18,7 +18,7 @@ student_name = "Your Name Here"
 
 # %% [markdown]
 # ---
-# ## Setup — RUN THIS FIRST, DO NOT MODIFY
+# ## Setup — RUN AT BEGINNING, DO NOT MODIFY
 
 # %%
 import urllib.request, pathlib, sys

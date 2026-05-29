@@ -96,8 +96,15 @@ print("hello, python")
 
 # %%
 5 > 3
+
+# %%
 5 < 3
-5 != 3  # != is NOT EQUAL TO
+
+# %% [markdown]
+# `!=` means "not equal to".
+
+# %%
+5 != 3
 
 # %% [markdown]
 # Double-equals (`==`) tests if two values are equal.
