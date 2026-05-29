@@ -1,25 +1,24 @@
 #!/bin/bash
-# PreToolUse hook — blocks any git push/checkout that would leave main.
-# Receives tool input as JSON on stdin.
+# PreToolUse hook — blocks git commands that create branches or push to non-main.
+# Matched to Bash tool only via settings.json. Input JSON arrives on stdin.
+# Claude Code input format: {"tool_name": "Bash", "tool_input": {"command": "..."}}
 
 INPUT="$(cat)"
-TOOL_NAME="${CLAUDE_TOOL_NAME:-}"
+CMD="$(echo "$INPUT" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+print(d.get('tool_input', {}).get('command', ''))
+" 2>/dev/null || echo "")"
 
-if [ "$TOOL_NAME" != "Bash" ]; then
-  exit 0
-fi
-
-CMD="$(echo "$INPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('command',''))" 2>/dev/null || echo "")"
-
-# Block: git push to any branch other than main
-if echo "$CMD" | grep -qE 'git push.*origin' && ! echo "$CMD" | grep -qE 'git push.*origin main'; then
-  echo "BLOCKED: Only 'git push origin main' is allowed in this repo. Work directly on main." >&2
+# Block: creating new branches
+if echo "$CMD" | grep -qE 'git (checkout -b|switch -c)'; then
+  echo "BLOCKED: Branch creation is disabled. Commit directly to main." >&2
   exit 2
 fi
 
-# Block: creating new branches
-if echo "$CMD" | grep -qE 'git checkout -b|git switch -c'; then
-  echo "BLOCKED: Branch creation is disabled. Commit directly to main." >&2
+# Block: git push to any remote branch other than main
+if echo "$CMD" | grep -qE 'git push' && echo "$CMD" | grep -qE 'origin' && ! echo "$CMD" | grep -qE 'origin main|origin HEAD'; then
+  echo "BLOCKED: Only 'git push origin main' is allowed. Do not push to feature branches." >&2
   exit 2
 fi
 
