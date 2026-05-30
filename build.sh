@@ -32,29 +32,6 @@ patch_branch_url() {
     fi
 }
 
-# Inject kernelspec + language_info so GitHub can render the notebook.
-# jupytext's notebook_metadata_filter:-all strips these, but GitHub's
-# renderer requires at least one to identify the language.
-patch_notebook_metadata() {
-    local file="$1"
-    python3 - "$file" <<'PYEOF'
-import json, sys
-path = sys.argv[1]
-with open(path) as f:
-    nb = json.load(f)
-nb.setdefault("metadata", {})
-nb["metadata"]["kernelspec"] = {
-    "display_name": "Python 3",
-    "language": "python",
-    "name": "python3"
-}
-nb["metadata"]["language_info"] = {"name": "python"}
-with open(path, "w") as f:
-    json.dump(nb, f, indent=1)
-    f.write("\n")
-PYEOF
-}
-
 convert_file() {
     local src="$1"                          # e.g. grader/grader.py
     local rel="${src#"$REPO_ROOT/"}"        # e.g. grader/grader.py
@@ -68,7 +45,6 @@ convert_file() {
 
     if jupytext --to notebook --output "$out" "$src" 2>/dev/null; then
         patch_branch_url "$out"
-        patch_notebook_metadata "$out"
         echo "  ✓  $rel  →  dist/$dir/$base.ipynb"
         ((converted++)) || true
     else
@@ -108,7 +84,6 @@ while IFS= read -r -d '' file; do
     local_rel="${file#"$REPO_ROOT/"}"
     if jupytext --to notebook --output "$local_out" "$file" 2>/dev/null; then
         patch_branch_url "$local_out"
-        patch_notebook_metadata "$local_out"
         echo "  ✓  $local_rel  →  ${local_out#"$REPO_ROOT/"}"
         ((converted++)) || true
     else
