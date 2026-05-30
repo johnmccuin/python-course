@@ -32,6 +32,31 @@ patch_branch_url() {
     fi
 }
 
+# GitHub's renderer (nbconvert 7.x) requires language_info.pygments_lexer
+# to render notebooks. jupytext strips it via notebook_metadata_filter:-all.
+# Inject a minimal but complete language_info so GitHub can render the file.
+patch_language_info() {
+    local file="$1"
+    python3 - "$file" <<'PYEOF'
+import json, sys
+path = sys.argv[1]
+with open(path) as f:
+    nb = json.load(f)
+nb.setdefault("metadata", {})
+nb["metadata"]["language_info"] = {
+    "name": "python",
+    "version": "3.11.0",
+    "mimetype": "text/x-python",
+    "file_extension": ".py",
+    "pygments_lexer": "ipython3",
+    "codemirror_mode": {"name": "ipython", "version": 3}
+}
+with open(path, "w", encoding="utf-8") as f:
+    json.dump(nb, f, indent=1, ensure_ascii=False)
+    f.write("\n")
+PYEOF
+}
+
 convert_file() {
     local src="$1"                          # e.g. grader/grader.py
     local rel="${src#"$REPO_ROOT/"}"        # e.g. grader/grader.py
@@ -45,6 +70,7 @@ convert_file() {
 
     if jupytext --to notebook --output "$out" "$src" 2>/dev/null; then
         patch_branch_url "$out"
+        patch_language_info "$out"
         echo "  ✓  $rel  →  dist/$dir/$base.ipynb"
         ((converted++)) || true
     else
@@ -84,6 +110,7 @@ while IFS= read -r -d '' file; do
     local_rel="${file#"$REPO_ROOT/"}"
     if jupytext --to notebook --output "$local_out" "$file" 2>/dev/null; then
         patch_branch_url "$local_out"
+        patch_language_info "$local_out"
         echo "  ✓  $local_rel  →  ${local_out#"$REPO_ROOT/"}"
         ((converted++)) || true
     else
