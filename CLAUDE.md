@@ -141,7 +141,7 @@ bash build.sh
 
 **The `dist/` folder is fully git-tracked.** Colab fetches notebooks via raw GitHub URLs, so generated files must be committed. Run `build.sh` after every source edit, then commit both the `.py` and the generated `.ipynb` together.
 
-**Note on jupytext cell IDs:** jupytext assigns new random cell UUIDs on every conversion run, so `dist/` files will always appear modified after a rebuild even if content is unchanged. This is normal — commit them alongside the source changes.
+**Note on jupytext cell IDs:** `build.sh` converts every `.py` source on each run, but it uses `jupytext --update`, which reuses each existing notebook's cell IDs (and outputs) instead of generating fresh random UUIDs. This means rebuilding **unchanged** content produces a byte-identical `.ipynb` and **no git diff** — only notebooks whose source actually changed will show up in `git status`. So after `build.sh` you can `git add dist/` and trust that the staged changes correspond to real edits. (Historically, plain conversion regenerated all cell UUIDs, so every `dist/` file appeared modified after any rebuild; `--update` removed that churn.)
 
 ---
 

@@ -43,7 +43,11 @@ convert_file() {
 
     mkdir -p "$DIST/$dir"
 
-    if jupytext --to notebook --output "$out" "$src" 2>/dev/null; then
+    # --update reuses the existing notebook's cell IDs (and outputs) instead of
+    # generating fresh random UUIDs, so rebuilding unchanged content produces a
+    # byte-identical file and no spurious git diff. It safely writes a new file
+    # when the target doesn't exist yet (e.g. a brand-new week).
+    if jupytext --to notebook --update --output "$out" "$src" 2>/dev/null; then
         patch_branch_url "$out"
         echo "  ✓  $rel  →  dist/$dir/$base.ipynb"
         ((converted++)) || true
@@ -82,7 +86,7 @@ while IFS= read -r -d '' file; do
     local_base="$(basename "$file" .py)"
     local_out="$local_dir/$local_base.ipynb"
     local_rel="${file#"$REPO_ROOT/"}"
-    if jupytext --to notebook --output "$local_out" "$file" 2>/dev/null; then
+    if jupytext --to notebook --update --output "$local_out" "$file" 2>/dev/null; then
         patch_branch_url "$local_out"
         echo "  ✓  $local_rel  →  ${local_out#"$REPO_ROOT/"}"
         ((converted++)) || true
