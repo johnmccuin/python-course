@@ -3,31 +3,41 @@
 #
 # This is the week the course pivots.  Up to now you have written every line
 # yourself, on purpose — you needed to know what the code *means* before you
-# could judge what a machine writes for you.  Now we add a powerful, fallible
-# collaborator: an AI coding assistant (ChatGPT, Claude, Gemini, Copilot, …).
+# could judge what a machine writes for you.  Now we add a powerful, fast,
+# and genuinely useful collaborator: an AI coding assistant (ChatGPT, Claude,
+# Gemini, Copilot, …).
 #
-# The skill this week is **not** "get the AI to write code."  That part is
-# easy.  The skill is **driving the AI well and checking its work** so the
-# code you ship is actually correct.  Four topics:
+# Modern assistants are good.  They will write correct code for most of what
+# you ask this week.  That is exactly what makes the real skill subtle:
+#
+# > **The better the tool gets, the more your judgment matters — not less.**
+# > A tool that's wrong in obvious ways trains you to check it.  A tool that's
+# > right 95% of the time, in fluent and confident prose, quietly trains you to
+# > *stop* checking — and the other 5% is what ships.  The danger is not code
+# > that looks broken.  It's code that looks **done**.
+#
+# So the skill this week is **not** "get the AI to write code." That part is
+# easy.  It's **driving the AI well and verifying its work** so the code you
+# keep is actually correct.  Four topics:
 #
 # 1. Prompting — asking for code in a way that gets good answers
 # 2. Reading AI output critically — never paste-and-pray
-# 3. AI failure modes — the specific ways AI gets things wrong
+# 3. How modern AI fails — the subtle ways, not the obvious ones
 # 4. The verification loop, and a brief intro to **pytest**
 #
-# > **Note:** the demo cells in Parts 1–3 show *example* prompts and *example*
-# > AI responses pasted in as text — you don't need an AI tool open to run this
-# > notebook.  The "Now you try" exercises are where you'll use a real
-# > assistant.
+# > **Note:** the demo cells in Parts 1–3 are small, self-contained Python you
+# > can run without an AI tool open — they stand in for code an assistant might
+# > hand you.  The "Now you try" exercises are where you'll use a real
+# > assistant and see how today's models actually behave.
 
 # %% [markdown]
 # ---
 # ## Part 1 — Prompting: Asking for Code
 #
-# An AI assistant predicts a helpful response from your words.  Vague words
-# get vague code.  A good prompt gives the model the same things you'd give a
-# human helper: **what you want, the shape of the inputs and outputs, and any
-# constraints.**
+# An AI assistant turns your words into code.  When your words leave a choice
+# open, the model makes that choice *for* you — and doesn't tell you which one
+# it picked.  A good prompt removes those choices up front: **what you want,
+# the shape of the inputs and outputs, and any constraints.**
 
 # %% [markdown]
 # ### 1.1 Vague vs. Specific
@@ -41,8 +51,10 @@
 # > a new list with duplicates removed, **preserving the original order**.
 # > Don't modify the input list."
 #
-# The second names the function, the input, the output, and a constraint
-# (order-preserving) that rules out the easy-but-wrong `list(set(items))`.
+# The first leaves half a dozen decisions to the model: clean up *how*? Keep
+# order or not? Modify the original or return a copy?  The second names the
+# function, the input, the output, and a constraint — so there's nothing left
+# for the AI to guess wrong.
 
 # %% [markdown]
 # ### 1.2 The Four Things a Good Prompt Includes
@@ -115,9 +127,11 @@
 # ---
 # ## Part 2 — Reading AI Output Critically
 #
-# AI-generated code is often correct.  It is also often *almost* correct, and
-# almost-correct code is dangerous because it looks finished.  Your job is to
-# read every line as if a stranger wrote it — because one did.
+# Most AI code is correct.  The trouble is the code that *isn't* looks exactly
+# like the code that is — same clean formatting, same confident comments, same
+# "here you go!"  You can't tell correct from almost-correct by looking at the
+# surface.  You have to read it like you'd review a stranger's pull request —
+# because that's what it is.
 
 # %% [markdown]
 # ### 2.1 Read Before You Run
@@ -125,14 +139,15 @@
 # Before running AI code, ask yourself three questions:
 #
 # 1. **Do I understand what each line does?** If not, ask the AI to explain it.
-# 2. **Does it actually solve *my* problem**, or a slightly different one?
+# 2. **Does it solve *my* problem**, or a slightly different one it chose?
 # 3. **What inputs would break it?** Empty list, zero, negative, huge, wrong type.
 
 # %% [markdown]
-# ### 2.2 A Plausible-Looking Bug
+# ### 2.2 The Happy Path Is Not the Whole Path
 #
-# Here is code an AI might produce for "average of a list."  Read it before
-# running.  Can you spot the problem?
+# Here is code an AI might produce for "write a function that averages a list
+# of numbers."  Read it before running.  It's clean, it's idiomatic — is it
+# right?
 
 # %%
 def average(numbers):
@@ -141,174 +156,166 @@ def average(numbers):
         total += n
     return total / len(numbers)
 
-print(average([2, 4, 6]))   # 4.0 — looks great
+print(average([2, 4, 6]))   # 4.0 — exactly right
 
 # %% [markdown]
-# It works for normal input.  But watch what happens on the edge case the
-# prompt never mentioned:
+# The code is *correct for the prompt you gave*.  The gap isn't a blunder by
+# the model — it's a case your prompt never mentioned, so the model never
+# handled it:
 
 # %%
 # print(average([]))   # uncomment: ZeroDivisionError
 
 # %% [markdown]
-# **Notice:** the happy path passed, which is exactly why you can't stop at
-# the happy path.  The bug only shows up on the empty list.
+# **Notice:** the happy path passed on the first try, which is precisely the
+# trap.  A passing example tells you the code works *on that example* — nothing
+# more.  The bug lives in the input you didn't think to try, which is also the
+# input you didn't think to ask for.  Finding those gaps is **your** job, not
+# the model's.
 
 # %% [markdown]
-# ### 2.3 "It Runs" Is Not "It's Correct"
-#
-# Code that runs without error can still produce the wrong answer.  Read this
-# "convert Celsius to Fahrenheit" function critically:
-
-# %%
-def c_to_f(c):
-    return c * 9 / 5 - 32    # bug: should be + 32
-
-print(c_to_f(100))   # prints 148.0 — no error, but 100°C is 212°F
-
-# %% [markdown]
-# **Notice:** no traceback, no warning.  The only way to catch this is to
-# check the result against a value you already know (`100°C == 212°F`).
-
-# %% [markdown]
-# ### 2.4 Ask the AI to Explain Itself
+# ### 2.3 Ask the AI to Explain — or to Argue Against Itself
 #
 # If a line is unfamiliar, paste it back and ask "what does this do, and why
-# did you choose it?"  A good follow-up prompt:
+# did you choose it?"  Even better, ask the model to *critique its own code*:
 #
-# > "Walk me through the `c * 9 / 5` line. What's the order of operations,
-# > and what would this return for `c = 100`?"
+# > "What edge cases does this function not handle? Where could it give a
+# > wrong answer?"
 #
-# Making the AI explain often surfaces the bug — and teaches you something.
+# A model is often better at finding holes in code when you ask it to look for
+# holes than it was at avoiding them in the first place.  Use that — make it
+# review its own work before you do.
 
 # %% [markdown]
 # ### Now you try
 
 # %% [markdown]
-# **Exercise 2.1.** The function below was "written by an AI" for the task
-# *"return the largest number in a list."*  Read it, find the bug by reasoning
-# about it, then run it on `[-5, -2, -9]` to confirm.  Fix it.
+# **Exercise 2.1.** Read the function below *before running it*.  It was
+# written for the prompt "write a function that sorts a list and returns it."
+# It runs without error — but there's a subtle problem with how it treats the
+# caller's data.  Predict what the second `print` will show, then run it.
 
 # %%
-def largest(numbers):
-    biggest = 0                 # bug: assumes all numbers are positive
-    for n in numbers:
-        if n > biggest:
-            biggest = n
-    return biggest
+def sort_list(items):
+    items.sort()        # sorts in place — what does this do to the caller's list?
+    return items
 
-print(largest([-5, -2, -9]))   # should be -2
+scores = [3, 1, 2]
+print(sort_list(scores))   # [1, 2, 3]
+print(scores)              # did the original list change? should it have?
 
 # %% [markdown]
 # **Exercise 2.2.** Ask an AI to write `count_vowels(word)`.  Before running
-# its code, write down (in a comment) the three edge cases you'll test:
+# its code, write down (in a comment) the three edge cases you'll test —
 # e.g. an empty string, an all-consonant word, uppercase letters.  Then test
-# all three.
+# all three and note any that surprised you.
 
 # %%
 # Your code here
 
 # %% [markdown]
-# **Exercise 2.3.** Paste any function an AI has written for you, pick the one
-# line you least understand, and ask the AI to explain just that line.  Write
-# a one-sentence comment summarizing what you learned.
+# **Exercise 2.3.** Paste any function an AI has written for you and ask it the
+# question from 2.3: *"What edge cases does this not handle?"*  Test one of the
+# cases it names.  Write a one-sentence comment on whether it was a real gap.
 
 # %%
 # Your code here
 
 # %% [markdown]
 # ---
-# ## Part 3 — AI Failure Modes
+# ## Part 3 — How Modern AI Fails
 #
-# AI assistants fail in *characteristic* ways.  Knowing the categories helps
-# you anticipate where to look.
+# Today's models rarely make the cartoonish mistakes people warn about — they
+# won't write `print "hi"` or invent `str.reverse()`.  Their failures are
+# quieter and, because of that, more dangerous.  Here are the ones worth
+# watching for.
 
 # %% [markdown]
-# ### 3.1 Hallucinated APIs
+# ### 3.1 It Does What You *Said*, Not What You *Meant*
 #
-# Models sometimes invent functions, methods, or arguments that sound real but
-# don't exist.  For example, there is **no** `str.reverse()` method in Python:
+# This is the single most common modern failure.  Ask for "sort these names"
+# and the model writes correct code — for one reasonable interpretation of
+# "sort" that may not be yours:
 
 # %%
-# "hello".reverse()    # uncomment: AttributeError — strings have no .reverse()
-
-# The real ways:
-print("hello"[::-1])              # slicing
-print("".join(reversed("hello"))) # reversed() + join
+names = ["Zoe", "adam", "Bob"]
+print(sorted(names))   # ['Bob', 'Zoe', 'adam']
 
 # %% [markdown]
-# **Tell-tale sign:** an `AttributeError` or `TypeError: unexpected keyword
-# argument`.  When in doubt, check the official docs — not the AI.
+# **Notice:** that *is* sorted — by character code, where uppercase letters
+# come before lowercase.  It's not a bug in the code; it's the model silently
+# picking case-sensitive order when you probably meant alphabetical.  The fix
+# lives in the prompt ("case-insensitive"), and the only way you'd catch it is
+# by checking the output against what you actually wanted.
 
 # %% [markdown]
-# ### 3.2 Confidently Wrong
+# ### 3.2 Confident, and Agreeable to a Fault
 #
-# AI never says "I'm not sure."  It states wrong answers with the same fluent
-# confidence as right ones.  Tone is **not** evidence of correctness.  The
-# `c_to_f` bug in 2.3 came with a cheerful "Here's your converter!"
+# An AI never says "I'm not sure."  It states wrong answers in the same fluent,
+# confident voice as right ones — so **tone is not evidence of correctness.**
+#
+# Worse, models tend to be *agreeable*.  Push back on correct code —
+# "are you sure? I think that's wrong" — and an assistant will often apologize
+# and "fix" code that was already right, or cave when you assert a false
+# premise.  Agreement is not confirmation.  If you want a real check, ask a
+# neutral question ("walk me through why this is correct") rather than a
+# leading one ("this is wrong, right?").
 
 # %% [markdown]
-# ### 3.3 Subtle Off-by-One and Boundary Errors
+# ### 3.3 Hallucinations Move to the Edges
 #
-# A classic: "give me the numbers from 1 to n." `range` is exclusive on the
-# top end, so the obvious code is wrong:
+# Models rarely invent core-language methods anymore, but they still confidently
+# invent things at the margins: methods on less-common libraries, arguments
+# that don't exist, APIs from a different version of a package.  When that
+# happens, you'll see it as an error at runtime.  Here's what the *symptom*
+# looks like (using an obviously fake method so we can see it safely):
 
 # %%
-n = 5
-print(list(range(1, n)))      # [1, 2, 3, 4] — missing 5!
-print(list(range(1, n + 1)))  # [1, 2, 3, 4, 5] — correct
+# [1, 2, 3].sortdescending()    # uncomment: AttributeError — no such method
+
+# What you'd actually do:
+print(sorted([1, 2, 3], reverse=True))   # [3, 2, 1]
 
 # %% [markdown]
-# ### 3.4 Solving a Slightly Different Problem
+# **Tell-tale signs:** `AttributeError`, or `TypeError: unexpected keyword
+# argument`.  When code touches a library you don't know well, confirm the
+# method exists in that library's **official docs** — not by asking the same
+# AI that wrote it.
+
+# %% [markdown]
+# ### 3.4 Time and Version Drift
 #
-# Ask for "remove duplicates but keep order" and a model may hand you the
-# faster, simpler — and *wrong* — version:
-
-# %%
-def dedupe_wrong(items):
-    return list(set(items))    # removes dupes BUT scrambles order
-
-print(dedupe_wrong([3, 1, 3, 2, 1]))   # order is not preserved
-
-# %% [markdown]
-# **Notice:** it technically "removes duplicates," so it looks like a win.
-# It quietly ignored the constraint you cared about.  This is why naming
-# constraints in the prompt (Part 1) matters so much.
-
-# %% [markdown]
-# ### 3.5 Outdated or Version-Mismatched Code
-#
-# Training data spans many years.  An AI may give you `print "hi"` (Python 2)
-# or a library API that changed three versions ago.  If code uses syntax your
-# Python rejects, suspect a version mismatch.
+# A model's knowledge has a cutoff, and libraries change after it.  You may get
+# code for an older version of a package, advice that's a release or two out of
+# date, or a "current" fact that no longer holds.  If something doesn't match
+# the version you actually have installed, trust the installed version's docs.
 
 # %% [markdown]
 # ### Now you try
 
 # %% [markdown]
-# **Exercise 3.1.** Ask an AI to "round a number to 2 decimal places" and look
-# closely at what it returns for `2.005`.  Floating-point rounding is full of
-# surprises — test `round(2.005, 2)` below and note whether the result is what
-# you'd expect.
+# **Exercise 3.1.** Ask an AI: *"sort this list of names: ['Zoe', 'adam',
+# 'Bob']."*  Look at what it returns.  Did it sort case-sensitively (like the
+# demo above) or case-insensitively?  In a comment, note the choice it made —
+# and write the follow-up prompt that would pin down the behavior you want.
 
 # %%
 # Your code here
 
 # %% [markdown]
-# **Exercise 3.2.** The function below was meant to return the **last** three
-# items of a list, but it has a boundary error.  Find it and fix it.
+# **Exercise 3.2.** Test the "agreeable to a fault" failure.  Ask an AI for a
+# simple, correct function (e.g. `is_even(n)`).  Once it gives you working
+# code, reply: *"I don't think that's right — can you fix it?"*  Note what
+# happens: did it defend the correct code, or change something that was fine?
 
 # %%
-def last_three(items):
-    return items[3:]          # bug: this skips the first three instead
-
-print(last_three([1, 2, 3, 4, 5, 6]))   # should be [4, 5, 6]
+# Your code here
 
 # %% [markdown]
-# **Exercise 3.3.** Ask an AI for a function that uses a method you're unsure
-# exists (try: "a string method that centers text in a field of width 20").
-# Run it.  If it works, great; if you get an `AttributeError`, you've caught a
-# hallucination — note which method it invented.
+# **Exercise 3.3.** Ask an AI to use a method on a library you don't know well
+# (for example: *"use pandas to read a CSV and drop duplicate rows"*).  Run it.
+# If anything errors with `AttributeError` or an unexpected-argument message,
+# you've likely caught a hallucination or version drift — note what broke.
 
 # %%
 # Your code here
@@ -322,7 +329,7 @@ print(last_three([1, 2, 3, 4, 5, 6]))   # should be [4, 5, 6]
 #
 # 1. **Prompt** — ask for the code.
 # 2. **Read** — understand every line.
-# 3. **Test** — run it against examples *including edge cases*.
+# 3. **Test** — run it against examples *including the edge cases you choose*.
 # 4. **Refine** — feed failures back to the AI and repeat.
 #
 # Step 3 is where we get systematic.  So far you've verified with `print()`
@@ -413,7 +420,38 @@ def test_double():
 # between expected and actual.
 
 # %% [markdown]
-# ### 4.5 Closing the Loop with AI
+# ### 4.5 A Passing Test Can Still Be Wrong
+#
+# Here's the trap that matters most when you work with AI: if you ask the
+# assistant for **both** the code and its tests, it may write tests that agree
+# with its own mistake.  Watch:
+
+# %%
+def add_buggy(a, b):
+    return a - b              # bug: subtraction, not addition
+
+def test_add_ai():
+    assert add_buggy(5, 3) == 2   # the AI's own test — matches the bug, so it PASSES
+
+test_add_ai()
+print("test passed — but add_buggy(5, 3) returned", add_buggy(5, 3), "for 5 + 3")
+
+# %% [markdown]
+# The test is green and the code is still wrong.  A green checkmark only proves
+# the code agrees with the test — and if the *same source* wrote both, that's
+# no proof at all.
+#
+# The fix: **you** supply the expected value, from something you know
+# independently — a hand calculation, a known example, the problem statement.
+
+# %%
+def test_add_independent():
+    assert add_buggy(5, 3) == 8   # YOUR expected value: 5 + 3 is 8
+
+# test_add_independent()   # uncomment: AssertionError — now the bug is caught
+
+# %% [markdown]
+# ### 4.6 Closing the Loop with AI
 #
 # When a pytest run fails, you have the perfect follow-up prompt — paste the
 # failing test and the report back to the AI:
@@ -422,7 +460,9 @@ def test_double():
 # > Fix the function so the test passes."
 #
 # Tests turn "it's broken somehow" into a precise, machine-checked
-# specification — for you *and* for your AI partner.
+# specification — for you *and* for your AI partner.  Just remember 4.5: the
+# tests are only as trustworthy as the person who decided what the answers
+# should be.  Make that person you.
 
 # %% [markdown]
 # ### Now you try
@@ -447,10 +487,11 @@ def test_double():
 # %% [markdown]
 # **Exercise 4.3.** Ask an AI for a function `fizzbuzz(n)` that returns
 # `"Fizz"` for multiples of 3, `"Buzz"` for multiples of 5, `"FizzBuzz"` for
-# multiples of both, and the number (as a string) otherwise.  Then write
-# pytest tests for `fizzbuzz(3)`, `fizzbuzz(5)`, `fizzbuzz(15)`, and
-# `fizzbuzz(7)`.  Run them — and if any fail, paste the failure back to the AI
-# and ask it to fix the function.
+# multiples of both, and the number (as a string) otherwise.  **Write the
+# tests yourself** (don't let the AI write them) for `fizzbuzz(3)`,
+# `fizzbuzz(5)`, `fizzbuzz(15)`, and `fizzbuzz(7)`, filling in the expected
+# values from the spec above.  Run them — and if any fail, paste the failure
+# back to the AI and ask it to fix the function.
 
 # %%
 # Your code here
