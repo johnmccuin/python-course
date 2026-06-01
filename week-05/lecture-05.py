@@ -193,12 +193,15 @@ print(average([2, 4, 6]))   # 4.0 — exactly right
 # *operator's*.  The model writes the code; **you** decide whether to trust it.
 # These habits are what keep you in the driver's seat:
 #
-# - **Never keep code you couldn't have written yourself.** If you can't read
-#   it, you can't verify it — and you haven't learned anything, you've just
-#   moved the not-understanding somewhere you'll trip over it later.  When a
-#   line is unfamiliar, ask the AI to explain it until you *could* have written
-#   it.  (This matters double right now: the point of this course is that *you*
-#   can program, not that you can ask a machine to.)
+# - **Be careful keeping code you couldn't have written yourself.** If you
+#   can't read it, you can't verify it — and you haven't learned anything,
+#   you've just moved the not-understanding somewhere you'll trip over it
+#   later.  The fix isn't to avoid such code; it's to take the time to
+#   understand it.  Use the AI as a patient tutor: ask it to walk you through
+#   the unfamiliar lines, explain *why* it chose them, and rephrase anything
+#   that's still murky until you *could* have written it yourself.  (This
+#   matters double right now: the point of this course is that *you* can
+#   program, not that you can ask a machine to.)
 #
 # - **Read the whole change, not just the part you asked about.** An assistant
 #   will often touch more than you requested — rename a variable, "improve" a
