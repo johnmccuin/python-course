@@ -25,6 +25,17 @@
 # 3. How modern AI fails — the subtle ways, not the obvious ones
 # 4. The verification loop, and a brief intro to **pytest**
 #
+# **How this actually works in practice.** Professionals rarely paste code one
+# function at a time anymore.  They work in *agentic* tools (Claude Code,
+# Cursor, Copilot, Colab's own assistant) where you describe a goal and the AI
+# reads your project, edits files, and even runs the tests itself — then hands
+# you a set of changes to review.  You're in Colab, so this week you'll drive it
+# by hand: write a prompt, read what comes back, run it, refine.  That
+# hand-cranked loop is the **same loop** an agent automates — so the judgment you
+# build here is exactly what makes you good with the more powerful tools.  And
+# the better those tools get, the more the bottleneck becomes the two ends only
+# you own: **saying what you want, and deciding whether what you got is right.**
+#
 # > **Note:** the demo cells in Parts 1–3 are small, self-contained Python you
 # > can run without an AI tool open — they stand in for code an assistant might
 # > hand you.  The "Now you try" exercises are where you'll use a real
@@ -500,6 +511,24 @@ def test_add_independent():
 # specification — for you *and* for your AI partner.  Just remember 4.5: the
 # tests are only as trustworthy as the person who decided what the answers
 # should be.  Make that person you.
+
+# %% [markdown]
+# ### 4.7 The Same Loop, Scaled Up
+#
+# Everything in this part was the verification loop done by hand: you prompted,
+# you read, you ran the test, you refined.  Agentic tools automate the
+# *mechanical middle* — they can write the code and run the tests for you in a
+# single step, and loop on failures without you lifting a finger.  What they do
+# **not** automate is the two ends:
+#
+# - **The spec going in** — deciding what to build and what "correct" means.
+# - **The judgment coming out** — reading the change and verifying it against a
+#   standard *you* set independently.
+#
+# As the tools get more capable, those two ends become **more** of your job, not
+# less — they're where your value concentrates.  Next week (Week 6) is devoted
+# to them: writing specs, breaking work into pieces you can actually review, and
+# keeping the result understandable enough to trust.
 
 # %% [markdown]
 # ### Now you try
