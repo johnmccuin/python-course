@@ -187,6 +187,40 @@ print(average([2, 4, 6]))   # 4.0 — exactly right
 # review its own work before you do.
 
 # %% [markdown]
+# ### 2.4 Your Job, Not the Model's
+#
+# Most bad outcomes with an AI aren't the model's mistakes — they're the
+# *operator's*.  The model writes the code; **you** decide whether to trust it.
+# These habits are what keep you in the driver's seat:
+#
+# - **Never keep code you couldn't have written yourself.** If you can't read
+#   it, you can't verify it — and you haven't learned anything, you've just
+#   moved the not-understanding somewhere you'll trip over it later.  When a
+#   line is unfamiliar, ask the AI to explain it until you *could* have written
+#   it.  (This matters double right now: the point of this course is that *you*
+#   can program, not that you can ask a machine to.)
+#
+# - **Read the whole change, not just the part you asked about.** An assistant
+#   will often touch more than you requested — rename a variable, "improve" a
+#   nearby line, restructure something.  If you only check the piece you had in
+#   mind, the rest lands unreviewed.  Read every line that changed.
+#
+# - **You own the spec, not the AI.** If you ask "what should this function
+#   do?" and accept the answer, the model has now written *both* the
+#   requirements and the code to match them — there's no independent check
+#   left.  Decide what "correct" means yourself, then judge the code against
+#   it.
+#
+# - **Know when to take the keyboard back.** If something is subtly wrong,
+#   re-prompting five times is often slower than reading the ten lines and
+#   fixing them yourself.  The AI is a tool, not the only tool.
+#
+# - **Don't let the speed rush you.** Code appears so fast that it's tempting
+#   to skip the read-test-think loop you'd never skip on your own code.  The
+#   speed is exactly when to slow down: a wrong answer arrives just as quickly
+#   as a right one.
+
+# %% [markdown]
 # ### Now you try
 
 # %% [markdown]
