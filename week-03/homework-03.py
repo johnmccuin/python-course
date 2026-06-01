@@ -220,7 +220,7 @@ print(f"Type of p: {type(p)}")
 
 # %% [markdown]
 # `Path("hw3_scores.csv")` is an **instance of a class** called `Path`.
-# You haven't written a class yourself yet — that's Week 7.  For now,
+# You haven't written a class yourself yet — that's Week 6.  For now,
 # just use the objects Python provides.
 #
 # The next two exercises write a CSV file and then read it back.

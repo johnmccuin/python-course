@@ -9,7 +9,7 @@
 # 4. Strings in depth
 # 5. Dictionaries
 # 6. Basic file I/O
-# 7. A first look at objects (foreshadowing Week 7)
+# 7. A first look at objects (foreshadowing Week 6)
 
 # %% [markdown]
 # ---
@@ -463,7 +463,7 @@ with open("summary.txt") as f:
 # An **object** bundles data (*attributes*) and behaviour (*methods*)
 # together under one name.
 #
-# We'll build our own objects in Week 7.  For now, let's notice the pattern
+# We'll build our own objects in Week 6.  For now, let's notice the pattern
 # by exploring a few objects from the **standard library**.
 
 # %% [markdown]
@@ -541,7 +541,7 @@ print(counts.most_common(2))     # top 2
 
 # %% [markdown]
 # `Counter` is a dict subclass — all dict operations work on it.
-# Week 7 will show you how to build your own classes like these.
+# Week 6 will show you how to build your own classes like these.
 
 # %% [markdown]
 # ---

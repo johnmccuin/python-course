@@ -23,12 +23,12 @@ This schedule is the source of truth for what each week covers. Do not infer top
 | 03 | Functions and More Data: functions (parameters, return values), dicts, strings in depth, basic file I/O; foreshadow classes via stdlib objects | No AI |
 | 04 | Organizing Code and Handling Problems: modules and imports, error handling, tracebacks, debugging strategies, assertions for verification | No AI |
 | 05 | Working With AI as a Coding Partner: prompting, reading AI output critically, verification loop, AI failure modes, brief pytest intro | AI pivot (AI introduced) |
-| 06 | Specs, Decomposition, Architecture, and Classes: writing specs, decomposition, architecture principles, cost of abstraction, intro to classes (`__init__`, methods, instances) | AI allowed |
+| 06 | Specs, Decomposition, Architecture, and Classes: writing specs, decomposition, architecture principles, cost of abstraction, intro to classes (`__init__`, methods, instances) — framed throughout as the durable, high-leverage skills in AI-assisted (agentic) coding: the spec is the human's main artifact, decomposition/architecture keep AI output reviewable and maintainable, and classes are taught for reading and judging code as much as for writing it | AI allowed |
 | 07 | Connecting to the World: APIs and LLMs: HTTP basics, `requests`, REST/JSON, Anthropic/OpenAI SDK, system prompts, structured output; capstone assigned | AI allowed |
 | 08 | Capstone Build Week: brief opening on scoping and planning, spec due partway through, supervised work time | AI allowed |
 | 09 | Capstone Presentations and Closing: presentations (spec, demo, architecture, reflection on AI), discussion of what to learn next | AI allowed |
 
-**Note:** Week 3 is intentionally wide — the lecture covers functions, dicts, strings in depth, and basic file I/O at survey depth. Later weeks revisit each topic in depth. The class-foreshadowing moment (using `Path`, file objects, or `datetime` as examples of "instances of a class") belongs in Week 3 with a note pointing to Week 7.
+**Note:** Week 3 is intentionally wide — the lecture covers functions, dicts, strings in depth, and basic file I/O at survey depth. Later weeks revisit each topic in depth. The class-foreshadowing moment (using `Path`, file objects, or `datetime` as examples of "instances of a class") belongs in Week 3 with a note pointing to Week 6, where classes are formally introduced.
 
 ---
 
