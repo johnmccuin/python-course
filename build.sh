@@ -64,9 +64,13 @@ fi
 echo ""
 
 # grader/
+# Excludes:
+#   smoke_test.py — plain dev script (runs the solutions offline), not a notebook
 while IFS= read -r -d '' file; do
     convert_file "$file"
-done < <(find "$REPO_ROOT/grader" -maxdepth 1 -name "*.py" -print0 2>/dev/null | sort -z)
+done < <(find "$REPO_ROOT/grader" -maxdepth 1 -name "*.py" \
+    -not -name "smoke_test.py" \
+    -print0 2>/dev/null | sort -z)
 
 # week-XX/
 # Excludes:

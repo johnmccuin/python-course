@@ -42,7 +42,7 @@ lectures aligned with it and avoid teaching straw-man limitations that newer mod
 
 **Note:** Week 3 is intentionally wide — the lecture covers functions, dicts, tuples, and strings in depth. **Basic file I/O moved to Week 4** (alongside modules and error handling), so do not reintroduce it in Week 3. The class-foreshadowing moment (using `Path`, file objects, or `datetime` as examples of "instances of a class") belongs in Week 3 with a note pointing to **Week 5**, where classes are formally introduced.
 
-**Capstone & homework note:** there is no autograded homework for Weeks 6–8 — Week 6's back half and Weeks 7–8 are project work (ideation, spec, supervised build). Autograded homework exists for Weeks 1–5 only.
+**Capstone & homework note:** there is no autograded homework for Weeks 6–8 — Week 6's back half and Weeks 7–8 are project work (ideation, spec, supervised build). Autograded homework exists for Weeks 1–5 only. The capstone is defined in two student handouts: `docs/capstone-project-brief.md` (the assignment, deliverables, requirements) and `docs/week-09-presentation-rubric.md` (the 100-point presentation rubric). Week 9 itself is presentations — no lecture/notebook.
 
 ---
 
@@ -370,6 +370,8 @@ cd /tmp/hw_test && python /path/to/week-0N/homework_solution-0N.py
 ```
 
 The download cells skip if files are already present, so local copies are used. The submit call will still post to the live gradebook under `"Instructor"` — this is expected and harmless.
+
+**Faster: the offline smoke-test.** `python grader/smoke_test.py` runs every Week 1–5 reference solution through the real grader in isolated temp dirs and asserts each scores N/N. It stubs out the network `submit()` (nothing is posted) and skips the downloads, so it needs no internet. Run it after editing any homework, checks, or solution — it's the quickest way to confirm a week still grades full marks.
 
 ---
 
