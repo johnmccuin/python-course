@@ -16,19 +16,33 @@ This is **not** a typical software project — no servers, no deployments. The p
 
 This schedule is the source of truth for what each week covers. Do not infer topic order from filenames or generic intro-Python conventions.
 
+**Design of this schedule (read this before changing any week):** Weeks 1–6 are a
+**traditional Python course with no AI** — students write every line themselves, because you
+cannot judge what a machine writes until you can write it yourself. The **back half of Week 6**
+pivots to project ideation and writing specs/descriptions students can hand to an AI. Weeks 7–8
+are then built around the **most durable, high-leverage skills for coding with AI**, chosen to
+stay relevant as models keep improving: directing and verifying AI (Week 7) and connecting
+models to the world via APIs/LLMs (Week 8). Students work on their capstone projects *instead of
+homework* during Weeks 7–8 and present in Week 9. The honest capability/limitation framing behind
+Weeks 7–8 — what current frontier models are genuinely good at, which classic limitations are now
+obsolete, and which are durable — lives in `docs/ai-capabilities-and-limitations.md`; keep the
+lectures aligned with it and avoid teaching straw-man limitations that newer models have closed.
+
 | Week | Topic | AI Use |
 |------|-------|--------|
 | 01 | First Steps: Python setup (Colab), variables, numbers, strings, booleans, expressions, print/input, if/else | No AI |
 | 02 | Making Decisions and Repeating: if/else, while loops, for loops, lists (motivating loops) | No AI |
-| 03 | Functions and More Data: functions (parameters, return values), dicts, strings in depth, basic file I/O; foreshadow classes via stdlib objects | No AI |
-| 04 | Organizing Code and Handling Problems: modules and imports, error handling, tracebacks, debugging strategies, assertions for verification | No AI |
-| 05 | Working With AI as a Coding Partner: prompting, reading AI output critically, verification loop, AI failure modes, brief pytest intro | AI pivot (AI introduced) |
-| 06 | Specs, Decomposition, Architecture, and Classes: writing specs, decomposition, architecture principles, cost of abstraction, intro to classes (`__init__`, methods, instances) — framed throughout as the durable, high-leverage skills in AI-assisted (agentic) coding: the spec is the human's main artifact, decomposition/architecture keep AI output reviewable and maintainable, and classes are taught for reading and judging code as much as for writing it | AI allowed |
-| 07 | Connecting to the World: APIs and LLMs: HTTP basics, `requests`, REST/JSON, Anthropic/OpenAI SDK, system prompts, structured output; capstone assigned | AI allowed |
-| 08 | Capstone Build Week: brief opening on scoping and planning, spec due partway through, supervised work time | AI allowed |
+| 03 | Functions and More Data: functions (parameters, return values, scope), dicts, tuples, strings in depth; foreshadow classes via stdlib objects | No AI |
+| 04 | Files, Modules, and Handling Problems: basic file I/O, modules and imports, error handling, tracebacks, debugging strategies, assertions for verification | No AI |
+| 05 | Classes and Objects: `__init__`, `self`, attributes, methods, instances; each instance carries its own data; reading and judging class code | No AI |
+| 06 | Pulling It Together → Project Specs: comprehensions, a few high-value stdlib objects, organizing a small program end-to-end; **back half** — project ideation, scoping, and writing clear specs/descriptions students can hand to an AI | No AI → spec work |
+| 07 | Working With AI as a Coding Partner: the honest capability picture, directing AI with specs, decomposition for reviewability, reading and judging output, the verification loop, AI failure modes, brief pytest intro | AI introduced |
+| 08 | Connecting Models to the World — APIs and LLMs: HTTP basics, `requests`, REST/JSON, Anthropic/OpenAI SDK, system prompts, structured output, building with non-determinism, security (prompt injection, secrets) | AI allowed |
 | 09 | Capstone Presentations and Closing: presentations (spec, demo, architecture, reflection on AI), discussion of what to learn next | AI allowed |
 
-**Note:** Week 3 is intentionally wide — the lecture covers functions, dicts, strings in depth, and basic file I/O at survey depth. Later weeks revisit each topic in depth. The class-foreshadowing moment (using `Path`, file objects, or `datetime` as examples of "instances of a class") belongs in Week 3 with a note pointing to Week 6, where classes are formally introduced.
+**Note:** Week 3 is intentionally wide — the lecture covers functions, dicts, tuples, and strings in depth. **Basic file I/O moved to Week 4** (alongside modules and error handling), so do not reintroduce it in Week 3. The class-foreshadowing moment (using `Path`, file objects, or `datetime` as examples of "instances of a class") belongs in Week 3 with a note pointing to **Week 5**, where classes are formally introduced.
+
+**Capstone & homework note:** there is no autograded homework for Weeks 6–8 — Week 6's back half and Weeks 7–8 are project work (ideation, spec, supervised build). Autograded homework exists for Weeks 1–5 only.
 
 ---
 

@@ -1,599 +1,388 @@
 # %% [markdown]
-# # Week 6 — Specs, Decomposition, Architecture, and Classes
+# # Week 6 — Pulling It Together, and Writing a Project Spec
 #
-# Last week you learned to drive an AI and verify its work.  This week is about
-# the work that surrounds the code an AI writes: deciding what to build,
-# breaking it into pieces you can reason about, arranging those pieces so the
-# whole stays understandable, and reading the structures — especially
-# **classes** — that show up in almost everything a model produces.
+# You now know the whole core of Python: values and variables, decisions and
+# loops, functions, the main data structures, files, error handling, and
+# classes.  This week has two halves.
 #
-# Start with the honest big picture, because it explains *why* these four topics
-# are the right ones to spend a week on:
+# **First half — pulling it together.**  A few finishing tools that make real
+# programs shorter and cleaner (comprehensions and a tour of the standard
+# library), then a worked example of organizing a complete small program out of
+# the pieces you already have.
 #
-# > **Capable models have made *writing* code nearly free.  They have not made
-# > *deciding what to build*, *keeping it understandable*, or *verifying it's
-# > correct* free.**  Those three jobs are now the bulk of the work — and they
-# > are exactly what this week is about.
+# **Second half — your project.**  The rest of the course is a capstone project.
+# Today you'll brainstorm an idea, scope it to something achievable, and write a
+# **spec**: a clear, plain-language description of what you're going to build.
+# That spec is the bridge to Weeks 7–8, where you'll learn to build with an AI
+# partner — and a clear spec is the single most important thing you bring to that
+# partnership.
 #
-# A second shift matters just as much.  The way professionals use AI today is
-# not "ask for a function, paste it into a cell."  It's **agentic**: you state a
-# goal, the assistant reads your whole project, edits several files, runs the
-# tests itself, and hands you a **diff to review and steer**.  Your leverage is
-# no longer how fast you type — it's the quality of the spec you give, the
-# sharpness of your review, and the architectural calls only you can make.
+# Four topics:
 #
-# Four topics, each a skill that gets *more* valuable as the models improve:
-#
-# 1. **Specs** — saying precisely what "done" means; the main thing *you* author
-# 2. **Decomposition** — structuring work so the AI's output stays reviewable
-# 3. **Architecture** — keeping the whole comprehensible; the highest-leverage
-#    human judgment
-# 4. **Classes** — the data-plus-behaviour structure you'll read and judge
-#    constantly
-#
-# > **AI note:** AI is allowed from here on, and this week you should lean on it.
-# > The goal is not to do *less* with the model — it's to do *more*, by
-# > supplying the judgment it doesn't reliably have.
+# 1. Comprehensions — building lists and dicts in one readable line
+# 2. A tour of the standard library — batteries included
+# 3. Organizing a small program end-to-end
+# 4. Project ideation and writing a spec
 
 # %% [markdown]
 # ---
-# ## Part 1 — Writing a Spec
+# ## Part 1 — Comprehensions
 #
-# A **spec** (specification) is a short, plain-language description of what a
-# piece of code should do — written *before* the code exists.  It's the answer
-# to "how will I know this is finished and correct?"
-#
-# In agentic work the spec is the **main artifact you produce**.  The model
-# writes the code; you write the spec the code is judged against.  A weak spec
-# is the number-one reason a capable model produces confidently-wrong output —
-# it filled your gaps with its own guesses.  A useful spec for a function
-# answers four questions:
-#
-# 1. **What** does it do, in one sentence?
-# 2. **Inputs** — what goes in, and of what type?
-# 3. **Output** — what comes back, and of what type?
-# 4. **Edge cases** — what are the tricky inputs, and what should happen?
-#
-# Those are the same four things a good *prompt* includes (Week 5) — because a
-# spec and a prompt are the same document with different audiences.
+# A **list comprehension** builds a list in one line.  You've written this shape
+# many times already — make an empty list, loop, `append` — and a comprehension
+# is the compact way to say the same thing.
 
 # %% [markdown]
-# ### 1.1 A Spec Is Just Words — Write It as a Comment First
+# ### 1.1 From a Loop to a Comprehension
 #
-# Before any code, the spec for a tip calculator might look like this.  Notice
-# there's no Python here yet — just decisions made on purpose.
+# Here is the long way and the short way, side by side.
 
 # %%
-# SPEC: tip(amount, percent)
-#   What:    compute the tip for a restaurant bill
-#   Inputs:  amount  (float, dollars, >= 0)
-#            percent (int, e.g. 20 for 20%)
-#   Output:  float — the tip in dollars, rounded to 2 decimals
-#   Edge:    a bill of 0 returns 0.0; percent of 0 returns 0.0
-
-# %% [markdown]
-# ### 1.2 The Spec Writes Itself Into a Docstring
-#
-# Once the code exists, the spec becomes the function's **docstring** — the
-# triple-quoted string right under `def`.  Now the description lives with the
-# code it describes (and an AI reading your file later uses it as context, too).
+# The long way (Week 2):
+squares = []
+for n in range(1, 6):
+    squares.append(n ** 2)
+print(squares)   # [1, 4, 9, 16, 25]
 
 # %%
-def tip(amount, percent):
-    """Return the tip in dollars for a bill, rounded to 2 decimals."""
-    return round(amount * percent / 100, 2)
-
-print(tip(50, 20))   # 10.0
+# The same thing as a comprehension:
+squares = [n ** 2 for n in range(1, 6)]
+print(squares)   # [1, 4, 9, 16, 25]
 
 # %% [markdown]
-# ### 1.3 Turn the Spec's Examples Into Checks
+# Read it left to right: **"`n ** 2` for each `n` in `range(1, 6)`."**
+# The expression on the left is what goes into the new list.
+
+# %% [markdown]
+# ### 1.2 Filtering with `if`
 #
-# The examples in a spec aren't decoration — they're tests waiting to be
-# written.  Each "input → output" line becomes an `assert` (Week 4) or a pytest
-# test (Week 5).  Writing them *from the spec* gives you a check the AI's code
-# must satisfy — one you didn't let the AI define for you.
+# Add an `if` at the end to keep only some items.
 
 # %%
-assert tip(50, 20) == 10.0    # ordinary case
-assert tip(0, 20) == 0.0      # edge: zero bill
-assert tip(100, 0) == 0.0     # edge: zero percent
-print("matches spec")
+numbers = [4, 7, 2, 9, 1, 6, 3, 8]
+evens = [n for n in numbers if n % 2 == 0]
+print(evens)   # [4, 2, 6, 8]
+
+# %%
+words = ["cat", "elephant", "dog", "hippopotamus"]
+long_words = [w.upper() for w in words if len(w) > 3]
+print(long_words)   # ['ELEPHANT', 'HIPPOPOTAMUS']
 
 # %% [markdown]
-# **Notice:** the spec came first, and the checks came *straight from it* — not
-# from the finished code.  That order is your independence.  If you let the AI
-# write both the code *and* the tests, a green checkmark only proves the code
-# agrees with itself (Week 5, 4.5).  The spec is the one place you, the human,
-# decide what correct means.
+# ### 1.3 Dict Comprehensions
+#
+# The same idea builds a dictionary (you saw a glimpse in Week 3).
+
+# %%
+names = ["Ada", "Bob", "Cy"]
+name_lengths = {name: len(name) for name in names}
+print(name_lengths)   # {'Ada': 3, 'Bob': 3, 'Cy': 2}
 
 # %% [markdown]
-# ### 1.4 Specs Scale Up — and That's Where You Add the Most Value
+# ### 1.4 When *Not* to Use One
 #
-# A four-line function spec is the starter rung.  In real work you'll write
-# specs for whole *features* — and that's exactly the altitude where a model
-# can't read your mind:
-#
-# > "Add a command that exports the user's saved notes to a single Markdown
-# > file.  One note per section, newest first.  Skip empty notes.  If there are
-# > no notes, write a file that says *No notes yet* rather than crashing."
-#
-# Notice what that spec does and doesn't do: it names the *behaviour and the
-# edge cases* (newest first, skip empty, the empty-overall case) and leaves the
-# *how* — file handling, sorting, formatting — to the model.  Specifying
-# behaviour while delegating mechanism is the core skill of directing an AI well.
+# A comprehension is for building a collection.  If you just want to *do*
+# something for each item (like print), a plain `for` loop is clearer.  And if
+# the logic needs more than a simple condition, reach for a regular loop — a
+# comprehension you can't read at a glance has lost its only advantage.
 
 # %% [markdown]
 # ### Now you try
 
 # %% [markdown]
-# **Exercise 1.1.** Write a spec — as a comment block, no code yet — for a
-# function `initials(full_name)` that returns a person's uppercase initials
-# (e.g. `"ada lovelace"` → `"AL"`).  Cover all four parts: what, inputs,
-# output, and at least one edge case.
+# **Exercise 1.1.** Use a list comprehension to build a list of the cubes
+# (`n ** 3`) of the numbers 1 through 6.
 
 # %%
 # Your code here
 
 # %% [markdown]
-# **Exercise 1.2.** Take this vague request: *"something to grade a quiz."*
-# Pin it down into a four-part spec for a function — name it, decide the inputs
-# and output, and name one edge case.  Then paste your spec to an AI as the
-# prompt and read what it produces.  Did a clear spec get you closer on the
-# first try than a vague one would have?
+# **Exercise 1.2.** Given `temps_c = [0, 20, 37, 100]`, use a comprehension to
+# build a list of the same temperatures in Fahrenheit (`c * 9 / 5 + 32`).
 
 # %%
 # Your code here
 
 # %% [markdown]
-# **Exercise 1.3.** Here is a spec.  Write the three `assert` statements that
-# check it — *without writing the function, and without asking the AI for the
-# expected answers*.  Reading the spec, you decide what's correct.
-#
-# > `clamp(n, low, high)` returns `n` if it's between `low` and `high`;
-# > otherwise the nearest of the two bounds.  Example: `clamp(5, 0, 10)` is 5,
-# > `clamp(-3, 0, 10)` is 0, `clamp(99, 0, 10)` is 10.
+# **Exercise 1.3.** Given `scores = [45, 82, 91, 58, 77, 60]`, use a
+# comprehension with an `if` to build a list of only the **passing** scores
+# (60 or above).
 
 # %%
 # Your code here
 
 # %% [markdown]
 # ---
-# ## Part 2 — Decomposition
+# ## Part 2 — A Tour of the Standard Library
 #
-# A spec tells you *what* to build.  **Decomposition** is breaking that *what*
-# into small pieces, each doing one clear job.  The unit you already have for
-# this is the **function** (Week 3).  The rule of thumb: **one function, one
-# job** — if you can't describe what it does without saying "and," it's probably
-# two functions.
-#
-# Here's the part to be clear-eyed about: **a capable model does not need you to
-# hand it bite-sized pieces.**  Give it the whole task and it will decompose
-# perfectly well on its own.  So why learn this at all?  Because decomposition
-# stopped being about helping the *model* and became about three things that are
-# entirely *your* job:
-#
-# - **Reviewability** — a 200-line blob the AI wrote is hard to verify; the same
-#   logic in small, named functions is easy to check one piece at a time.
-# - **Steering** — knowing the pieces lets you direct structure precisely:
-#   "pull the validation out into its own function," "this should return the
-#   list, not print it."
-# - **Understanding** — you can only maintain and change what you understand,
-#   and named pieces are how a system stays understandable.
+# Python "comes with batteries included": a large standard library of modules
+# you can `import` (Week 4) without installing anything.  Knowing what's in the
+# box saves you from reinventing it.  Here are a few you'll reach for constantly.
 
 # %% [markdown]
-# ### 2.1 The Monolith — Everything in One Place
-#
-# Here's a task done as a single block: take a sentence, report the average word
-# length.  It works — but it does three jobs at once (split, measure, average),
-# and you must read all of it to trust any of it.
+# ### 2.1 `statistics` — averages and spread
 
 # %%
-sentence = "the quick brown fox"
-words = sentence.split()
-lengths = [len(w) for w in words]
-print(sum(lengths) / len(lengths))   # 4.0
+import statistics
+
+grades = [88, 92, 75, 100, 63, 88]
+print(statistics.mean(grades))    # the average
+print(statistics.median(grades))  # the middle value
+print(statistics.mode(grades))    # the most common value
 
 # %% [markdown]
-# ### 2.2 Decomposed — One Job Per Function
+# ### 2.2 `collections.Counter` — tallying things
 #
-# Same task, broken into named steps.  Each function is tiny and does exactly
-# one thing — and its *name* tells you what, so you can verify the whole by
-# reading the parts independently.
+# You met `Counter` in Week 3.  It counts occurrences in one step.
 
 # %%
-def split_words(text):
-    return text.split()
+from collections import Counter
 
-def word_lengths(words):
-    return [len(w) for w in words]
-
-def average(numbers):
-    return sum(numbers) / len(numbers)
+votes = ["yes", "no", "yes", "yes", "no", "abstain"]
+tally = Counter(votes)
+print(tally)                  # Counter({'yes': 3, 'no': 2, 'abstain': 1})
+print(tally.most_common(1))   # [('yes', 3)] — the winner
 
 # %% [markdown]
-# Now the top-level code reads like the spec itself — a sentence of steps:
+# ### 2.3 `datetime` — dates and times
+#
+# Also from Week 3 — dates are objects with attributes and methods.
 
 # %%
-words = split_words("the quick brown fox")
-print(average(word_lengths(words)))   # 4.0
+from datetime import date
+
+today = date.today()
+print(today.year)
+print(today.strftime("%B %d, %Y"))   # e.g. June 03, 2026
 
 # %% [markdown]
-# **Notice:** the decomposed version has *more* lines, not fewer.  That's the
-# trade.  What you buy is **names you can reason about**, pieces you can **test
-# one at a time**, and parts you can **reuse** — `average` now works on any list
-# of numbers.  When you review AI-written code, this is the shape you're steering
-# it toward: not because the model can't write the blob, but because the named
-# version is the one *you* can verify and change later.
-
-# %% [markdown]
-# ### 2.3 Decomposition Is How You Read a Diff
-#
-# In agentic work, the AI hands you a change spanning several functions or
-# files.  You can't review what you can't navigate — so the structure *is* the
-# reviewability.  When a diff is a single sprawling function, the right move
-# isn't to squint harder; it's to ask the AI to **decompose it**:
-#
-# > "Split this into smaller functions, one job each, with names that say what
-# > they do."
-#
-# That request only makes sense if *you* know what good decomposition looks
-# like.  The skill didn't go away — it moved from your fingers to your judgment.
+# ### 2.4 `random` — choices and shuffling
 
 # %%
-def read_scores():  pass     # naming the pieces is how you'll review the diff
-def best_score():   pass
-def report():       pass
-print("you can judge this structure before a single body is written")
+import random
+
+deck = ["A", "K", "Q", "J"]
+print(random.choice(deck))    # one random card
+random.shuffle(deck)          # shuffle in place
+print(deck)
 
 # %% [markdown]
 # ### Now you try
 
 # %% [markdown]
-# **Exercise 2.1.** A task: *given a list of prices, print the total with 8%
-# sales tax added.*  **Before writing or prompting**, in a comment, list the
-# small one-job steps you'd break it into (e.g. "sum the prices," …).  Name
-# three.  This is the structure you'd review an AI's version against.
+# **Exercise 2.1.** Use `statistics.mean` to compute and print the average of
+# `[10, 20, 30, 40]`.
 
 # %%
 # Your code here
 
 # %% [markdown]
-# **Exercise 2.2.** Now implement two of those steps as separate one-job
-# functions (for example `subtotal(prices)` and `add_tax(amount, rate)`).  Keep
-# each to a single job — if you're tempted to write "and," split it.
-
-# %%
-# Your code here
-
-# %% [markdown]
-# **Exercise 2.3.** Here's a monolith that does three jobs at once.  Ask an AI
-# to split it into named one-job functions — then **read its answer critically**:
-# are the names accurate? is each function really one job? Fix anything you'd
-# have done differently.
+# **Exercise 2.2.** Given the sentence below, split it into words and use
+# `Counter` to find the most common word.
 #
-# ```python
-# nums = [4, 8, 15, 16, 23, 42]
-# evens = [n for n in nums if n % 2 == 0]
-# print(sum(evens) / len(evens))
-# ```
+# `text = "the cat sat on the mat and the cat ran"`
+
+# %%
+# Your code here
+
+# %% [markdown]
+# **Exercise 2.3.** Use `random.randint(1, 6)` to simulate rolling a die 5
+# times, collecting the results into a list, then print the list and its sum.
 
 # %%
 # Your code here
 
 # %% [markdown]
 # ---
-# ## Part 3 — Architecture and the Cost of Abstraction
+# ## Part 3 — Organizing a Small Program End-to-End
 #
-# **Architecture** is how the pieces fit together: which part knows about which,
-# what names they share, where a change ripples to.  This is the **highest-
-# leverage human skill in AI-assisted coding**, and it's worth saying plainly
-# why:
+# A real program is more than a single cell.  The skill is **organizing** it:
+# breaking the work into small functions that each do one job, then composing
+# them.  The rule of thumb is **one function, one job** — if you can't describe
+# what a function does without saying "and," it's probably two functions.
 #
-# > Because the model makes writing code nearly free, the friction that used to
-# > discourage over-engineering is *gone*.  A model will happily add the
-# > fifteenth slightly-different helper, couple everything together, and
-# > duplicate logic — because it's optimizing for "works now," not "stays
-# > understandable in six months."  Judgment about structure is precisely what
-# > the model doesn't reliably supply.  **That judgment is your job, and it's the
-# > part of this work that's hardest to automate.**
+# Let's build a small **grade reporter** out of the pieces you already have.
 
 # %% [markdown]
-# ### 3.1 Abstraction Has a Cost
+# ### 3.1 Start by Naming the Jobs
 #
-# An **abstraction** is anything that hides detail behind a name — a function, a
-# class, a module.  Decomposition (Part 2) was abstraction, and it was worth it.
-# But it is **not free**: every abstraction is one more name to learn and one
-# more layer to jump through when you're tracing a bug.
+# Before writing code, list the steps in plain words:
 #
-# Here's an abstraction that *isn't* worth it — a function wrapping a single
-# operation that was already perfectly clear:
+# 1. Turn a numeric score into a letter grade.
+# 2. Compute the class average.
+# 3. Print a tidy report.
+#
+# Each of those becomes one small function.  Naming the jobs first *is* the
+# design — you can see the whole shape before writing a single line of logic.
+
+# %% [markdown]
+# ### 3.2 One Function Per Job
 
 # %%
-def add_one(x):
-    return x + 1
+def letter_grade(score):
+    """Return the letter grade for a 0–100 score."""
+    if score >= 90:
+        return "A"
+    elif score >= 80:
+        return "B"
+    elif score >= 70:
+        return "C"
+    elif score >= 60:
+        return "D"
+    return "F"
 
-print(add_one(4))   # 5 — but `4 + 1` was already obvious
+def class_average(scores):
+    """Return the average of a list of scores."""
+    return sum(scores) / len(scores)
 
 # %% [markdown]
-# `add_one(x)` is *more* to read than `x + 1`, and it hides nothing useful.
-# The cost (a new name, a function call) buys you nothing.  Compare `average(numbers)`
-# from Part 2, which hides a real multi-step computation behind a name worth
-# having.  The question is always: **does the name hide enough to earn its
-# keep?**  When you review AI output, this is a frequent edit — the model adds
-# layers freely, and trimming the ones that don't pay off is your call.
-
-# %% [markdown]
-# ### 3.2 The Rule of Three — Don't Abstract Too Early
+# ### 3.3 Compose Them Into the Program
 #
-# A common mistake — and one AI makes constantly, because abstraction is cheap
-# for it — is building a flexible, general tool the first time you need
-# something.  Usually you don't yet know what "general" should mean, so the
-# abstraction fits nothing well.
-#
-# A practical guideline: **write it inline the first time, copy it the second
-# time, and only turn it into a function on the third.**  By then you've seen
-# three real cases and know what they actually share.
+# With the small pieces in place, the top-level code reads like the plan from 3.1.
 
 # %%
-# First time you need a greeting, just write it:
-print("Hello, Ada!")
-# Don't accept a configurable GreetingFactory from the AI for one hello.
+def print_report(students):
+    """Print each student's letter grade, then the class average.
+
+    students: a dict mapping name -> numeric score.
+    """
+    for name, score in students.items():
+        print(f"{name:10} {score:3}  {letter_grade(score)}")
+    print("-" * 20)
+    print(f"Average: {class_average(list(students.values())):.1f}")
+
+gradebook = {"Ada": 95, "Bob": 72, "Cy": 88, "Dee": 54}
+print_report(gradebook)
 
 # %% [markdown]
-# ### 3.3 Keep the Pieces Loosely Coupled
-#
-# Two pieces are **tightly coupled** when changing one forces you to change the
-# other.  The looser the coupling, the safer each change — and the easier each
-# piece is to verify in isolation.  The simplest way to loosen coupling: have
-# functions **take inputs and return outputs**, instead of reaching out to
-# shared global variables.
-
-# %%
-total = 0
-def add_bad(n):
-    global total          # reaches outside itself — tightly coupled, hard to test
-    total += n
-
-def add_good(running, n):
-    return running + n     # everything it needs comes in; result comes out
-
-print(add_good(10, 5))     # 15 — easy to test, no hidden state
-
-# %% [markdown]
-# **Notice:** `add_good` can be checked with a single `assert add_good(10, 5) ==
-# 15` — everything it touches is in front of you.  `add_bad` depends on a `total`
-# defined somewhere else, so you can't understand, test, *or* safely let an AI
-# modify it without tracing the whole program.  Loose coupling is what keeps an
-# AI's change to one function from quietly breaking another.
+# **Notice:** each function is small enough to read and trust on its own, and
+# `print_report` reads like a sentence.  If a letter grade looks wrong, you know
+# exactly which function to check.  *That* is what organizing code buys you —
+# and it's the same structure that will let you review an AI's work in Week 7.
 
 # %% [markdown]
 # ### Now you try
 
 # %% [markdown]
-# **Exercise 3.1.** Here is an over-abstraction: a function that wraps something
-# already clear.  Rewrite the `print` to skip the function entirely, and write a
-# one-line comment on why the abstraction wasn't worth its cost.  (This is the
-# judgment you'll apply to AI output constantly.)
-#
-# ```python
-# def multiply_by_two(x):
-#     return x * 2
-# print(multiply_by_two(9))
-# ```
+# **Exercise 3.1.** Write a one-job function `is_passing(score)` that returns
+# `True` when a score is 60 or above.  Test it on a passing and a failing score.
 
 # %%
 # Your code here
 
 # %% [markdown]
-# **Exercise 3.2.** The function below reaches out to a global variable, making
-# it tightly coupled.  Rewrite it so everything it needs comes in as a parameter
-# and the result comes back as a return value.
-#
-# ```python
-# cart = [10, 20, 30]
-# def cart_total():
-#     return sum(cart)
-# ```
+# **Exercise 3.2.** Write a function `count_passing(scores)` that uses a loop
+# (or a comprehension) to return how many scores in a list are passing.  Reuse
+# `is_passing` inside it.
 
 # %%
 # Your code here
 
 # %% [markdown]
-# **Exercise 3.3.** Ask an AI to write a small utility (anything — a function
-# that formats a phone number, say).  Look at its answer through Part 3's lens:
-# is anything over-abstracted? too generic for the one case you asked about?
-# tightly coupled to something global?  In a comment, name one structural change
-# you'd make and why.  If there's nothing to change, say why it's already sound.
+# **Exercise 3.3.** Compose them: given `scores = [55, 81, 72, 49, 90]`, print
+# a one-line summary like `"3 of 5 students passed."` using `count_passing`
+# and `len`.
 
 # %%
 # Your code here
 
 # %% [markdown]
 # ---
-# ## Part 4 — Classes: Bundling Data and Behaviour
+# ## Part 4 — Your Project: Ideation and a Spec
 #
-# In Week 3 you used objects from the standard library — `date`, `Path`,
-# `Counter` — and noticed the pattern: an object bundles **data** (attributes,
-# like `today.year`) and **behaviour** (methods, like `today.strftime()`) under
-# one name.  Now you'll learn to build and read your own.
-#
-# Why classes get a whole part in an AI-assisted course: you will hand-write
-# fewer classes from scratch than programmers once did — the model writes the
-# boilerplate.  But AI-generated code is **full** of classes, so you must be able
-# to **read them fluently, debug them, and judge whether one belongs at all.**
-# That's the durable skill, and everything below builds toward it.
-#
-# A **class** is a blueprint.  An **instance** is one thing built from that
-# blueprint.  `date` is a class; `today` is an instance of it.
+# The rest of the course is a project of your own.  Weeks 7–8 are work time:
+# you'll build it with an AI coding partner, and present it in Week 9.  The
+# single most valuable thing you can do *today* is decide what you're building
+# and write it down clearly.
 
 # %% [markdown]
-# ### 4.1 Defining a Class
+# ### 4.1 Finding an Idea
 #
-# A class gathers related data and the functions that work on it.  Here's a
-# minimal one — a bank account.  Read the three new pieces, then we'll name
-# them.
+# A good first project is **small, real, and yours.**  The best ideas scratch
+# your own itch.  Some directions:
+#
+# - A tool: a tip splitter, a study-flashcard quizzer, a unit converter.
+# - A small game: number-guessing, hangman, rock-paper-scissors.
+# - A data cruncher: read a file of your data (workouts, expenses, grades) and
+#   report on it.
+#
+# Pick something you could describe to a friend in two sentences.
+
+# %% [markdown]
+# ### 4.2 Scope It Down
+#
+# The number-one beginner mistake is building too big.  Aim for a program you
+# could finish the *core* of in an afternoon.  Write down a **minimum version**
+# (the smallest thing that's still useful) and a few **"if there's time"**
+# extras.  You ship the minimum first.
+#
+# > Too big: "an app that tracks all my finances with charts and login."
+# > Right-sized: "read `expenses.txt`, total the spending per category, print
+# > the three biggest."
+
+# %% [markdown]
+# ### 4.3 What a Spec Is
+#
+# A **spec** (specification) is a short, plain-language description of what your
+# program should do — written *before* the code exists.  It answers "how will I
+# know this is finished and correct?"  A useful spec covers four things:
+#
+# 1. **What** it does, in one or two sentences.
+# 2. **Inputs** — what goes in (a file? user typing? a list?), and of what kind.
+# 3. **Output** — what comes out, with a concrete example.
+# 4. **Edge cases** — the tricky inputs, and what should happen for each.
+
+# %% [markdown]
+# ### 4.4 An Example Spec
+#
+# Here's a spec for the expense tool above.  Notice there's no Python — just
+# decisions made on purpose, in words anyone could read.
 
 # %%
-class BankAccount:
-    def __init__(self, owner, balance=0):
-        self.owner = owner        # an attribute: data stored on the instance
-        self.balance = balance
+# SPEC: Expense Summarizer
+#   What:    read a file of expenses and print the total per category,
+#            plus the three largest single expenses.
+#   Inputs:  a text file "expenses.txt"; each line is "category,amount"
+#            e.g.  food,12.50
+#   Output:  one line per category with its total, then a "Top 3" list.
+#   Edge:    - a missing file prints a friendly message, doesn't crash
+#            - a blank line is skipped
+#            - amounts always have 2 decimals in the output
 
-    def deposit(self, amount):    # a method: a function that belongs to the class
-        self.balance += amount
+print("A spec is just words — but words you've committed to.")
 
 # %% [markdown]
-# Three new things to name — and you'll meet all three in nearly every class an
-# AI writes:
+# ### 4.5 Why the Spec Is the Bridge to Weeks 7–8
 #
-# - **`__init__`** — the *constructor*.  It runs automatically when you create
-#   an instance and sets up its starting data.  (The double underscores mark it
-#   as special to Python.)
-# - **`self`** — the instance the method is working on.  Every method takes
-#   `self` as its first parameter; through it, a method reads and writes that
-#   instance's own attributes.
-# - **attributes** (`self.owner`, `self.balance`) — the data each instance
-#   carries.
-
-# %% [markdown]
-# ### 4.2 Creating and Using an Instance
-#
-# Calling the class like a function runs `__init__` and hands back a new
-# instance.  Note you **don't** pass `self` — Python supplies it for you.
-
-# %%
-account = BankAccount("Ada", 100)   # runs __init__; self.owner="Ada", self.balance=100
-print(account.owner)                # Ada      — read an attribute
-print(account.balance)              # 100
-account.deposit(50)                 # call a method; Python passes `account` as self
-print(account.balance)              # 150
-
-# %% [markdown]
-# ### 4.3 Each Instance Has Its Own Data
-#
-# This is the whole point of a class: every instance carries its **own** copy of
-# the attributes.  Two accounts don't share a balance.
-
-# %%
-a = BankAccount("Ada", 100)
-b = BankAccount("Bob", 0)
-a.deposit(25)
-print(a.balance, b.balance)   # 125 0 — b is untouched
-
-# %% [markdown]
-# ### 4.4 Methods Can Use Other Attributes and Enforce Rules
-#
-# Because a method has access to `self`, it can use any of the instance's data —
-# and it's the natural place to put rules that protect that data.  Here a
-# `withdraw` method refuses to overdraw:
-
-# %%
-class SafeAccount:
-    def __init__(self, balance=0):
-        self.balance = balance
-
-    def withdraw(self, amount):
-        if amount > self.balance:           # a rule, living with the data it guards
-            return "Insufficient funds"
-        self.balance -= amount
-        return f"New balance: {self.balance}"
-
-acct = SafeAccount(50)
-print(acct.withdraw(30))   # New balance: 20
-print(acct.withdraw(100))  # Insufficient funds
-
-# %% [markdown]
-# **Notice:** the rule "you can't withdraw more than you have" lives *inside*
-# the class, right next to the `balance` it protects.  That's the architectural
-# payoff from Part 3 — data and the rules that govern it, bundled together.  When
-# you read an AI's class, this is what you're checking: *are the right rules
-# living with the right data, or did the model scatter them?*
-
-# %% [markdown]
-# ### 4.5 Reading for a Common Bug: a Missing `self`
-#
-# The single most common mistake in class code — and one you'll spot in AI
-# output, not just your own — is referring to an attribute by its bare name
-# instead of `self.name`.  Inside a method, the bare name doesn't exist; the
-# attribute lives on `self`.  Train your eye to catch it in a diff:
-
-# %%
-class Counter:
-    def __init__(self):
-        self.count = 0
-    def bump(self):
-        count = count + 1      # BUG: should be self.count = self.count + 1
-
-c = Counter()
-# c.bump()   # uncomment: UnboundLocalError — `count` is not defined here
-
-# %% [markdown]
-# `count` on its own is a brand-new local variable with no value yet, so
-# `count + 1` fails.  The attribute is `self.count`.  Whenever a method needs the
-# instance's own data, it goes through `self` — every time.  Spotting this in
-# someone else's code (human or model) is exactly the kind of review your
-# fluency buys you.
-
-# %% [markdown]
-# ### 4.6 The Judgment Call: Does This *Need* to Be a Class?
-#
-# A class earns its keep when **data and behaviour travel together** and you have
-# **more than one** of the thing (many accounts, many timers).  When you just
-# need to transform some input into some output once, a plain **function** is
-# simpler — and simpler is the Part 3 win.  An AI will sometimes reach for a
-# class where a function would do; recognizing that is your call to make.
-#
-# - *Use a class:* several bank accounts, each tracking its own balance over time.
-# - *Use a function:* "convert these Celsius readings to Fahrenheit" — no state
-#   to carry, so `def to_f(c): ...` is plenty.
+# Next week you start working with an AI coding partner.  An AI will write code
+# fast — but it builds *exactly what you describe*, and silently guesses at
+# anything you leave out.  The clearer your spec, the better the result and the
+# easier it is to check.  **The spec is the part only you can write**, because
+# only you know what you actually want.  Today's spec is the thing you'll hand
+# over first.
 
 # %% [markdown]
 # ### Now you try
-#
-# These exercises are short on purpose — use an AI freely, but **read every line
-# it gives you** and make sure you could have written it.  That's the whole game.
 
 # %% [markdown]
-# **Exercise 4.1.** Define a class `Dog` with an `__init__` that stores a
-# `name` attribute, and a method `bark(self)` that returns `f"{self.name} says
-# woof!"`.  Create a `Dog` named `"Rex"` and call its `bark` method.  (Write it
-# yourself first; then, if you like, ask an AI for its version and compare.)
+# **Exercise 4.1.** Brainstorm.  In a comment, write down **three** project
+# ideas you'd find genuinely useful or fun.  One sentence each.
 
 # %%
-# Your code here
+# Your ideas here
 
 # %% [markdown]
-# **Exercise 4.2.** Create two different `Dog` instances with different names.
-# Call `bark` on each to confirm they carry their own `name` — each should
-# print its own.
+# **Exercise 4.2.** Pick your favourite and **scope it.**  In a comment, write
+# the *minimum useful version* in one sentence, then list two "if there's time"
+# extras you'd add later.
 
 # %%
-# Your code here
+# Your scope here
 
 # %% [markdown]
-# **Exercise 4.3.** Read before you run.  An AI produced the class below for
-# "a class that stores a width and height and returns its area."  It has the
-# missing-`self` bug from 4.5.  Find it, fix it, then confirm `Rectangle(3, 4).area()`
-# returns `12`.
-#
-# ```python
-# class Rectangle:
-#     def __init__(self, width, height):
-#         self.width = width
-#         self.height = height
-#     def area(self):
-#         return width * height
-# ```
+# **Exercise 4.3.** Write the full **four-part spec** for your minimum version
+# (What / Inputs / Output / Edge cases), in the comment-block style of 4.4.
+# This is your starting point for next week — keep it.
 
 # %%
-# Your code here
-
-# %% [markdown]
-# **Exercise 4.4.** Tie the week together.  Write a one-line spec for a `Timer`
-# that starts at `0`, has a `tick(self)` method that adds 1, and a `read(self)`
-# method that returns the count.  Decide (Part 4.6) whether this *should* be a
-# class — and in a comment, say why it earns one.  Then implement it, create one,
-# tick it three times, and confirm `read()` returns `3`.
-
-# %%
-# Your code here
+# Your spec here

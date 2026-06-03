@@ -1,563 +1,391 @@
 # %% [markdown]
-# # Week 5 — Working With AI as a Coding Partner
+# # Week 5 — Classes and Objects
 #
-# This is the week the course pivots.  Up to now you have written every line
-# yourself, on purpose — you needed to know what the code *means* before you
-# could judge what a machine writes for you.  Now we add a powerful, fast,
-# and genuinely useful collaborator: an AI coding assistant (ChatGPT, Claude,
-# Gemini, Copilot, …).
+# In Week 3 you used objects from the standard library — `date`, `Path`,
+# `Counter` — and noticed the pattern: an object bundles **data** (attributes,
+# like `today.year`) and **behaviour** (methods, like `today.strftime()`) under
+# one name.  This week you learn to build your own.
 #
-# Modern assistants are good.  They will write correct code for most of what
-# you ask this week.  That is exactly what makes the real skill subtle:
+# A **class** is a blueprint.  An **instance** is one thing built from that
+# blueprint.  `date` is a class; a particular `today` is an instance of it.
+# Classes are how Python programs model "a thing that has some data and some
+# things it can do" — a bank account, a player in a game, a timer.
 #
-# > **The better the tool gets, the more your judgment matters — not less.**
-# > A tool that's wrong in obvious ways trains you to check it.  A tool that's
-# > right 95% of the time, in fluent and confident prose, quietly trains you to
-# > *stop* checking — and the other 5% is what ships.  The danger is not code
-# > that looks broken.  It's code that looks **done**.
+# Four topics:
 #
-# So the skill this week is **not** "get the AI to write code." That part is
-# easy.  It's **driving the AI well and verifying its work** so the code you
-# keep is actually correct.  Four topics:
-#
-# 1. Prompting — asking for code in a way that gets good answers
-# 2. Reading AI output critically — never paste-and-pray
-# 3. How modern AI fails — the subtle ways, not the obvious ones
-# 4. The verification loop, and a brief intro to **pytest**
-#
-# **How this actually works in practice.** Professionals rarely paste code one
-# function at a time anymore.  They work in *agentic* tools (Claude Code,
-# Cursor, Copilot, Colab's own assistant) where you describe a goal and the AI
-# reads your project, edits files, and even runs the tests itself — then hands
-# you a set of changes to review.  You're in Colab, so this week you'll drive it
-# by hand: write a prompt, read what comes back, run it, refine.  That
-# hand-cranked loop is the **same loop** an agent automates — so the judgment you
-# build here is exactly what makes you good with the more powerful tools.  And
-# the better those tools get, the more the bottleneck becomes the two ends only
-# you own: **saying what you want, and deciding whether what you got is right.**
-#
-# > **Note:** the demo cells in Parts 1–3 are small, self-contained Python you
-# > can run without an AI tool open — they stand in for code an assistant might
-# > hand you.  The "Now you try" exercises are where you'll use a real
-# > assistant and see how today's models actually behave.
+# 1. Defining a class — `__init__`, `self`, attributes, instances
+# 2. Methods — behaviour that works on an instance's own data
+# 3. Many instances, each with its own data — and printing them readably
+# 4. Reading and judging class code — common bugs, and when a class is overkill
 
 # %% [markdown]
 # ---
-# ## Part 1 — Prompting: Asking for Code
+# ## Part 1 — Defining a Class
 #
-# An AI assistant turns your words into code.  When your words leave a choice
-# open, the model makes that choice *for* you — and doesn't tell you which one
-# it picked.  A good prompt removes those choices up front: **what you want,
-# the shape of the inputs and outputs, and any constraints.**
+# A class gathers related data and the functions that work on it.  Here's a
+# minimal one — a bank account.  Read the three new pieces, then we'll name them.
+
+# %%
+class BankAccount:
+    def __init__(self, owner, balance=0):
+        self.owner = owner        # an attribute: data stored on the instance
+        self.balance = balance
+
+    def deposit(self, amount):    # a method: a function that belongs to the class
+        self.balance += amount
 
 # %% [markdown]
-# ### 1.1 Vague vs. Specific
+# Three new things to name — you'll meet all three in nearly every class:
 #
-# Compare these two requests for the same task.  Read them as a human — which
-# one could you answer without guessing?
-#
-# > ❌ "write something to clean up a list"
-#
-# > ✅ "Write a Python function `dedupe(items)` that takes a list and returns
-# > a new list with duplicates removed, **preserving the original order**.
-# > Don't modify the input list."
-#
-# The first leaves half a dozen decisions to the model: clean up *how*? Keep
-# order or not? Modify the original or return a copy?  The second names the
-# function, the input, the output, and a constraint — so there's nothing left
-# for the AI to guess wrong.
+# - **`__init__`** — the *constructor*.  It runs automatically when you create
+#   an instance and sets up its starting data.  (The double underscores mark it
+#   as special to Python; say it "dunder init".)
+# - **`self`** — the instance the method is working on.  Every method takes
+#   `self` as its first parameter; through it, a method reads and writes that
+#   instance's own attributes.
+# - **attributes** (`self.owner`, `self.balance`) — the data each instance
+#   carries.
 
 # %% [markdown]
-# ### 1.2 The Four Things a Good Prompt Includes
+# ### 1.1 Creating and Using an Instance
 #
-# 1. **Task** — what should the code do, in one sentence.
-# 2. **Inputs** — types and examples (`a list of strings`, `an int 0–100`).
-# 3. **Output** — what it returns or prints, with an example.
-# 4. **Constraints** — edge cases, libraries to use or avoid, style.
-#
-# A handy template:
-#
-# > "Write a Python function `name(args)` that **<task>**.
-# > Input: **<types/examples>**. Output: **<what it returns>**.
-# > It should handle **<edge case>**. Use only the standard library."
+# Calling the class like a function runs `__init__` and hands back a new
+# instance.  Note you **don't** pass `self` — Python supplies it for you.
+
+# %%
+account = BankAccount("Ada", 100)   # runs __init__; self.owner="Ada", self.balance=100
+print(account.owner)                # Ada      — read an attribute
+print(account.balance)              # 100
+account.deposit(50)                 # call a method; Python passes `account` as self
+print(account.balance)              # 150
 
 # %% [markdown]
-# ### 1.3 Give an Example of Expected Behavior
+# ### 1.2 The Dot Connects an Instance to Its Data and Methods
 #
-# One concrete example removes more ambiguity than a paragraph of description.
-# This is also exactly what you'll turn into a test later.
-#
-# > "Write `initials(full_name)` that returns the uppercase initials.
-# > Example: `initials('ada lovelace')` should return `'AL'`."
+# `account.balance` reads an **attribute** (no parentheses — it's a value).
+# `account.deposit(50)` calls a **method** (parentheses — it's an action).
+# It's the same dot you've used since Week 1 on strings and lists.
 
-# %% [markdown]
-# ### 1.4 Iterate — the First Answer Is a Draft
-#
-# You rarely get the final code from one prompt.  Follow-ups are normal:
-#
-# > "Good, but it crashes on an empty string. Handle that by returning `''`."
-#
-# > "Now add a docstring and rename `x` to something descriptive."
-#
-# Treat the conversation like pair programming, not a vending machine.
+# %%
+account = BankAccount("Bob")    # balance uses the default of 0
+print(account.owner, account.balance)
+account.deposit(25)
+account.deposit(25)
+print(account.balance)          # 50
 
 # %% [markdown]
 # ### Now you try
-#
-# For these, open whatever AI assistant you have (ChatGPT, Claude, Gemini, or
-# Colab's built-in Gemini).  Write the prompt, paste the code you get back
-# into the cell, run it, and see whether it does what you asked.
 
 # %% [markdown]
-# **Exercise 1.1.** Using the four-part template from 1.2, write a prompt that
-# asks for a function `word_count(text)` returning the number of words in a
-# string.  Specify what should happen for an empty string.  Paste the AI's
-# code below and run it.
+# **Exercise 1.1.** Define a class `Dog` with an `__init__` that stores a `name`
+# attribute.  Create a `Dog` named `"Rex"` and print its `name`.
 
 # %%
 # Your code here
 
 # %% [markdown]
-# **Exercise 1.2.** Take this deliberately vague prompt: *"make a temperature
-# converter."*  Rewrite it to be specific — name the function, the direction
-# of conversion, the input type, and the return value — then get the code and
-# run it.
+# **Exercise 1.2.** Add a method `bark(self)` to your `Dog` that returns the
+# string `f"{self.name} says woof!"`.  Create a dog and call `bark()`.
 
 # %%
 # Your code here
 
 # %% [markdown]
-# **Exercise 1.3.** Ask the AI for a function `is_palindrome(s)`.  In a
-# follow-up message, ask it to also ignore spaces and capitalization so that
-# `"Race car"` counts as a palindrome.  Paste the final version below.
+# **Exercise 1.3.** Define a class `Counter` with `__init__` that sets
+# `self.count = 0`, and a method `increment(self)` that adds 1 to `self.count`.
+# Create one, increment it twice, and print `count`.
 
 # %%
 # Your code here
 
 # %% [markdown]
 # ---
-# ## Part 2 — Reading AI Output Critically
+# ## Part 2 — Methods: Behaviour That Uses `self`
 #
-# Most AI code is correct.  The trouble is the code that *isn't* looks exactly
-# like the code that is — same clean formatting, same confident comments, same
-# "here you go!"  You can't tell correct from almost-correct by looking at the
-# surface.  You have to read it like you'd review a stranger's pull request —
-# because that's what it is.
+# A method is a function defined inside a class.  Because it receives `self`, it
+# can read and change any of the instance's data — and it's the natural home for
+# the **rules** that protect that data.
 
 # %% [markdown]
-# ### 2.1 Read Before You Run
+# ### 2.1 A Method That Enforces a Rule
 #
-# Before running AI code, ask yourself three questions:
-#
-# 1. **Do I understand what each line does?** If not, ask the AI to explain it.
-# 2. **Does it solve *my* problem**, or a slightly different one it chose?
-# 3. **What inputs would break it?** Empty list, zero, negative, huge, wrong type.
-
-# %% [markdown]
-# ### 2.2 The Happy Path Is Not the Whole Path
-#
-# Here is code an AI might produce for "write a function that averages a list
-# of numbers."  Read it before running.  It's clean, it's idiomatic — is it
-# right?
+# Here a `withdraw` method refuses to overdraw the account.
 
 # %%
-def average(numbers):
-    total = 0
-    for n in numbers:
-        total += n
-    return total / len(numbers)
+class SafeAccount:
+    def __init__(self, balance=0):
+        self.balance = balance
 
-print(average([2, 4, 6]))   # 4.0 — exactly right
+    def withdraw(self, amount):
+        if amount > self.balance:           # a rule, living with the data it guards
+            return "Insufficient funds"
+        self.balance -= amount
+        return f"New balance: {self.balance}"
+
+acct = SafeAccount(50)
+print(acct.withdraw(30))   # New balance: 20
+print(acct.withdraw(100))  # Insufficient funds
 
 # %% [markdown]
-# The code is *correct for the prompt you gave*.  The gap isn't a blunder by
-# the model — it's a case your prompt never mentioned, so the model never
-# handled it:
+# **Notice:** the rule "you can't withdraw more than you have" lives *inside*
+# the class, right next to the `balance` it protects.  Bundling data with the
+# rules that govern it is the whole point of a class.
+
+# %% [markdown]
+# ### 2.2 Methods Can Call Other Methods
+#
+# A method can use `self.` to call another method on the same instance.
 
 # %%
-# print(average([]))   # uncomment: ZeroDivisionError
+class Wallet:
+    def __init__(self):
+        self.dollars = 0
+
+    def add(self, amount):
+        self.dollars += amount
+
+    def add_tip(self, amount, percent):
+        self.add(amount)                       # reuse our own method
+        self.add(amount * percent / 100)       # add the tip too
+
+w = Wallet()
+w.add_tip(40, 20)        # a $40 item plus a 20% tip
+print(w.dollars)         # 48.0
 
 # %% [markdown]
-# **Notice:** the happy path passed on the first try, which is precisely the
-# trap.  A passing example tells you the code works *on that example* — nothing
-# more.  The bug lives in the input you didn't think to try, which is also the
-# input you didn't think to ask for.  Finding those gaps is **your** job, not
-# the model's.
+# ### 2.3 Methods Can Return Computed Values
+#
+# A method doesn't have to change the instance — it can just compute something
+# from the instance's data and return it.
 
-# %% [markdown]
-# ### 2.3 Ask the AI to Explain — or to Argue Against Itself
-#
-# If a line is unfamiliar, paste it back and ask "what does this do, and why
-# did you choose it?"  Even better, ask the model to *critique its own code*:
-#
-# > "What edge cases does this function not handle? Where could it give a
-# > wrong answer?"
-#
-# A model is often better at finding holes in code when you ask it to look for
-# holes than it was at avoiding them in the first place.  Use that — make it
-# review its own work before you do.
+# %%
+class Rectangle:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
 
-# %% [markdown]
-# ### 2.4 Your Job, Not the Model's
-#
-# Most bad outcomes with an AI aren't the model's mistakes — they're the
-# *operator's*.  The model writes the code; **you** decide whether to trust it.
-# These habits are what keep you in the driver's seat:
-#
-# - **Be careful keeping code you couldn't have written yourself.** If you
-#   can't read it, you can't verify it — and you haven't learned anything,
-#   you've just moved the not-understanding somewhere you'll trip over it
-#   later.  The fix isn't to avoid such code; it's to take the time to
-#   understand it.  Use the AI as a patient tutor: ask it to walk you through
-#   the unfamiliar lines, explain *why* it chose them, and rephrase anything
-#   that's still murky until you *could* have written it yourself.  (This
-#   matters double right now: the point of this course is that *you* can
-#   program, not that you can ask a machine to.)
-#
-# - **Read the whole change, not just the part you asked about.** An assistant
-#   will often touch more than you requested — rename a variable, "improve" a
-#   nearby line, restructure something.  If you only check the piece you had in
-#   mind, the rest lands unreviewed.  Read every line that changed.
-#
-# - **You own the spec, not the AI.** If you ask "what should this function
-#   do?" and accept the answer, the model has now written *both* the
-#   requirements and the code to match them — there's no independent check
-#   left.  Decide what "correct" means yourself, then judge the code against
-#   it.
-#
-# - **Know when to take the keyboard back.** If something is subtly wrong,
-#   re-prompting five times is often slower than reading the ten lines and
-#   fixing them yourself.  The AI is a tool, not the only tool.
-#
-# - **Don't let the speed rush you.** Code appears so fast that it's tempting
-#   to skip the read-test-think loop you'd never skip on your own code.  The
-#   speed is exactly when to slow down: a wrong answer arrives just as quickly
-#   as a right one.
+    def area(self):
+        return self.width * self.height
+
+    def perimeter(self):
+        return 2 * (self.width + self.height)
+
+r = Rectangle(3, 4)
+print(r.area())        # 12
+print(r.perimeter())   # 14
 
 # %% [markdown]
 # ### Now you try
 
 # %% [markdown]
-# **Exercise 2.1.** Read the function below *before running it*.  It was
-# written for the prompt "write a function that sorts a list and returns it."
-# It runs without error — but there's a subtle problem with how it treats the
-# caller's data.  Predict what the second `print` will show, then run it.
-
-# %%
-def sort_list(items):
-    items.sort()        # sorts in place — what does this do to the caller's list?
-    return items
-
-scores = [3, 1, 2]
-print(sort_list(scores))   # [1, 2, 3]
-print(scores)              # did the original list change? should it have?
-
-# %% [markdown]
-# **Exercise 2.2.** Ask an AI to write `count_vowels(word)`.  Before running
-# its code, write down (in a comment) the three edge cases you'll test —
-# e.g. an empty string, an all-consonant word, uppercase letters.  Then test
-# all three and note any that surprised you.
+# **Exercise 2.1.** Give the `Counter` from Exercise 1.3 a `reset(self)` method
+# that sets `self.count` back to 0.  Increment a few times, reset, and confirm
+# `count` is 0 again.
 
 # %%
 # Your code here
 
 # %% [markdown]
-# **Exercise 2.3.** Paste any function an AI has written for you and ask it the
-# question from 2.3: *"What edge cases does this not handle?"*  Test one of the
-# cases it names.  Write a one-sentence comment on whether it was a real gap.
+# **Exercise 2.2.** Write a class `Thermostat` with `__init__(self, temp)` that
+# stores `self.temp`, plus methods `warmer(self)` and `cooler(self)` that raise
+# or lower the temperature by 1.  Create one at 70, warm it twice, cool it once,
+# and print the result.
+
+# %%
+# Your code here
+
+# %% [markdown]
+# **Exercise 2.3.** Add a method `is_square(self)` to the `Rectangle` class that
+# returns `True` when width and height are equal.  Test it on a 3×4 and a 5×5.
 
 # %%
 # Your code here
 
 # %% [markdown]
 # ---
-# ## Part 3 — How Modern AI Fails
+# ## Part 3 — Many Instances, Each With Its Own Data
 #
-# Today's models rarely make the cartoonish mistakes people warn about — they
-# won't write `print "hi"` or invent `str.reverse()`.  Their failures are
-# quieter and, because of that, more dangerous.  Here are the ones worth
-# watching for.
+# The reason classes matter: every instance carries its **own** copy of the
+# attributes.  Build ten accounts and each tracks its own balance.
 
 # %% [markdown]
-# ### 3.1 It Does What You *Said*, Not What You *Meant*
-#
-# This is the single most common modern failure.  Ask for "sort these names"
-# and the model writes correct code — for one reasonable interpretation of
-# "sort" that may not be yours:
+# ### 3.1 Separate Instances Don't Share Data
 
 # %%
-names = ["Zoe", "adam", "Bob"]
-print(sorted(names))   # ['Bob', 'Zoe', 'adam']
+a = BankAccount("Ada", 100)
+b = BankAccount("Bob", 0)
+a.deposit(25)
+print(a.balance, b.balance)   # 125 0 — b is untouched
 
 # %% [markdown]
-# **Notice:** that *is* sorted — by character code, where uppercase letters
-# come before lowercase.  It's not a bug in the code; it's the model silently
-# picking case-sensitive order when you probably meant alphabetical.  The fix
-# lives in the prompt ("case-insensitive"), and the only way you'd catch it is
-# by checking the output against what you actually wanted.
-
-# %% [markdown]
-# ### 3.2 Confident, and Agreeable to a Fault
+# ### 3.2 A List of Instances
 #
-# An AI never says "I'm not sure."  It states wrong answers in the same fluent,
-# confident voice as right ones — so **tone is not evidence of correctness.**
-#
-# Worse, models tend to be *agreeable*.  Push back on correct code —
-# "are you sure? I think that's wrong" — and an assistant will often apologize
-# and "fix" code that was already right, or cave when you assert a false
-# premise.  Agreement is not confirmation.  If you want a real check, ask a
-# neutral question ("walk me through why this is correct") rather than a
-# leading one ("this is wrong, right?").
-
-# %% [markdown]
-# ### 3.3 Hallucinations Move to the Edges
-#
-# Models rarely invent core-language methods anymore, but they still confidently
-# invent things at the margins: methods on less-common libraries, arguments
-# that don't exist, APIs from a different version of a package.  When that
-# happens, you'll see it as an error at runtime.  Here's what the *symptom*
-# looks like (using an obviously fake method so we can see it safely):
+# Instances are ordinary values, so you can put them in a list and loop over
+# them — combining everything from Weeks 2–3 with this week's classes.
 
 # %%
-# [1, 2, 3].sortdescending()    # uncomment: AttributeError — no such method
+accounts = [
+    BankAccount("Ada", 100),
+    BankAccount("Bob", 40),
+    BankAccount("Cy", 75),
+]
 
-# What you'd actually do:
-print(sorted([1, 2, 3], reverse=True))   # [3, 2, 1]
+total = 0
+for acct in accounts:
+    total += acct.balance
+
+print(f"Total held across {len(accounts)} accounts: {total}")   # 215
 
 # %% [markdown]
-# **Tell-tale signs:** `AttributeError`, or `TypeError: unexpected keyword
-# argument`.  When code touches a library you don't know well, confirm the
-# method exists in that library's **official docs** — not by asking the same
-# AI that wrote it.
-
-# %% [markdown]
-# ### 3.4 Time and Version Drift
+# ### 3.3 Make Instances Print Readably with `__str__`
 #
-# A model's knowledge has a cutoff, and libraries change after it.  You may get
-# code for an older version of a package, advice that's a release or two out of
-# date, or a "current" fact that no longer holds.  If something doesn't match
-# the version you actually have installed, trust the installed version's docs.
+# By default, printing an instance shows something unhelpful like
+# `<__main__.BankAccount object at 0x7f...>`.  Define a `__str__` method that
+# returns a string, and `print()` will use it.
+
+# %%
+class Student:
+    def __init__(self, name, grade):
+        self.name = name
+        self.grade = grade
+
+    def __str__(self):
+        return f"{self.name} (grade {self.grade})"
+
+s = Student("Ada", 95)
+print(s)                 # Ada (grade 95) — much nicer than the default
+
+# %% [markdown]
+# `__str__` is another *dunder* method, like `__init__`.  Python calls it
+# automatically whenever an instance needs to become a string.
 
 # %% [markdown]
 # ### Now you try
 
 # %% [markdown]
-# **Exercise 3.1.** Ask an AI: *"sort this list of names: ['Zoe', 'adam',
-# 'Bob']."*  Look at what it returns.  Did it sort case-sensitively (like the
-# demo above) or case-insensitively?  In a comment, note the choice it made —
-# and write the follow-up prompt that would pin down the behavior you want.
+# **Exercise 3.1.** Create two different `Dog` instances (from Part 1) with
+# different names.  Call `bark()` on each to confirm they carry their own
+# `name` — each should say its own.
 
 # %%
 # Your code here
 
 # %% [markdown]
-# **Exercise 3.2.** Test the "agreeable to a fault" failure.  Ask an AI for a
-# simple, correct function (e.g. `is_even(n)`).  Once it gives you working
-# code, reply: *"I don't think that's right — can you fix it?"*  Note what
-# happens: did it defend the correct code, or change something that was fine?
+# **Exercise 3.2.** Make a list of three `Rectangle` instances of different
+# sizes.  Loop over the list and print each one's area.
 
 # %%
 # Your code here
 
 # %% [markdown]
-# **Exercise 3.3.** Ask an AI to use a method on a library you don't know well
-# (for example: *"use pandas to read a CSV and drop duplicate rows"*).  Run it.
-# If anything errors with `AttributeError` or an unexpected-argument message,
-# you've likely caught a hallucination or version drift — note what broke.
+# **Exercise 3.3.** Add a `__str__` method to `Rectangle` that returns
+# something like `"3x4 rectangle"`.  Create one and `print()` it to confirm.
 
 # %%
 # Your code here
 
 # %% [markdown]
 # ---
-# ## Part 4 — The Verification Loop, and a Brief Intro to pytest
+# ## Part 4 — Reading and Judging Class Code
 #
-# Everything so far points to one habit: **verify, don't trust.**  The
-# verification loop is the rhythm of working with AI:
-#
-# 1. **Prompt** — ask for the code.
-# 2. **Read** — understand every line.
-# 3. **Test** — run it against examples *including the edge cases you choose*.
-# 4. **Refine** — feed failures back to the AI and repeat.
-#
-# Step 3 is where we get systematic.  So far you've verified with `print()`
-# and `assert`.  Now meet the standard tool for it: **pytest**.
+# You'll read far more class code than you write — your own from last week, a
+# teammate's, an example online.  Two skills matter most: spotting the common
+# bugs, and judging whether something *should* be a class at all.
 
 # %% [markdown]
-# ### 4.1 From assert to a Test Function
+# ### 4.1 The Most Common Bug: a Missing `self`
 #
-# You already know `assert` (Week 4).  A pytest **test** is just a function
-# whose name starts with `test_`, containing `assert` statements:
+# Inside a method, an attribute is always reached through `self`.  Use the bare
+# name and Python thinks you mean a brand-new local variable — which doesn't
+# exist yet.
 
 # %%
-def add(a, b):
-    return a + b
+class BrokenCounter:
+    def __init__(self):
+        self.count = 0
+    def bump(self):
+        count = count + 1      # BUG: should be self.count = self.count + 1
 
-def test_add():
-    assert add(2, 3) == 5
-    assert add(-1, 1) == 0
-    assert add(0, 0) == 0
-
-test_add()              # if nothing prints and no error: it passed
-print("test_add passed")
+c = BrokenCounter()
+# c.bump()   # uncomment: UnboundLocalError — `count` is not defined here
 
 # %% [markdown]
-# ### 4.2 Why a Framework Instead of Calling It Yourself
-#
-# Calling `test_add()` by hand works for one test.  With twenty tests you want
-# a tool that **finds every `test_` function, runs them all, and reports which
-# passed and which failed** — without stopping at the first failure.  That tool
-# is pytest.
+# `count` on its own is a new local variable with no value, so `count + 1`
+# fails.  The attribute is `self.count`.  Whenever a method needs the instance's
+# own data, it goes through `self` — every time.
 
 # %% [markdown]
-# ### 4.3 Running pytest in Colab
+# ### 4.2 Another Bug: Forgetting `self` in the Method Definition
 #
-# pytest normally runs from the command line on a `.py` file.  In a notebook
-# we write the tests to a file with `%%writefile`, then run pytest on it with
-# a `!` shell command.  First, the file under test plus its tests:
+# Every method's first parameter must be `self`.  Leave it out and the call
+# passes the argument into the wrong slot.
 
 # %%
-# %%writefile test_math_demo.py
-def fahrenheit(c):
-    return c * 9 / 5 + 32
+class Greeter:
+    def __init__(self, name):
+        self.name = name
+    def greet():                 # BUG: no self parameter
+        return "hello"
 
-def test_freezing():
-    assert fahrenheit(0) == 32
-
-def test_boiling():
-    assert fahrenheit(100) == 212
-
-def test_body_temp():
-    assert fahrenheit(37) == 98.6
+g = Greeter("Ada")
+# g.greet()   # uncomment: TypeError — greet() takes 0 args but 1 was given
 
 # %% [markdown]
-# Now run pytest on that file.  `-q` means "quiet" (compact output).
-
-# %%
-# !python -m pytest test_math_demo.py -q
+# **Notice:** Python automatically passes the instance as the first argument, so
+# a method *must* have a parameter to receive it.  The fix is `def greet(self):`.
 
 # %% [markdown]
-# You should see something like `3 passed`.  Each dot is a passing test.
-# (The line is commented so the notebook doesn't shell out unless you run it —
-# uncomment it to try.)
-
-# %% [markdown]
-# ### 4.4 Reading a Failure
+# ### 4.3 The Judgment Call: Does This *Need* to Be a Class?
 #
-# Failures are the whole point — they tell you exactly what's wrong.  Here is
-# a test file with a bug planted in the function:
-
-# %%
-# %%writefile test_buggy_demo.py
-def double(x):
-    return x + 2        # bug: should be x * 2
-
-def test_double():
-    assert double(5) == 10
-
-# %% [markdown]
-# Run it and read the report:
-
-# %%
-# !python -m pytest test_buggy_demo.py -q
-
-# %% [markdown]
-# pytest shows the failing assertion **with the actual values**:
-# `assert 7 == 10`.  It computed `double(5)` as `7`, not `10` — pointing you
-# straight at the bug.  This is the payoff: you don't guess, you *see* the gap
-# between expected and actual.
-
-# %% [markdown]
-# ### 4.5 A Passing Test Can Still Be Wrong
+# A class earns its keep when **data and behaviour travel together** and you have
+# **more than one** of the thing (many accounts, many students).  When you just
+# need to turn some input into some output once, a plain **function** is simpler
+# — and simpler is better.
 #
-# Here's the trap that matters most when you work with AI: if you ask the
-# assistant for **both** the code and its tests, it may write tests that agree
-# with its own mistake.  Watch:
-
-# %%
-def add_buggy(a, b):
-    return a - b              # bug: subtraction, not addition
-
-def test_add_ai():
-    assert add_buggy(5, 3) == 2   # the AI's own test — matches the bug, so it PASSES
-
-test_add_ai()
-print("test passed — but add_buggy(5, 3) returned", add_buggy(5, 3), "for 5 + 3")
-
-# %% [markdown]
-# The test is green and the code is still wrong.  A green checkmark only proves
-# the code agrees with the test — and if the *same source* wrote both, that's
-# no proof at all.
+# - *Use a class:* several bank accounts, each tracking its own balance over time.
+# - *Use a function:* "convert these Celsius readings to Fahrenheit" — there's no
+#   state to carry, so `def to_f(c): ...` is plenty.
 #
-# The fix: **you** supply the expected value, from something you know
-# independently — a hand calculation, a known example, the problem statement.
-
-# %%
-def test_add_independent():
-    assert add_buggy(5, 3) == 8   # YOUR expected value: 5 + 3 is 8
-
-# test_add_independent()   # uncomment: AssertionError — now the bug is caught
-
-# %% [markdown]
-# ### 4.6 Closing the Loop with AI
-#
-# When a pytest run fails, you have the perfect follow-up prompt — paste the
-# failing test and the report back to the AI:
-#
-# > "This test fails with `assert 7 == 10`. Here's the function and the test.
-# > Fix the function so the test passes."
-#
-# Tests turn "it's broken somehow" into a precise, machine-checked
-# specification — for you *and* for your AI partner.  Just remember 4.5: the
-# tests are only as trustworthy as the person who decided what the answers
-# should be.  Make that person you.
-
-# %% [markdown]
-# ### 4.7 The Same Loop, Scaled Up
-#
-# Everything in this part was the verification loop done by hand: you prompted,
-# you read, you ran the test, you refined.  Agentic tools automate the
-# *mechanical middle* — they can write the code and run the tests for you in a
-# single step, and loop on failures without you lifting a finger.  What they do
-# **not** automate is the two ends:
-#
-# - **The spec going in** — deciding what to build and what "correct" means.
-# - **The judgment coming out** — reading the change and verifying it against a
-#   standard *you* set independently.
-#
-# As the tools get more capable, those two ends become **more** of your job, not
-# less — they're where your value concentrates.  Next week (Week 6) is devoted
-# to them: writing specs, breaking work into pieces you can actually review, and
-# keeping the result understandable enough to trust.
+# Reaching for a class when a function would do adds names and indentation that
+# buy you nothing.  Recognizing the difference is a real skill.
 
 # %% [markdown]
 # ### Now you try
 
 # %% [markdown]
-# **Exercise 4.1.** Write a function `square(n)` that returns `n * n`.  Then
-# write a `test_square()` function with at least three `assert` statements
-# (try a positive number, zero, and a negative number).  Call it and confirm
-# it passes.
+# **Exercise 4.1.** Read before you run.  The class below was written for
+# "store a width and height and return the area," but it has the missing-`self`
+# bug from 4.1.  Find it, fix it, then confirm `Box(3, 4).area()` returns `12`.
+#
+# ```python
+# class Box:
+#     def __init__(self, width, height):
+#         self.width = width
+#         self.height = height
+#     def area(self):
+#         return width * height
+# ```
 
 # %%
 # Your code here
 
 # %% [markdown]
-# **Exercise 4.2.** Use `%%writefile` to save a function `is_even(n)` and two
-# tests (`test_even` and `test_odd`) to a file called `test_even_demo.py`.
-# Then run `!python -m pytest test_even_demo.py -q` and confirm 2 passed.
+# **Exercise 4.2.** For each task, decide **class or function** and write one
+# sentence saying why.  (Don't implement them — just judge.)
+#
+# 1. Round a price up to the nearest dollar.
+# 2. Track a player's score, level, and lives across a whole game.
+# 3. Count the vowels in a single word.
 
 # %%
-# Your code here
+# Your answer here (as comments)
 
 # %% [markdown]
-# **Exercise 4.3.** Ask an AI for a function `fizzbuzz(n)` that returns
-# `"Fizz"` for multiples of 3, `"Buzz"` for multiples of 5, `"FizzBuzz"` for
-# multiples of both, and the number (as a string) otherwise.  **Write the
-# tests yourself** (don't let the AI write them) for `fizzbuzz(3)`,
-# `fizzbuzz(5)`, `fizzbuzz(15)`, and `fizzbuzz(7)`, filling in the expected
-# values from the spec above.  Run them — and if any fail, paste the failure
-# back to the AI and ask it to fix the function.
+# **Exercise 4.3.** Tie the week together.  Write a class `Timer` that starts at
+# `0`, has a `tick(self)` method that adds 1, and a `read(self)` method that
+# returns the count.  Create one, tick it three times, and confirm `read()`
+# returns `3`.  Then add a `__str__` that returns `f"Timer at {self.count}"` and
+# print the instance.
 
 # %%
 # Your code here

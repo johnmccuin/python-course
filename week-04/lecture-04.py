@@ -1,24 +1,134 @@
 # %% [markdown]
-# # Week 4 — Organizing Code and Handling Problems
+# # Week 4 — Files, Modules, and Handling Problems
 #
-# This week we cover four topics that make programs more reliable and
-# easier to maintain:
+# This week we cover the tools that let programs work with the outside world
+# and keep running when something goes wrong:
 #
-# 1. Modules and imports — reusing code across files
-# 2. Error handling — catching exceptions gracefully
-# 3. Tracebacks and debugging — reading errors and finding bugs
-# 4. Assertions — verifying that your code does what you think
+# 1. Files — reading and writing data that outlives your program
+# 2. Modules and imports — reusing code across files
+# 3. Error handling — catching exceptions gracefully
+# 4. Tracebacks and debugging — reading errors and finding bugs
+# 5. Assertions — verifying that your code does what you think
 
 # %% [markdown]
 # ---
-# ## Part 1 — Modules and Imports
+# ## Part 1 — Files
+#
+# Everything you've stored so far disappears when the program ends.
+# **Files** let a program save results and read data back later.
+# Python makes this straightforward with the built-in `open()` function.
+
+# %% [markdown]
+# ### 1.1 Writing to a File
+
+# %%
+# open(path, mode) — "w" creates/overwrites, "a" appends, "r" reads
+with open("sample.txt", "w") as f:
+    f.write("Line 1\n")     # \n is the newline character — without it, no line break
+    f.write("Line 2\n")
+    f.write("Line 3\n")
+
+# The `with` block automatically closes the file when it exits —
+# even if an error occurs. Always prefer `with` over a manual f.close().
+
+# %% [markdown]
+# ### 1.2 Reading an Entire File
+#
+# `.read()` returns the whole file as one string.
+
+# %%
+with open("sample.txt", "r") as f:
+    contents = f.read()
+
+print(contents)
+print(repr(contents))   # repr shows the \n characters explicitly
+
+# %% [markdown]
+# ### 1.3 Reading Line by Line
+#
+# Looping over a file gives you one line at a time — the memory-friendly way
+# to handle large files.  Each line keeps its trailing `\n`, so `.strip()` it.
+
+# %%
+with open("sample.txt", "r") as f:
+    for line in f:
+        print(line.strip())   # strip() removes the trailing newline
+
+# %% [markdown]
+# ### 1.4 Reading All Lines into a List
+
+# %%
+with open("sample.txt", "r") as f:
+    lines = f.readlines()
+
+print(lines)           # list of strings, each ending with \n
+print(len(lines))      # 3
+
+# %% [markdown]
+# ### 1.5 Appending to a File
+#
+# `"w"` erases the file first; `"a"` keeps what's there and adds to the end.
+
+# %%
+with open("sample.txt", "a") as f:
+    f.write("Line 4\n")
+
+with open("sample.txt") as f:   # "r" is the default mode
+    print(f.read())
+
+# %% [markdown]
+# ### 1.6 A Practical Pattern: read → process → write
+#
+# Most file programs follow this shape: read input, compute something, write
+# output.  Here we count the words in one file and save the count to another.
+
+# %%
+with open("sample.txt") as f:
+    text = f.read()
+
+word_count = len(text.split())
+
+with open("summary.txt", "w") as f:
+    f.write(f"Word count: {word_count}\n")
+
+with open("summary.txt") as f:
+    print(f.read())
+
+# %% [markdown]
+# ### Now you try
+
+# %% [markdown]
+# **Exercise 1.1.** Write three of your favourite foods to a file called
+# `foods.txt`, one per line.  Then open the file and print its contents.
+
+# %%
+# Your code here
+
+# %% [markdown]
+# **Exercise 1.2.** Read `foods.txt` back line by line and print each food with
+# a number in front, like `1. pizza`.  (Hint: keep a counter, or use
+# `enumerate`.)
+
+# %%
+# Your code here
+
+# %% [markdown]
+# **Exercise 1.3.** Append one more food to `foods.txt` using `"a"` mode, then
+# read the whole file again to confirm it now has four lines.
+
+# %%
+# Your code here
+
+# %% [markdown]
+# ---
+# ## Part 2 — Modules and Imports
 #
 # A **module** is just a Python file that you can load into another file.
 # Python ships with a huge **standard library** of modules — no installation
 # needed.  Third-party modules (like `requests`) are installed with `pip`.
 
 # %% [markdown]
-# ### 1.1 Importing a Module
+# ### 2.1 Importing a Module
 #
 # `import math` loads the entire `math` module.  Access its contents with
 # the dot: `math.sqrt(9)`.
@@ -32,7 +142,7 @@ print(math.floor(3.7))  # 3
 print(math.ceil(3.2))   # 4
 
 # %% [markdown]
-# ### 1.2 Importing Specific Names
+# ### 2.2 Importing Specific Names
 #
 # `from module import name` brings just one name into scope — no dot needed.
 
@@ -43,7 +153,7 @@ print(sqrt(25))   # 5.0
 print(pi)         # 3.14159…
 
 # %% [markdown]
-# ### 1.3 Aliases
+# ### 2.3 Aliases
 #
 # Long module names can be aliased with `as`.
 
@@ -54,7 +164,7 @@ print(rnd.randint(1, 6))    # simulated die roll
 print(rnd.choice(["heads", "tails"]))
 
 # %% [markdown]
-# ### 1.4 Useful Standard-Library Modules
+# ### 2.4 Useful Standard-Library Modules
 #
 # A quick tour of modules you'll reach for often.
 
@@ -62,7 +172,7 @@ print(rnd.choice(["heads", "tails"]))
 import os
 
 print(os.getcwd())           # current working directory
-print(os.path.exists("nonexistent.txt"))  # False
+print(os.path.exists("sample.txt"))  # True — we wrote it in Part 1
 
 # %%
 import sys
@@ -87,7 +197,7 @@ print(string.digits)            # 0123456789
 print(string.punctuation)       # !"#$%&'()*+,...
 
 # %% [markdown]
-# ### 1.5 Writing Your Own Module
+# ### 2.5 Writing Your Own Module
 #
 # Any `.py` file is a module.  If `helpers.py` lives in the same folder:
 #
@@ -103,13 +213,13 @@ print(string.punctuation)       # !"#$%&'()*+,...
 # print(helpers.greet("Alice"))
 # ```
 #
-# We'll use this pattern in the homework.
+# This is exactly how the homework loads its `checks` module.
 
 # %% [markdown]
 # ### Now you try
 
 # %% [markdown]
-# **Exercise 1.1.** Import the `math` module and print the value of `math.e`
+# **Exercise 2.1.** Import the `math` module and print the value of `math.e`
 # (Euler's number).  Then use `math.log` to compute the natural log of `math.e`
 # — it should be 1.0.
 
@@ -117,15 +227,15 @@ print(string.punctuation)       # !"#$%&'()*+,...
 # Your code here
 
 # %% [markdown]
-# **Exercise 1.2.** Use `random.randint` to simulate rolling two six-sided
+# **Exercise 2.2.** Use `random.randint` to simulate rolling two six-sided
 # dice.  Print both values and their sum.
 
 # %%
 # Your code here
 
 # %% [markdown]
-# **Exercise 1.3.** Use `os.path.exists` to check whether a file called
-# `"lecture-04.py"` exists in the current directory.  Print a message saying
+# **Exercise 2.3.** Use `os.path.exists` to check whether the file `"foods.txt"`
+# you made in Part 1 exists in the current directory.  Print a message saying
 # whether it was found or not.
 
 # %%
@@ -133,21 +243,21 @@ print(string.punctuation)       # !"#$%&'()*+,...
 
 # %% [markdown]
 # ---
-# ## Part 2 — Error Handling
+# ## Part 3 — Error Handling
 #
 # When something goes wrong at runtime Python raises an **exception**.
 # Without handling it, the program crashes.  `try / except` lets you catch
 # exceptions and decide what to do instead.
 
 # %% [markdown]
-# ### 2.1 What an Unhandled Exception Looks Like
+# ### 3.1 What an Unhandled Exception Looks Like
 
 # %%
 # Uncomment to see the crash — then re-comment before moving on
 # int("abc")
 
 # %% [markdown]
-# ### 2.2 Basic try / except
+# ### 3.2 Basic try / except
 
 # %%
 try:
@@ -160,7 +270,7 @@ except ValueError:
 # The program continues normally after the `try / except` block.
 
 # %% [markdown]
-# ### 2.3 Catching the Exception Object
+# ### 3.3 Catching the Exception Object
 #
 # Add `as e` to inspect the error message.
 
@@ -171,7 +281,20 @@ except ZeroDivisionError as e:
     print(f"Caught an error: {e}")
 
 # %% [markdown]
-# ### 2.4 Multiple except Clauses
+# ### 3.4 A Natural Pair: Files That Might Not Exist
+#
+# Opening a missing file raises `FileNotFoundError`.  This is the most common
+# place a beginner's file program crashes — and `try / except` is the fix.
+
+# %%
+try:
+    with open("does_not_exist.txt") as f:
+        print(f.read())
+except FileNotFoundError:
+    print("That file isn't here — check the name and try again.")
+
+# %% [markdown]
+# ### 3.5 Multiple except Clauses
 #
 # Handle different errors differently.
 
@@ -189,7 +312,7 @@ print(safe_divide(10, 0))    # Cannot divide by zero.
 print(safe_divide(10, "x"))  # Both arguments must be numbers.
 
 # %% [markdown]
-# ### 2.5 The else and finally Clauses
+# ### 3.6 The else and finally Clauses
 #
 # - `else` runs only if **no** exception was raised.
 # - `finally` **always** runs — use it for cleanup (closing files, etc.).
@@ -205,7 +328,7 @@ finally:
     print("Done — this always runs.")
 
 # %% [markdown]
-# ### 2.6 Raising Exceptions
+# ### 3.7 Raising Exceptions
 #
 # Use `raise` to signal that something went wrong in your own code.
 
@@ -223,7 +346,7 @@ except ValueError as e:
     print(e)
 
 # %% [markdown]
-# ### 2.7 Common Exception Types
+# ### 3.8 Common Exception Types
 #
 # | Exception | When it occurs |
 # |---|---|
@@ -239,7 +362,7 @@ except ValueError as e:
 # ### Now you try
 
 # %% [markdown]
-# **Exercise 2.1.** Write a function `safe_index(lst, i)` that returns
+# **Exercise 3.1.** Write a function `safe_index(lst, i)` that returns
 # `lst[i]` if `i` is a valid index, or the string `"index out of range"`
 # if it is not.  Test it with a valid and an invalid index.
 
@@ -247,7 +370,7 @@ except ValueError as e:
 # Your code here
 
 # %% [markdown]
-# **Exercise 2.2.** Write a function `read_int(prompt)` that uses `input()`
+# **Exercise 3.2.** Write a function `read_int(prompt)` that uses `input()`
 # to ask the user for an integer.  If the user types something that isn't
 # a valid integer, print `"Please enter a whole number."` and return `None`.
 # Otherwise return the integer.
@@ -256,22 +379,23 @@ except ValueError as e:
 # Your code here
 
 # %% [markdown]
-# **Exercise 2.3.** Write a function `safe_open(filename)` that tries to open
+# **Exercise 3.3.** Write a function `safe_open(filename)` that tries to open
 # and return the contents of `filename`.  If the file doesn't exist, return
-# the string `"File not found."` instead of crashing.
+# the string `"File not found."` instead of crashing.  Test it on `sample.txt`
+# (exists) and on a name that doesn't.
 
 # %%
 # Your code here
 
 # %% [markdown]
 # ---
-# ## Part 3 — Tracebacks and Debugging Strategies
+# ## Part 4 — Tracebacks and Debugging Strategies
 #
 # A **traceback** is Python's crash report.  Learning to read it quickly is
 # one of the most valuable debugging skills you can develop.
 
 # %% [markdown]
-# ### 3.1 Anatomy of a Traceback
+# ### 4.1 Anatomy of a Traceback
 #
 # Run the cell below and study the output.
 
@@ -305,7 +429,7 @@ def process(items):
 # That's almost always where the bug lives.
 
 # %% [markdown]
-# ### 3.2 Common Bugs and How They Look
+# ### 4.2 Common Bugs and How They Look
 
 # %%
 # Bug 1: Off-by-one in a loop
@@ -340,7 +464,7 @@ def greet(name):
 print(greet("Alice"))
 
 # %% [markdown]
-# ### 3.3 Debugging with print()
+# ### 4.3 Debugging with print()
 #
 # The simplest debugger: insert `print()` calls to inspect state.
 
@@ -360,7 +484,7 @@ print(f"First negative at index: {result}")
 # `logging` statements (a topic for a more advanced course).
 
 # %% [markdown]
-# ### 3.4 Narrowing Down a Bug
+# ### 4.4 Narrowing Down a Bug
 #
 # When a bug is hard to find, apply **binary search**:
 # 1. Add a print halfway through the suspect code.
@@ -373,7 +497,7 @@ print(f"First negative at index: {result}")
 # ### Now you try
 
 # %% [markdown]
-# **Exercise 3.1.** The function below has a bug.  Run it, read the traceback,
+# **Exercise 4.1.** The function below has a bug.  Run it, read the traceback,
 # identify the problem, and fix it.
 #
 # ```python
@@ -390,7 +514,7 @@ def average(numbers):
 # print(average([]))   # uncomment to see the error, then fix the function above
 
 # %% [markdown]
-# **Exercise 3.2.** The loop below is supposed to print the squares of 1–5,
+# **Exercise 4.2.** The loop below is supposed to print the squares of 1–5,
 # but it has an off-by-one error.  Find and fix it.
 
 # %%
@@ -398,7 +522,7 @@ for i in range(1, 5):   # bug is here
     print(i ** 2)
 
 # %% [markdown]
-# **Exercise 3.3.** Add two `print()` debug statements to the function below
+# **Exercise 4.3.** Add two `print()` debug statements to the function below
 # to trace the value of `count` on each iteration, then run it to confirm
 # it counts correctly.
 
@@ -414,7 +538,7 @@ print(count_evens([1, 2, 3, 4, 5, 6]))
 
 # %% [markdown]
 # ---
-# ## Part 4 — Assertions
+# ## Part 5 — Assertions
 #
 # An **assertion** is a sanity check you write directly in your code.
 # It says: "At this point, this must be true — if it isn't, something is
@@ -427,7 +551,7 @@ print(count_evens([1, 2, 3, 4, 5, 6]))
 # If `condition` is `False`, Python raises `AssertionError` and stops.
 
 # %% [markdown]
-# ### 4.1 Basic Assertions
+# ### 5.1 Basic Assertions
 
 # %%
 x = 42
@@ -436,7 +560,7 @@ assert isinstance(x, int), "x must be an integer"
 print("Both assertions passed.")
 
 # %% [markdown]
-# ### 4.2 Assertions as Executable Documentation
+# ### 5.2 Assertions as Executable Documentation
 #
 # An assertion tells the reader (and Python) what you *expect* to be true.
 # Compare:
@@ -454,7 +578,7 @@ print("Both assertions passed.")
 # The second version *verifies* the assumption instead of just stating it.
 
 # %% [markdown]
-# ### 4.3 Checking Function Inputs
+# ### 5.3 Checking Function Inputs
 
 # %%
 def bmi(weight_kg, height_m):
@@ -470,7 +594,7 @@ except AssertionError as e:
     print(f"AssertionError: {e}")
 
 # %% [markdown]
-# ### 4.4 Checking Function Outputs
+# ### 5.4 Checking Function Outputs
 #
 # You can also assert something about what a function *returns*.
 
@@ -486,7 +610,7 @@ print(clamp(-3, 0, 10))   # 0
 print(clamp(15, 0, 10))   # 10
 
 # %% [markdown]
-# ### 4.5 Assertions vs. Exceptions — When to Use Which
+# ### 5.5 Assertions vs. Exceptions — When to Use Which
 #
 # | Situation | Use |
 # |---|---|
@@ -496,13 +620,14 @@ print(clamp(15, 0, 10))   # 10
 #
 # Assertions are not a substitute for input validation — they can be
 # disabled globally with `python -O` (optimize flag).  Use `raise` for
-# anything a user could trigger.
+# anything a user could trigger.  (Assertions will come back in Week 7 as the
+# foundation of *testing* — checking that code does what you claim.)
 
 # %% [markdown]
 # ### Now you try
 
 # %% [markdown]
-# **Exercise 4.1.** Write a function `rectangle_area(width, height)` that
+# **Exercise 5.1.** Write a function `rectangle_area(width, height)` that
 # returns `width * height`.  Add assertions to verify that both arguments
 # are positive numbers before computing the area.
 
@@ -510,7 +635,7 @@ print(clamp(15, 0, 10))   # 10
 # Your code here
 
 # %% [markdown]
-# **Exercise 4.2.** Write a function `first_and_last(lst)` that returns a
+# **Exercise 5.2.** Write a function `first_and_last(lst)` that returns a
 # tuple `(lst[0], lst[-1])`.  Add an assertion that `lst` is not empty
 # before accessing those indices.
 
@@ -518,7 +643,7 @@ print(clamp(15, 0, 10))   # 10
 # Your code here
 
 # %% [markdown]
-# **Exercise 4.3.** The function below computes a letter grade from a
+# **Exercise 5.3.** The function below computes a letter grade from a
 # percentage score.  Add an assertion that `score` is between 0 and 100
 # (inclusive) before the grade is computed.
 

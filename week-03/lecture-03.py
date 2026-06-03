@@ -8,8 +8,8 @@
 # 3. Docstrings and scope
 # 4. Strings in depth
 # 5. Dictionaries
-# 6. Basic file I/O
-# 7. A first look at objects (foreshadowing Week 6)
+# 6. Tuples
+# 7. A first look at objects (foreshadowing Week 5)
 
 # %% [markdown]
 # ---
@@ -185,7 +185,7 @@ low, high = min_max([3, 1, 4, 1, 5, 9, 2, 6])
 print(f"Min: {low}, Max: {high}")
 
 # %% [markdown]
-# The comma creates a **tuple** — we'll cover tuples in depth in Week 4.
+# The comma creates a **tuple** — we'll cover tuples in depth in Part 4.
 
 # %% [markdown]
 # ---
@@ -382,77 +382,115 @@ print(squares)   # {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
 
 # %% [markdown]
 # ---
-# ## Part 4 — Basic File I/O
+# ## Part 4 — Tuples
 #
-# Programs often need to read data from files or save results.
-# Python makes this straightforward with the built-in `open()` function.
+# A **tuple** is an ordered collection like a list — but **immutable**: once
+# created, you can't change, add, or remove items.  Use a tuple when a group of
+# values belongs together and *shouldn't* change: a coordinate `(x, y)`, an
+# RGB color `(255, 128, 0)`, a row from a spreadsheet.
 
 # %% [markdown]
-# ### 4.1 Writing to a File
+# ### 4.1 Creating Tuples
 
 # %%
-# open(path, mode) — "w" creates/overwrites, "a" appends, "r" reads
-with open("sample.txt", "w") as f:
-    f.write("Line 1\n")
-    f.write("Line 2\n")
-    f.write("Line 3\n")
+point = (3, 4)            # parentheses
+rgb = 255, 128, 0          # parentheses are optional — the commas make the tuple
+single = (42,)             # a one-item tuple needs a trailing comma
+empty = ()
 
-# The `with` block automatically closes the file when it exits —
-# even if an error occurs. Always prefer `with` over manual f.close().
+print(point, type(point))
+print(rgb)
+print(single, type(single))
 
 # %% [markdown]
-# ### 4.2 Reading an Entire File
+# ### 4.2 Indexing Works Like Lists; Changing Does Not
+#
+# You read from a tuple exactly like a list — but assignment fails.
 
 # %%
-with open("sample.txt", "r") as f:
-    contents = f.read()
+point = (3, 4)
+print(point[0])    # 3
+print(point[-1])   # 4
+print(len(point))  # 2
 
-print(contents)
-print(repr(contents))   # show the \n characters explicitly
+# point[0] = 99    # uncomment: TypeError — tuples are immutable
 
 # %% [markdown]
-# ### 4.3 Reading Line by Line
+# ### 4.3 Packing and Unpacking
+#
+# Listing values with commas **packs** them into a tuple.  Putting names on the
+# left **unpacks** them back out — one name per item.  You met this already with
+# `min_max` in Part 1.
 
 # %%
-with open("sample.txt", "r") as f:
-    for line in f:
-        print(line.strip())   # strip() removes the trailing newline
+person = ("Ada", 36, "London")   # pack
+name, age, city = person          # unpack
+print(name)
+print(age)
+print(city)
+
+# %%
+# A classic use: swap two variables in one line, no temp variable needed
+a = 1
+b = 2
+a, b = b, a
+print(a, b)   # 2 1
 
 # %% [markdown]
-# ### 4.4 Reading All Lines into a List
+# ### 4.4 Returning Multiple Values Is Just a Tuple
+#
+# When a function returns several values separated by commas, it's returning one
+# tuple — which the caller usually unpacks.
 
 # %%
-with open("sample.txt", "r") as f:
-    lines = f.readlines()
+def divide(a, b):
+    quotient = a // b
+    remainder = a % b
+    return quotient, remainder   # packs into a tuple
 
-print(lines)           # list of strings, each ending with \n
-print(len(lines))      # 3
+q, r = divide(17, 5)             # unpacks it
+print(f"17 = {q} * 5 + {r}")     # 17 = 3 * 5 + 2
 
 # %% [markdown]
-# ### 4.5 Appending to a File
-
-# %%
-with open("sample.txt", "a") as f:
-    f.write("Line 4\n")
-
-with open("sample.txt") as f:   # "r" is the default mode
-    print(f.read())
+# ### 4.5 Tuple or List — Which?
+#
+# | Use a **list** when… | Use a **tuple** when… |
+# |---|---|
+# | the collection will change (append, remove, sort) | the values are fixed and belong together |
+# | items are "many of the same thing" | items are "one record with parts" |
+# | e.g. a shopping list, scores to update | e.g. a coordinate, a returned pair |
+#
+# Because tuples can't change, Python also lets them be used as **dictionary
+# keys** (lists can't be).  That's a detail for later — for now, remember:
+# tuple = a fixed, ordered group of values.
 
 # %% [markdown]
-# ### 4.6 A Practical Pattern: read → process → write
+# ### Now you try
+
+# %% [markdown]
+# **Exercise 4.1.** Create a tuple `book` holding a title, an author, and a year.
+# Unpack it into three variables and print a sentence using all three.
 
 # %%
-# Count words in the file and write the result to a new file
-with open("sample.txt") as f:
-    text = f.read()
+# Your code here
 
-word_count = len(text.split())
 
-with open("summary.txt", "w") as f:
-    f.write(f"Word count: {word_count}\n")
+# %% [markdown]
+# **Exercise 4.2.** Write a function `min_and_max(numbers)` that returns both the
+# smallest and largest values as a tuple.  Call it and unpack the result into two
+# variables `lo` and `hi`.
 
-with open("summary.txt") as f:
-    print(f.read())
+# %%
+# Your code here
+
+
+# %% [markdown]
+# **Exercise 4.3.** You have `start = "Monday"` and `end = "Friday"`.  Swap their
+# values in a single line using tuple unpacking, then print both.
+
+# %%
+# Your code here
+
 
 # %% [markdown]
 # ---
@@ -463,7 +501,7 @@ with open("summary.txt") as f:
 # An **object** bundles data (*attributes*) and behaviour (*methods*)
 # together under one name.
 #
-# We'll build our own objects in Week 6.  For now, let's notice the pattern
+# We'll build our own objects in **Week 5**.  For now, let's notice the pattern
 # by exploring a few objects from the **standard library**.
 
 # %% [markdown]
@@ -511,21 +549,21 @@ print(age_days.days, "days old")
 # %%
 from pathlib import Path
 
-p = Path("sample.txt")
-print(p.exists())       # True/False
-print(p.name)           # sample.txt
-print(p.suffix)         # .txt
-print(p.stem)           # sample
-print(p.stat().st_size) # file size in bytes
+p = Path("report_2026.txt")
+print(p.name)           # report_2026.txt
+print(p.suffix)         # .txt   — attribute, no parentheses
+print(p.stem)           # report_2026
+print(p.exists())       # False  — we never created this file; it's just a path
 
 # %% [markdown]
+# A `Path` describes a location whether or not a file is actually there.
 # `pathlib.Path` objects let you work with file paths in a clean,
 # cross-platform way.  The `/` operator even builds paths:
 
 # %%
-folder = Path(".")
-notebook = folder / "sample.txt"
-print(notebook)
+folder = Path("data")
+report = folder / "report_2026.txt"
+print(report)           # data/report_2026.txt
 
 # %% [markdown]
 # ### 5.4 `collections.Counter`
@@ -541,7 +579,7 @@ print(counts.most_common(2))     # top 2
 
 # %% [markdown]
 # `Counter` is a dict subclass — all dict operations work on it.
-# Week 6 will show you how to build your own classes like these.
+# Week 5 will show you how to build your own classes like these.
 
 # %% [markdown]
 # ---
@@ -552,7 +590,7 @@ print(counts.most_common(2))     # top 2
 # | Functions | `def`, parameters, `return`, defaults, kwargs, scope |
 # | Strings | Indexing/slicing, `.split()`, `.join()`, `.strip()`, f-strings |
 # | Dictionaries | `{k: v}`, access by key, `.get()`, `.items()`, comprehensions |
-# | File I/O | `open()`, `with` block, `"r"/"w"/"a"` modes, `.read()`, iteration |
+# | Tuples | Immutable ordered groups; packing/unpacking; multiple return values |
 # | Objects | `object.method()` pattern; `datetime`, `Path`, `Counter` as examples |
 #
 # **Key takeaways:**
@@ -560,7 +598,7 @@ print(counts.most_common(2))     # top 2
 # - Strings are immutable; use methods to build new strings.
 # - Dictionaries give you fast key-based lookup — the right tool when
 #   you need to associate names with values.
-# - Always use `with` when opening files.
+# - Tuples are fixed, ordered groups; returning several values makes a tuple.
 # - Objects bundle data and behaviour; you've been using them all along.
 
 # %% [markdown]
@@ -587,9 +625,9 @@ print(counts.most_common(2))     # top 2
 
 
 # %% [markdown]
-# **Problem 3.** Write a function `read_and_count(filename)` that opens the
-# file at `filename`, reads its contents, and returns a dictionary with two
-# keys: `"lines"` (number of lines) and `"words"` (number of words).
+# **Problem 3.** Write a function `high_low(numbers)` that returns a **tuple**
+# `(minimum, maximum)` of a list of numbers.  Call it and unpack the result into
+# two variables.  Example: `high_low([3, 9, 1, 7])` → `(1, 9)`.
 
 # %%
 # Your code here
