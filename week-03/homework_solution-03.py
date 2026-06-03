@@ -126,46 +126,30 @@ grader.check("ex5_best_score", lambda: checks.check_ex5(best_score))
 
 # %% [markdown]
 # ---
-# ## Part 4 — Reading and Writing Files
-
-# %%
-from pathlib import Path
-
-p = Path("hw3_scores.csv")
-print(f"hw3_scores.csv exists: {p.exists()}")
-print(f"Type of p: {type(p)}")
+# ## Part 4 — Tuples
 
 # %% [markdown]
 # ---
-# ### Exercise 6: save_scores
+# ### Exercise 6: min_max
 
 # %%
-def save_scores(filename, scores):
-    with open(filename, "w") as f:
-        for name, score in scores.items():
-            f.write(f"{name},{score}\n")
+def min_max(numbers):
+    return min(numbers), max(numbers)
 
 # %%
-grader.check("ex6_save_scores", lambda: checks.check_ex6(save_scores))
+grader.check("ex6_min_max", lambda: checks.check_ex6(min_max))
 
 # %% [markdown]
 # ---
-# ### Exercise 7: total_from_file
+# ### Exercise 7: parse_point
 
 # %%
-def total_from_file(filename):
-    total = 0
-    with open(filename) as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            parts = line.split(",")
-            total += int(parts[1])
-    return total
+def parse_point(text):
+    parts = text.split(",")
+    return int(parts[0]), int(parts[1])
 
 # %%
-grader.check("ex7_total_from_file", lambda: checks.check_ex7(total_from_file))
+grader.check("ex7_parse_point", lambda: checks.check_ex7(parse_point))
 
 # %% [markdown]
 # ---

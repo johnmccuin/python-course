@@ -1,9 +1,9 @@
 # %% [markdown]
 # <!-- Instructor note: estimated beginner completion time ~25 min working smoothly.
 #      Multiply by ~3 per course prep practices → expect ~75 min real student time.
-#      7 exercises: 2 functions+strings warm-ups, 1 strings-in-depth, 2 dicts, 2 file-I/O. -->
+#      7 exercises: 2 functions+strings warm-ups, 1 strings-in-depth, 2 dicts, 2 tuples. -->
 #
-# # Week 3 — Homework: Functions, Strings, Dicts, and Files
+# # Week 3 — Homework: Functions, Strings, Dicts, and Tuples
 #
 # Work through each exercise in order.
 # After finishing an exercise, run its **check cell** to see if your answer is correct.
@@ -200,80 +200,65 @@ grader.check("ex5_best_score", lambda: checks.check_ex5(best_score))
 
 # %% [markdown]
 # ---
-# ## Part 4 — Reading and Writing Files
+# ## Part 4 — Tuples
 #
-# ### Objects: a quick look ahead
+# Quick reminder: a **tuple** is a fixed, ordered group of values.  Listing
+# values with commas **packs** them into a tuple; names on the left **unpack**
+# them back out.  Returning several values from a function makes a tuple.
 #
-# When you write `open("data.csv", "w")`, Python returns a **file object** —
-# an instance of a class that knows how to talk to the filesystem.
-# You call methods on it (`.write()`, `.read()`) just like you call
-# `.upper()` on a string.
-#
-# `pathlib.Path` works the same way.  Try running the cell below:
-
-# %%
-from pathlib import Path
-
-p = Path("hw3_scores.csv")
-print(f"hw3_scores.csv exists: {p.exists()}")   # False — not created yet
-print(f"Type of p: {type(p)}")
-
-# %% [markdown]
-# `Path("hw3_scores.csv")` is an **instance of a class** called `Path`.
-# You haven't written a class yourself yet — that's Week 6.  For now,
-# just use the objects Python provides.
-#
-# The next two exercises write a CSV file and then read it back.
-# Run them in order — Exercise 7 reads the file that Exercise 6 creates.
+# ```python
+# def divide(a, b):
+#     return a // b, a % b      # packs a tuple
+# q, r = divide(17, 5)          # unpacks it: q=3, r=2
+# ```
 
 # %% [markdown]
 # ---
-# ### Exercise 6: save_scores
+# ### Exercise 6: min_max
 #
-# Write a function `save_scores(filename, scores)` that saves a
-# `{name: score}` dictionary to a text file.  Write **one line per student**
-# in the format `name,score`.
-#
-# After `save_scores("hw3_scores.csv", {"Alice": 92, "Bob": 85, "Carol": 97})`
-# the file should contain:
-# ```
-# Alice,92
-# Bob,85
-# Carol,97
-# ```
-#
-# The function does not need to return anything.
-#
-# *Tip: loop over the dictionary with `for name, score in scores.items():`,*
-# *then write each line with `f.write(f"{name},{score}\n")`.*
-
-# %%
-def save_scores(filename, scores):
-    pass  # ← delete this line and write your code here
-
-# %%
-grader.check("ex6_save_scores", lambda: checks.check_ex6(save_scores))
-
-# %% [markdown]
-# ---
-# ### Exercise 7: total_from_file
-#
-# Write a function `total_from_file(filename)` that reads the CSV file
-# created by `save_scores` and returns the **sum** of all scores as an integer.
-# Each line in the file has the format `name,score`.
+# Write a function `min_max(numbers)` that returns a **tuple** `(minimum,
+# maximum)` of a non-empty list of numbers.  You may use the built-in `min()`
+# and `max()`.
 #
 # | Call | Expected result |
 # |------|----------------|
-# | `total_from_file("hw3_scores.csv")` (after Exercise 6) | `274` |
+# | `min_max([3, 1, 4, 1, 5])` | `(1, 5)` |
+# | `min_max([7])` | `(7, 7)` |
+# | `min_max([-2, 0, 2])` | `(-2, 2)` |
 #
-# You may assume the file always has at least one line and all scores are integers.
+# *Tip: a tuple is just values separated by commas — `return min(...), max(...)`*
+# *returns the two of them as one tuple.*
 
 # %%
-def total_from_file(filename):
+def min_max(numbers):
     pass  # ← delete this line and write your code here
 
 # %%
-grader.check("ex7_total_from_file", lambda: checks.check_ex7(total_from_file))
+grader.check("ex6_min_max", lambda: checks.check_ex6(min_max))
+
+# %% [markdown]
+# ---
+# ### Exercise 7: parse_point
+#
+# Write a function `parse_point(text)` that takes a string like `"3,4"` and
+# returns a **tuple of two integers** `(3, 4)`.  Split on the comma and convert
+# each piece to an `int`.
+#
+# | Call | Expected result |
+# |------|----------------|
+# | `parse_point("3,4")` | `(3, 4)` |
+# | `parse_point("10,20")` | `(10, 20)` |
+# | `parse_point("-1,5")` | `(-1, 5)` |
+#
+# *Tip: `text.split(",")` gives you a list of two strings; convert each with*
+# *`int(...)` and return them as a tuple.*
+
+# %%
+def parse_point(text):
+    pass  # ← delete this line and write your code here
+
+# %%
+grader.check("ex7_parse_point", lambda: checks.check_ex7(parse_point))
 
 # %% [markdown]
 # ---

@@ -1,11 +1,11 @@
 # %% [markdown]
 # <!-- Instructor note: estimated beginner completion time ~30 min working smoothly.
 #      Multiply by ~3 per course prep practices → expect ~90 min real student time.
-#      7 exercises mapped to the four lecture-04 parts:
-#      2 modules/imports, 2 error handling, 1 debugging fix, 2 assertions.
+#      7 exercises mapped to the five lecture-04 parts:
+#      2 files, 1 modules/imports, 2 error handling, 1 debugging fix, 1 assertions.
 #      Only concepts from lectures 1-4 are tested. -->
 #
-# # Week 4 — Homework: Modules, Errors, Debugging, and Assertions
+# # Week 4 — Homework: Files, Modules, Errors, and Assertions
 #
 # Work through each exercise in order.
 # After finishing an exercise, run its **check cell** to see if your answer is correct.
@@ -51,7 +51,74 @@ print("Ready!")
 
 # %% [markdown]
 # ---
-# ## Part 1 — Modules and Imports
+# ## Part 1 — Files
+#
+# Quick reminder: open a file with `with open(path, mode) as f:` — `"w"` writes
+# (overwriting), `"r"` reads. The `with` block closes the file for you.
+#
+# ```python
+# with open("notes.txt", "w") as f:
+#     f.write("first line\n")    # \n starts a new line
+#
+# with open("notes.txt") as f:   # "r" is the default
+#     text = f.read()
+# ```
+
+# %% [markdown]
+# ---
+# ### Exercise 1: save_lines
+#
+# Write a function `save_lines(filename, lines)` that writes each string in the
+# list `lines` to `filename`, **one per line**. The function does not need to
+# return anything.
+#
+# After `save_lines("hw4.txt", ["apple", "banana", "cherry"])` the file should
+# contain:
+# ```
+# apple
+# banana
+# cherry
+# ```
+#
+# *Tip: open the file with `"w"` mode, loop over `lines`, and write each one*
+# *followed by a newline: `f.write(line + "\n")`.*
+
+# %%
+def save_lines(filename, lines):
+    pass  # ← delete this line and write your code here
+
+# %%
+grader.check("ex1_save_lines", lambda: checks.check_ex1(save_lines))
+
+# %% [markdown]
+# ---
+# ### Exercise 2: sum_numbers
+#
+# Write a function `sum_numbers(filename)` that reads a file with **one whole
+# number per line** and returns the **sum** of those numbers as an integer.
+#
+# For a file containing:
+# ```
+# 10
+# 20
+# 30
+# ```
+# `sum_numbers(...)` should return `60`.
+#
+# *Tip: loop over the file line by line, `int()` each line, and add it to a*
+# *running total. Watch out — `int(" 10\n")` works, but build the habit of*
+# *`.strip()`-ing each line first.*
+
+# %%
+def sum_numbers(filename):
+    pass  # ← delete this line and write your code here
+
+# %%
+grader.check("ex2_sum_numbers", lambda: checks.check_ex2(sum_numbers))
+
+# %% [markdown]
+# ---
+# ## Part 2 — Modules and Imports
 #
 # Quick reminder: `import` loads a module so you can use the code inside it.
 # Reach for the standard library before writing things by hand.
@@ -63,7 +130,7 @@ print("Ready!")
 
 # %% [markdown]
 # ---
-# ### Exercise 1: circle_area
+# ### Exercise 3: circle_area
 #
 # Write a function `circle_area(radius)` that returns the area of a circle
 # with the given radius. Use `math.pi` for full precision — don't type
@@ -84,37 +151,11 @@ def circle_area(radius):
     pass  # ← delete this line and write your code here
 
 # %%
-grader.check("ex1_circle_area", lambda: checks.check_ex1(circle_area))
+grader.check("ex3_circle_area", lambda: checks.check_ex3(circle_area))
 
 # %% [markdown]
 # ---
-# ### Exercise 2: count_punctuation
-#
-# Write a function `count_punctuation(text)` that returns how many characters
-# in `text` are punctuation marks. Use the `string` module's
-# `string.punctuation` (the string of all punctuation characters) instead of
-# listing them yourself.
-#
-# | Call | Expected result |
-# |------|----------------|
-# | `count_punctuation("Hello, World!")` | `2` |
-# | `count_punctuation("no punctuation here")` | `0` |
-# | `count_punctuation("a.b.c")` | `2` |
-# | `count_punctuation("")` | `0` |
-#
-# *Tip: `import string`, then loop over the characters and check*
-# *`if ch in string.punctuation:`.*
-
-# %%
-def count_punctuation(text):
-    pass  # ← delete this line and write your code here
-
-# %%
-grader.check("ex2_count_punctuation", lambda: checks.check_ex2(count_punctuation))
-
-# %% [markdown]
-# ---
-# ## Part 2 — Error Handling
+# ## Part 3 — Error Handling
 #
 # Quick reminder: `try / except` lets you catch an exception and decide what
 # to do instead of crashing.
@@ -128,7 +169,7 @@ grader.check("ex2_count_punctuation", lambda: checks.check_ex2(count_punctuation
 
 # %% [markdown]
 # ---
-# ### Exercise 3: safe_divide
+# ### Exercise 4: safe_divide
 #
 # Write a function `safe_divide(a, b)` that returns `a / b`. If `b` is zero,
 # catch the `ZeroDivisionError` and return the string
@@ -148,11 +189,11 @@ def safe_divide(a, b):
     pass  # ← delete this line and write your code here
 
 # %%
-grader.check("ex3_safe_divide", lambda: checks.check_ex3(safe_divide))
+grader.check("ex4_safe_divide", lambda: checks.check_ex4(safe_divide))
 
 # %% [markdown]
 # ---
-# ### Exercise 4: parse_scores
+# ### Exercise 5: parse_scores
 #
 # Write a function `parse_scores(items)` that takes a list of strings and
 # returns a **new list** of integers — one for each item that can be
@@ -175,11 +216,11 @@ def parse_scores(items):
     pass  # ← delete this line and write your code here
 
 # %%
-grader.check("ex4_parse_scores", lambda: checks.check_ex4(parse_scores))
+grader.check("ex5_parse_scores", lambda: checks.check_ex5(parse_scores))
 
 # %% [markdown]
 # ---
-# ## Part 3 — Debugging and Tracebacks
+# ## Part 4 — Debugging and Tracebacks
 #
 # Quick reminder: a traceback is Python's crash report — read it bottom-up to
 # find the line and error type. The function below has a bug that only shows
@@ -187,7 +228,7 @@ grader.check("ex4_parse_scores", lambda: checks.check_ex4(parse_scores))
 
 # %% [markdown]
 # ---
-# ### Exercise 5: fix average
+# ### Exercise 6: fix average
 #
 # The function `average(numbers)` is supposed to return the mean of a list.
 # It works for non-empty lists but **crashes on an empty list** with a
@@ -211,11 +252,11 @@ def average(numbers):
     return sum(numbers) / len(numbers)
 
 # %%
-grader.check("ex5_average", lambda: checks.check_ex5(average))
+grader.check("ex6_average", lambda: checks.check_ex6(average))
 
 # %% [markdown]
 # ---
-# ## Part 4 — Assertions
+# ## Part 5 — Assertions
 #
 # Quick reminder: an assertion is a sanity check that stops the program with
 # an `AssertionError` if a condition you expect to be true turns out false.
@@ -223,31 +264,6 @@ grader.check("ex5_average", lambda: checks.check_ex5(average))
 # ```python
 # assert amount > 0, "amount must be positive"
 # ```
-
-# %% [markdown]
-# ---
-# ### Exercise 6: rectangle_area
-#
-# Write a function `rectangle_area(width, height)` that returns
-# `width * height`. **Before** computing the area, add two `assert` statements
-# verifying that `width` and `height` are each greater than 0.
-#
-# | Call | Expected result |
-# |------|----------------|
-# | `rectangle_area(3, 4)` | `12` |
-# | `rectangle_area(2.5, 2)` | `5.0` |
-# | `rectangle_area(-1, 4)` | raises `AssertionError` |
-# | `rectangle_area(3, 0)` | raises `AssertionError` |
-#
-# *Tip: `assert width > 0, "width must be positive"` (and one for height),*
-# *then `return width * height`.*
-
-# %%
-def rectangle_area(width, height):
-    pass  # ← delete this line and write your code here
-
-# %%
-grader.check("ex6_rectangle_area", lambda: checks.check_ex6(rectangle_area))
 
 # %% [markdown]
 # ---

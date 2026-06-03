@@ -4,15 +4,82 @@ This module is fetched by the homework notebook at runtime and is
 intentionally kept separate so students cannot see the check logic
 while working on their answers.
 
-Every exercise tests a concept demonstrated in lecture-04 (modules and
-imports, error handling, tracebacks/debugging, assertions), building on
-the functions, loops, lists, dicts, and strings from Weeks 1-3.
+Every exercise tests a concept demonstrated in lecture-04 (files, modules
+and imports, error handling, tracebacks/debugging, assertions), building on
+the functions, loops, lists, dicts, strings, and tuples from Weeks 1-3.
 """
 
 import math
+import pathlib
 
 
-def check_ex1(circle_area):
+def check_ex1(save_lines):
+    if not callable(save_lines):
+        return "save_lines doesn't seem to be a function — make sure you used `def`."
+
+    test_file = "hw4_ex1_test.txt"
+    lines = ["apple", "banana", "cherry"]
+
+    try:
+        save_lines(test_file, lines)
+    except Exception as exc:
+        return f"save_lines raised {type(exc).__name__}: {exc}"
+
+    if not pathlib.Path(test_file).exists():
+        return (
+            "save_lines did not create the file. "
+            "Open it for writing with `with open(filename, 'w') as f:`."
+        )
+
+    content = pathlib.Path(test_file).read_text()
+    got = content.splitlines()
+
+    if got == ["".join(lines)] or (len(got) == 1 and got[0] == "applebananacherry"):
+        return (
+            "save_lines wrote everything on one line — add a newline after each "
+            "item: `f.write(line + '\\n')`."
+        )
+    if [ln for ln in got if ln.strip()] != lines:
+        return (
+            f"The file's lines were {got!r}, expected {lines!r} "
+            "(one item per line, in order)."
+        )
+    return True
+
+
+def check_ex2(sum_numbers):
+    if not callable(sum_numbers):
+        return "sum_numbers doesn't seem to be a function — make sure you used `def`."
+
+    cases = [
+        ("10\n20\n30\n", 60),
+        ("5\n", 5),
+        ("1\n2\n3\n4\n5\n", 15),
+        ("100\n-40\n", 60),
+    ]
+    test_file = "hw4_ex2_test.txt"
+    for content, expected in cases:
+        pathlib.Path(test_file).write_text(content)
+        try:
+            got = sum_numbers(test_file)
+        except Exception as exc:
+            return f"sum_numbers raised {type(exc).__name__}: {exc} (file was {content!r})"
+        if got is None:
+            return "sum_numbers returned None — check that you have a return statement."
+        if isinstance(got, str):
+            return (
+                f"sum_numbers returned the string {got!r} — convert each line with "
+                "int() and add the numbers."
+            )
+        if got != expected:
+            return (
+                f"sum_numbers returned {got!r} for a file of {content.split()!r}, "
+                f"expected {expected}. Convert each line to int() before adding."
+            )
+    return True
+
+
+def check_ex3(circle_area):
     if not callable(circle_area):
         return "circle_area doesn't seem to be a function — make sure you used `def`."
 
@@ -48,36 +115,7 @@ def check_ex1(circle_area):
     return True
 
 
-def check_ex2(count_punctuation):
-    if not callable(count_punctuation):
-        return "count_punctuation doesn't seem to be a function — make sure you used `def`."
-
-    tests = [
-        ("Hello, World!", 2),
-        ("no punctuation here", 0),
-        ("a.b.c", 2),
-        ("!!!", 3),
-        ("", 0),
-        ("Wait... really?!", 5),
-    ]
-    for text, expected in tests:
-        try:
-            got = count_punctuation(text)
-        except Exception as exc:
-            return f"count_punctuation({text!r}) raised {type(exc).__name__}: {exc}"
-        if got is None:
-            return "count_punctuation returned None — check that you have a return statement."
-        if not isinstance(got, int):
-            return f"count_punctuation({text!r}) returned {got!r} — the result should be an integer count."
-        if got != expected:
-            return (
-                f"count_punctuation({text!r}) returned {got}, expected {expected}. "
-                "Import the string module and check whether each character is in string.punctuation."
-            )
-    return True
-
-
-def check_ex3(safe_divide):
+def check_ex4(safe_divide):
     if not callable(safe_divide):
         return "safe_divide doesn't seem to be a function — make sure you used `def`."
 
@@ -121,7 +159,7 @@ def check_ex3(safe_divide):
     return True
 
 
-def check_ex4(parse_scores):
+def check_ex5(parse_scores):
     if not callable(parse_scores):
         return "parse_scores doesn't seem to be a function — make sure you used `def`."
 
@@ -158,7 +196,7 @@ def check_ex4(parse_scores):
     return True
 
 
-def check_ex5(average):
+def check_ex6(average):
     if not callable(average):
         return "average doesn't seem to be a function — make sure you used `def`."
 
@@ -190,49 +228,6 @@ def check_ex5(average):
         return f"average([]) raised {type(exc).__name__}: {exc}"
     if got != 0:
         return f"average([]) returned {got!r}, expected 0 for an empty list."
-    return True
-
-
-def check_ex6(rectangle_area):
-    if not callable(rectangle_area):
-        return "rectangle_area doesn't seem to be a function — make sure you used `def`."
-
-    valid_tests = [
-        (3, 4, 12),
-        (2.5, 2, 5.0),
-        (1, 1, 1),
-    ]
-    for width, height, expected in valid_tests:
-        try:
-            got = rectangle_area(width, height)
-        except AssertionError:
-            return (
-                f"rectangle_area({width!r}, {height!r}) raised AssertionError, "
-                "but both arguments are positive — your assertion is too strict."
-            )
-        except Exception as exc:
-            return f"rectangle_area({width!r}, {height!r}) raised {type(exc).__name__}: {exc}"
-        if got is None:
-            return "rectangle_area returned None — check that you return width * height."
-        if abs(got - expected) > 1e-9:
-            return f"rectangle_area({width!r}, {height!r}) returned {got!r}, expected {expected!r}."
-
-    # Invalid inputs must trigger an AssertionError.
-    bad_tests = [(-1, 4), (3, 0), (0, 0), (5, -2)]
-    for width, height in bad_tests:
-        try:
-            got = rectangle_area(width, height)
-        except AssertionError:
-            continue  # correct — the assertion fired
-        except Exception as exc:
-            return (
-                f"rectangle_area({width!r}, {height!r}) raised {type(exc).__name__} instead of "
-                "AssertionError — use `assert` to check that the inputs are positive."
-            )
-        return (
-            f"rectangle_area({width!r}, {height!r}) returned {got!r} without complaining. "
-            "Add assert statements that require width and height to be greater than 0."
-        )
     return True
 
 

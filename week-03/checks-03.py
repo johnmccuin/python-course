@@ -182,112 +182,72 @@ def check_ex5(best_score):
     return True
 
 
-def check_ex6(save_scores):
-    import pathlib
+def check_ex6(min_max):
+    if not callable(min_max):
+        return "min_max doesn't seem to be a function — make sure you used `def`."
 
-    if not callable(save_scores):
-        return "save_scores doesn't seem to be a function — make sure you used `def`."
-
-    test_file = "hw3_ex6_test.csv"
-    test_scores = {"Alice": 92, "Bob": 85, "Carol": 97}
-
-    try:
-        save_scores(test_file, test_scores)
-    except Exception as exc:
-        return f"save_scores raised {type(exc).__name__}: {exc}"
-
-    if not pathlib.Path(test_file).exists():
-        return (
-            "save_scores did not create the file. "
-            "Make sure you open it for writing: `with open(filename, 'w') as f:`"
-        )
-
-    content = pathlib.Path(test_file).read_text()
-    lines = [ln for ln in content.splitlines() if ln.strip()]
-
-    if len(lines) == 0:
-        return "The file is empty — make sure you're calling f.write() inside the loop."
-    if len(lines) != 3:
-        return (
-            f"Expected 3 lines in the file, found {len(lines)}. "
-            "Write one 'name,score' line per student."
-        )
-
-    expected_lines = ["Alice,92", "Bob,85", "Carol,97"]
-    for i, (got_line, exp_line) in enumerate(zip(lines, expected_lines)):
-        if got_line.strip() != exp_line:
-            # Check if they used a different delimiter
-            if got_line.strip() == exp_line.replace(",", ": "):
-                return (
-                    f"Line {i + 1} uses ': ' as the separator — use a comma instead. "
-                    f"Expected: {exp_line!r}"
-                )
+    tests = [
+        ([3, 1, 4, 1, 5], (1, 5)),
+        ([7], (7, 7)),
+        ([-2, 0, 2], (-2, 2)),
+        ([10, 9, 8, 7], (7, 10)),
+    ]
+    for numbers, expected in tests:
+        try:
+            got = min_max(numbers)
+        except Exception as exc:
+            return f"min_max({numbers!r}) raised {type(exc).__name__}: {exc}"
+        if got is None:
+            return "min_max returned None — check that you have a return statement."
+        if isinstance(got, list):
             return (
-                f"Line {i + 1} contains {got_line!r}, expected {exp_line!r}. "
-                "Format each line as 'name,score' with no extra spaces."
+                f"min_max({numbers!r}) returned the list {got!r} — return a tuple instead. "
+                "Use parentheses or just `return min(...), max(...)`."
             )
+        if not isinstance(got, tuple):
+            return f"min_max({numbers!r}) returned {got!r} — the result should be a tuple (minimum, maximum)."
+        if len(got) != 2:
+            return f"min_max({numbers!r}) returned {got!r} — the tuple should have exactly two items."
+        if got == (expected[1], expected[0]) and expected[0] != expected[1]:
+            return (
+                f"min_max({numbers!r}) returned {got!r} — the order is reversed. "
+                "Return (minimum, maximum), smallest first."
+            )
+        if got != expected:
+            return f"min_max({numbers!r}) returned {got!r}, expected {expected!r}."
     return True
 
 
-def check_ex7(total_from_file):
-    import pathlib
+def check_ex7(parse_point):
+    if not callable(parse_point):
+        return "parse_point doesn't seem to be a function — make sure you used `def`."
 
-    if not callable(total_from_file):
-        return "total_from_file doesn't seem to be a function — make sure you used `def`."
-
-    # Write a known test file so this check is self-contained.
-    test_file = "hw3_ex7_test.csv"
-    pathlib.Path(test_file).write_text("Alice,92\nBob,85\nCarol,97\n")
-    expected = 274  # 92 + 85 + 97
-
-    try:
-        got = total_from_file(test_file)
-    except Exception as exc:
-        return f"total_from_file raised {type(exc).__name__}: {exc}"
-
-    if got is None:
-        return "total_from_file returned None — check that you have a return statement."
-
-    # Check if they returned a string instead of an int
-    if isinstance(got, str):
-        return (
-            f"total_from_file returned {got!r} — "
-            "the result should be a number, not a string. "
-            "Use int() to convert the score before adding it."
-        )
-
-    if got == 3:
-        return "total_from_file returned 3 — that's the number of lines, not the sum of scores."
-
-    if got != expected:
-        # Check for string concatenation instead of addition
+    tests = [
+        ("3,4", (3, 4)),
+        ("10,20", (10, 20)),
+        ("-1,5", (-1, 5)),
+        ("0,0", (0, 0)),
+    ]
+    for text, expected in tests:
         try:
-            str_concat = int("9285" + "97")
-        except Exception:
-            str_concat = None
-        if got == str_concat or str(got) == "928597":
+            got = parse_point(text)
+        except Exception as exc:
+            return f"parse_point({text!r}) raised {type(exc).__name__}: {exc}"
+        if got is None:
+            return "parse_point returned None — check that you have a return statement."
+        if isinstance(got, list):
             return (
-                f"total_from_file returned {got!r}: the scores are being joined as "
-                "strings rather than added as numbers. Convert to int() before adding."
+                f"parse_point({text!r}) returned the list {got!r} — return a tuple instead."
             )
-        return (
-            f"total_from_file returned {got!r}, expected {expected} (92 + 85 + 97). "
-            "Make sure you convert each score to int() before adding."
-        )
-
-    # Second test with different data.
-    pathlib.Path(test_file).write_text("Zara,70\nEli,99\nMia,88\n")
-    expected2 = 257  # 70 + 99 + 88
-
-    try:
-        got2 = total_from_file(test_file)
-    except Exception as exc:
-        return f"total_from_file raised {type(exc).__name__} on second test: {exc}"
-
-    if got2 != expected2:
-        return (
-            f"total_from_file returned {got2!r} for a second file (Zara 70, Eli 99, Mia 88), "
-            f"expected {expected2}."
-        )
-
+        if not isinstance(got, tuple):
+            return f"parse_point({text!r}) returned {got!r} — the result should be a tuple of two ints."
+        if len(got) != 2:
+            return f"parse_point({text!r}) returned {got!r} — the tuple should have exactly two items."
+        if got == tuple(str(n) for n in expected) or any(isinstance(x, str) for x in got):
+            return (
+                f"parse_point({text!r}) returned {got!r} — the pieces are still strings. "
+                "Convert each with int() before returning."
+            )
+        if got != expected:
+            return f"parse_point({text!r}) returned {got!r}, expected {expected!r}."
     return True

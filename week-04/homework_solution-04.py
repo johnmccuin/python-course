@@ -45,11 +45,45 @@ print("Ready!")
 
 # %% [markdown]
 # ---
-# ## Part 1 — Modules and Imports
+# ## Part 1 — Files
 
 # %% [markdown]
 # ---
-# ### Exercise 1: circle_area
+# ### Exercise 1: save_lines
+
+# %%
+def save_lines(filename, lines):
+    with open(filename, "w") as f:
+        for line in lines:
+            f.write(line + "\n")
+
+# %%
+grader.check("ex1_save_lines", lambda: checks.check_ex1(save_lines))
+
+# %% [markdown]
+# ---
+# ### Exercise 2: sum_numbers
+
+# %%
+def sum_numbers(filename):
+    total = 0
+    with open(filename) as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                total += int(line)
+    return total
+
+# %%
+grader.check("ex2_sum_numbers", lambda: checks.check_ex2(sum_numbers))
+
+# %% [markdown]
+# ---
+# ## Part 2 — Modules and Imports
+
+# %% [markdown]
+# ---
+# ### Exercise 3: circle_area
 
 # %%
 import math
@@ -58,32 +92,15 @@ def circle_area(radius):
     return math.pi * radius ** 2
 
 # %%
-grader.check("ex1_circle_area", lambda: checks.check_ex1(circle_area))
+grader.check("ex3_circle_area", lambda: checks.check_ex3(circle_area))
 
 # %% [markdown]
 # ---
-# ### Exercise 2: count_punctuation
-
-# %%
-import string
-
-def count_punctuation(text):
-    count = 0
-    for ch in text:
-        if ch in string.punctuation:
-            count += 1
-    return count
-
-# %%
-grader.check("ex2_count_punctuation", lambda: checks.check_ex2(count_punctuation))
+# ## Part 3 — Error Handling
 
 # %% [markdown]
 # ---
-# ## Part 2 — Error Handling
-
-# %% [markdown]
-# ---
-# ### Exercise 3: safe_divide
+# ### Exercise 4: safe_divide
 
 # %%
 def safe_divide(a, b):
@@ -93,11 +110,11 @@ def safe_divide(a, b):
         return "Cannot divide by zero."
 
 # %%
-grader.check("ex3_safe_divide", lambda: checks.check_ex3(safe_divide))
+grader.check("ex4_safe_divide", lambda: checks.check_ex4(safe_divide))
 
 # %% [markdown]
 # ---
-# ### Exercise 4: parse_scores
+# ### Exercise 5: parse_scores
 
 # %%
 def parse_scores(items):
@@ -110,15 +127,15 @@ def parse_scores(items):
     return result
 
 # %%
-grader.check("ex4_parse_scores", lambda: checks.check_ex4(parse_scores))
+grader.check("ex5_parse_scores", lambda: checks.check_ex5(parse_scores))
 
 # %% [markdown]
 # ---
-# ## Part 3 — Debugging and Tracebacks
+# ## Part 4 — Debugging and Tracebacks
 
 # %% [markdown]
 # ---
-# ### Exercise 5: fix average
+# ### Exercise 6: fix average
 
 # %%
 def average(numbers):
@@ -127,24 +144,11 @@ def average(numbers):
     return sum(numbers) / len(numbers)
 
 # %%
-grader.check("ex5_average", lambda: checks.check_ex5(average))
+grader.check("ex6_average", lambda: checks.check_ex6(average))
 
 # %% [markdown]
 # ---
-# ## Part 4 — Assertions
-
-# %% [markdown]
-# ---
-# ### Exercise 6: rectangle_area
-
-# %%
-def rectangle_area(width, height):
-    assert width > 0, "width must be positive"
-    assert height > 0, "height must be positive"
-    return width * height
-
-# %%
-grader.check("ex6_rectangle_area", lambda: checks.check_ex6(rectangle_area))
+# ## Part 5 — Assertions
 
 # %% [markdown]
 # ---
@@ -153,7 +157,7 @@ grader.check("ex6_rectangle_area", lambda: checks.check_ex6(rectangle_area))
 # %%
 def withdraw(balance, amount):
     assert amount > 0, "amount must be positive"
-    assert amount <= balance, "amount exceeds balance"
+    assert amount <= balance, "amount must not exceed the balance"
     return balance - amount
 
 # %%
