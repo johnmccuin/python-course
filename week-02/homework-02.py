@@ -80,7 +80,8 @@ print("Ready!")
 # | 500 – 999    | `"Silver"` |
 # | Below 500    | `"Bronze"` |
 #
-# Your code should work correctly for **any** value of `points`, not just 1200.
+# `points` will always be a whole number (integer).
+# Your code should work correctly for **any** integer value of `points`, not just 1200.
 
 # %%
 points = 1200
