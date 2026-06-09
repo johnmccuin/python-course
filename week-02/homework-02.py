@@ -65,29 +65,30 @@ print("Ready!")
 
 # %% [markdown]
 # ---
-# ### Exercise 1: grade_label
+# ### Exercise 1: game_rank
 #
-# The variable `score` is already set to `83`.
-# Write an `if/elif/else` block that assigns a variable `label` to the
-# letter grade it earns:
+# An online game assigns each player a **rank** based on their `points`.
+# The variable `points` is already set to `1200`.
+# Write an `if/elif/else` block that assigns a variable `rank` to the
+# correct rank name:
 #
-# | Score range | Label |
-# |-------------|-------|
-# | 90 – 100 | `"A"` |
-# | 80 – 89  | `"B"` |
-# | 70 – 79  | `"C"` |
-# | 60 – 69  | `"D"` |
-# | Below 60 | `"F"` |
+# | Points | Rank |
+# |--------|------|
+# | 2000 or more | `"Diamond"` |
+# | 1500 – 1999  | `"Platinum"` |
+# | 1000 – 1499  | `"Gold"` |
+# | 500 – 999    | `"Silver"` |
+# | Below 500    | `"Bronze"` |
 #
-# Your code should work correctly for **any** value of `score`, not just 83.
+# Your code should work correctly for **any** value of `points`, not just 1200.
 
 # %%
-score = 83
+points = 1200
 # Your code here
-label = ...
+rank = ...
 
 # %%
-grader.check("ex1_grade_label", lambda: checks.check_ex1(label))
+grader.check("ex1_game_rank", lambda: checks.check_ex1(rank))
 
 # %% [markdown]
 # ---
@@ -133,22 +134,22 @@ grader.check("ex2_shipping_cost", lambda: checks.check_ex2(cost))
 
 # %% [markdown]
 # ---
-# ### Exercise 3: loop_total
+# ### Exercise 3: even_total
 #
-# `limit` is set to `15`. Use a while loop to add up every integer from
-# `1` through `limit` (inclusive) and store the running total in `total`.
+# `limit` is set to `20`. Use a while loop to add up every **even** number from
+# `2` through `limit` (inclusive) and store the running total in `total`.
 #
-# Example: if `limit` were `4`, then `total` should be `1 + 2 + 3 + 4 = 10`.
+# Example: if `limit` were `8`, then `total` should be `2 + 4 + 6 + 8 = 20`.
 #
-# For `limit = 15`, `total` should be `120`.
+# For `limit = 20`, `total` should be `110`.
 
 # %%
-limit = 15
+limit = 20
 total = 0
 # Your code here — use a while loop
 
 # %%
-grader.check("ex3_loop_total", lambda: checks.check_ex3(total))
+grader.check("ex3_even_total", lambda: checks.check_ex3(total))
 
 # %% [markdown]
 # ---

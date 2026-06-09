@@ -6,21 +6,21 @@ while working on their answers.
 """
 
 
-def check_ex1(label):
-    if label is ...:
+def check_ex1(rank):
+    if rank is ...:
         return "You haven't written your if/elif/else yet — replace the `...` with your code."
-    if label is None:
-        return "label is None — make sure every branch of your if/elif/else assigns a value to label."
-    if not isinstance(label, str):
-        return "label should be a string like 'A' or 'B', not a number."
-    if label not in {"A", "B", "C", "D", "F"}:
-        return f"'{label}' isn't a valid label. Expected one of: A, B, C, D, F — check your spelling."
-    if label == "A":
-        return "Got 'A' — score=83 is not in the 90–100 range. Check your boundary values."
-    if label == "C":
-        return "Got 'C' — score=83 is not in the 70–79 range. Check your boundary values."
-    if label != "B":
-        return f"Got '{label}' — for score=83 the correct label is 'B' (80 ≤ score ≤ 89). Double-check your ranges."
+    if rank is None:
+        return "rank is None — make sure every branch of your if/elif/else assigns a value to rank."
+    if not isinstance(rank, str):
+        return "rank should be a string like 'Gold' or 'Silver', not a number."
+    if rank not in {"Diamond", "Platinum", "Gold", "Silver", "Bronze"}:
+        return f"'{rank}' isn't a valid rank. Expected one of: Diamond, Platinum, Gold, Silver, Bronze — check your spelling and capitalization."
+    if rank == "Platinum":
+        return "Got 'Platinum' — points=1200 is not in the 1500–1999 range. Check your boundary values."
+    if rank == "Silver":
+        return "Got 'Silver' — points=1200 is not in the 500–999 range. Check your boundary values."
+    if rank != "Gold":
+        return f"Got '{rank}' — for points=1200 the correct rank is 'Gold' (1000 ≤ points ≤ 1499). Double-check your ranges."
     return True
 
 
@@ -44,15 +44,15 @@ def check_ex3(total):
     if not isinstance(total, (int, float)):
         return f"total should be a number, not {type(total).__name__}."
     if total == 0:
-        return "total is still 0 — check that you're updating total inside the loop body (e.g. total += i)."
-    if total == 105:
-        return "Got 105 — that's 1+2+…+14. Your loop stopped one step early. Is your condition < or <=?"
-    if total == 136:
-        return "Got 136 — that's 1+2+…+16. Your loop ran one step too many. Check your condition."
-    if total == 55:
-        return "Got 55 — that's 1+2+…+10 (the lecture example). Make sure you're looping up to limit=15."
-    if total != 120:
-        return f"Got {total} but expected 120 (1+2+…+15). Trace through your loop on paper — what value does your counter reach?"
+        return "total is still 0 — check that you're updating total inside the loop body (e.g. total += n)."
+    if total == 90:
+        return "Got 90 — that's 2+4+…+18. Your loop stopped one step early. Should it include limit=20?"
+    if total == 132:
+        return "Got 132 — that's 2+4+…+22. Your loop ran one step too far past limit=20. Check your condition."
+    if total == 210:
+        return "Got 210 — that's 1+2+…+20, every number. You're meant to add only the even numbers."
+    if total != 110:
+        return f"Got {total} but expected 110 (2+4+…+20). Trace through your loop on paper — which numbers are you adding?"
     return True
 
 

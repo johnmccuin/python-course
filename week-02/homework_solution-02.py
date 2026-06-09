@@ -50,24 +50,24 @@ print("Ready!")
 
 # %% [markdown]
 # ---
-# ### Exercise 1: grade_label
+# ### Exercise 1: game_rank
 
 # %%
-score = 83
+points = 1200
 
-if score >= 90:
-    label = "A"
-elif score >= 80:
-    label = "B"
-elif score >= 70:
-    label = "C"
-elif score >= 60:
-    label = "D"
+if points >= 2000:
+    rank = "Diamond"
+elif points >= 1500:
+    rank = "Platinum"
+elif points >= 1000:
+    rank = "Gold"
+elif points >= 500:
+    rank = "Silver"
 else:
-    label = "F"
+    rank = "Bronze"
 
 # %%
-grader.check("ex1_grade_label", lambda: checks.check_ex1(label))
+grader.check("ex1_game_rank", lambda: checks.check_ex1(rank))
 
 # %% [markdown]
 # ---
@@ -88,19 +88,19 @@ grader.check("ex2_shipping_cost", lambda: checks.check_ex2(cost))
 
 # %% [markdown]
 # ---
-# ### Exercise 3: loop_total
+# ### Exercise 3: even_total
 
 # %%
-limit = 15
+limit = 20
 total = 0
-i = 1
+n = 2
 
-while i <= limit:
-    total += i
-    i += 1
+while n <= limit:
+    total += n
+    n += 2
 
 # %%
-grader.check("ex3_loop_total", lambda: checks.check_ex3(total))
+grader.check("ex3_even_total", lambda: checks.check_ex3(total))
 
 # %% [markdown]
 # ---
