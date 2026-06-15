@@ -672,3 +672,16 @@ print(counts.most_common(2))     # top 2
 
 # %%
 # Your code here
+
+
+# %% [markdown]
+# **Problem 5.** A food truck keeps its menu as a `{item: price}` dictionary.
+# Write a function `affordable_items(menu, budget)` that **takes the menu
+# dictionary** and a `budget`, and returns a **new** dictionary containing only
+# the items whose price is **at most** `budget`.
+#
+# Example: `affordable_items({"taco": 3, "burrito": 8, "soda": 2}, 3)` →
+# `{"taco": 3, "soda": 2}`.
+
+# %%
+# Your code here

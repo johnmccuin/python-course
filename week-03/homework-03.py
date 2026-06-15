@@ -1,7 +1,7 @@
 # %% [markdown]
 # <!-- Instructor note: estimated beginner completion time ~25 min working smoothly.
 #      Multiply by ~3 per course prep practices → expect ~75 min real student time.
-#      8 exercises: 2 functions+strings warm-ups, 1 strings-in-depth, 3 dicts, 2 tuples. -->
+#      7 exercises: 2 functions+strings warm-ups, 1 strings-in-depth, 2 dicts, 2 tuples. -->
 #
 # # Week 3 — Homework: Functions, Strings, Dicts, and Tuples
 #
@@ -200,32 +200,6 @@ grader.check("ex5_best_score", lambda: checks.check_ex5(best_score))
 
 # %% [markdown]
 # ---
-# ### Exercise 6: needs_restock
-#
-# A small shop tracks how many units of each product are on the shelf in an
-# `{item: quantity}` dictionary.  Write a function
-# `needs_restock(inventory, threshold)` that returns a **new** dictionary
-# containing only the items whose quantity is **strictly less than**
-# `threshold` — the items that are running low and need reordering.
-#
-# | Call | Expected result |
-# |------|----------------|
-# | `needs_restock({"apples": 12, "bananas": 3, "cherries": 7}, 8)` | `{"bananas": 3, "cherries": 7}` |
-# | `needs_restock({"milk": 5}, 5)` | `{}` |
-# | `needs_restock({"milk": 5}, 6)` | `{"milk": 5}` |
-#
-# *Tip: loop over `inventory.items()` and add the low ones to a result dict —*
-# *the same pattern as `filter_scores`, but keeping the items below the cutoff.*
-
-# %%
-def needs_restock(inventory, threshold):
-    pass  # ← delete this line and write your code here
-
-# %%
-grader.check("ex6_needs_restock", lambda: checks.check_ex6(needs_restock))
-
-# %% [markdown]
-# ---
 # ## Part 4 — Tuples
 #
 # Quick reminder: a **tuple** is a fixed, ordered group of values.  Listing
@@ -240,7 +214,7 @@ grader.check("ex6_needs_restock", lambda: checks.check_ex6(needs_restock))
 
 # %% [markdown]
 # ---
-# ### Exercise 7: min_max
+# ### Exercise 6: min_max
 #
 # Write a function `min_max(numbers)` that returns a **tuple** `(minimum,
 # maximum)` of a non-empty list of numbers.  You may use the built-in `min()`
@@ -260,11 +234,11 @@ def min_max(numbers):
     pass  # ← delete this line and write your code here
 
 # %%
-grader.check("ex7_min_max", lambda: checks.check_ex7(min_max))
+grader.check("ex6_min_max", lambda: checks.check_ex6(min_max))
 
 # %% [markdown]
 # ---
-# ### Exercise 8: parse_point
+# ### Exercise 7: parse_point
 #
 # Write a function `parse_point(text)` that takes a string like `"3,4"` and
 # returns a **tuple of two integers** `(3, 4)`.  Split on the comma and convert
@@ -284,7 +258,7 @@ def parse_point(text):
     pass  # ← delete this line and write your code here
 
 # %%
-grader.check("ex8_parse_point", lambda: checks.check_ex8(parse_point))
+grader.check("ex7_parse_point", lambda: checks.check_ex7(parse_point))
 
 # %% [markdown]
 # ---

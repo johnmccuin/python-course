@@ -182,46 +182,7 @@ def check_ex5(best_score):
     return True
 
 
-def check_ex6(needs_restock):
-    if not callable(needs_restock):
-        return "needs_restock doesn't seem to be a function — make sure you used `def`."
-
-    tests = [
-        ({"apples": 12, "bananas": 3, "cherries": 7}, 8, {"bananas": 3, "cherries": 7}),
-        ({"milk": 5}, 5, {}),
-        ({"milk": 5}, 6, {"milk": 5}),
-        ({"a": 10, "b": 20}, 0, {}),
-        ({"flour": 2, "sugar": 9, "salt": 1}, 3, {"flour": 2, "salt": 1}),
-    ]
-    for inventory, threshold, expected in tests:
-        try:
-            got = needs_restock(inventory, threshold)
-        except Exception as exc:
-            return f"needs_restock({inventory!r}, {threshold!r}) raised {type(exc).__name__}: {exc}"
-        if got is None:
-            return (
-                "needs_restock returned None — make sure you build a result dict "
-                "and return it at the end of the function."
-            )
-        if not isinstance(got, dict):
-            return f"needs_restock returned {got!r} — the result should be a dictionary."
-        if got != expected:
-            # Common mistake: using <= instead of < (includes items at the threshold)
-            inclusive = {k: v for k, v in inventory.items() if v <= threshold}
-            if got == inclusive:
-                return (
-                    f"needs_restock({inventory!r}, {threshold!r}) returned {got!r}: "
-                    "items with a quantity exactly equal to the threshold shouldn't be "
-                    "included. Use < not <=."
-                )
-            return (
-                f"needs_restock({inventory!r}, {threshold!r}) returned {got!r}, "
-                f"expected {expected!r}."
-            )
-    return True
-
-
-def check_ex7(min_max):
+def check_ex6(min_max):
     if not callable(min_max):
         return "min_max doesn't seem to be a function — make sure you used `def`."
 
@@ -257,7 +218,7 @@ def check_ex7(min_max):
     return True
 
 
-def check_ex8(parse_point):
+def check_ex7(parse_point):
     if not callable(parse_point):
         return "parse_point doesn't seem to be a function — make sure you used `def`."
 
