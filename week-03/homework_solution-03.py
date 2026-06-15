@@ -3,7 +3,7 @@
 #
 # **Instructor reference — do not distribute to students.**
 #
-# Running all cells top-to-bottom should score **7 / 7**.
+# Running all cells top-to-bottom should score **8 / 8**.
 
 # %% [markdown]
 # **Enter your name below exactly as it appears on the course roster —
@@ -126,22 +126,37 @@ grader.check("ex5_best_score", lambda: checks.check_ex5(best_score))
 
 # %% [markdown]
 # ---
+# ### Exercise 6: needs_restock
+
+# %%
+def needs_restock(inventory, threshold):
+    result = {}
+    for item, quantity in inventory.items():
+        if quantity < threshold:
+            result[item] = quantity
+    return result
+
+# %%
+grader.check("ex6_needs_restock", lambda: checks.check_ex6(needs_restock))
+
+# %% [markdown]
+# ---
 # ## Part 4 — Tuples
 
 # %% [markdown]
 # ---
-# ### Exercise 6: min_max
+# ### Exercise 7: min_max
 
 # %%
 def min_max(numbers):
     return min(numbers), max(numbers)
 
 # %%
-grader.check("ex6_min_max", lambda: checks.check_ex6(min_max))
+grader.check("ex7_min_max", lambda: checks.check_ex7(min_max))
 
 # %% [markdown]
 # ---
-# ### Exercise 7: parse_point
+# ### Exercise 8: parse_point
 
 # %%
 def parse_point(text):
@@ -149,7 +164,7 @@ def parse_point(text):
     return int(parts[0]), int(parts[1])
 
 # %%
-grader.check("ex7_parse_point", lambda: checks.check_ex7(parse_point))
+grader.check("ex8_parse_point", lambda: checks.check_ex8(parse_point))
 
 # %% [markdown]
 # ---
