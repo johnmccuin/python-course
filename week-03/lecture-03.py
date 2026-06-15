@@ -29,7 +29,7 @@ print("Hello, Carol! Welcome.")
 # That works, but we wrote nearly the same line three times.
 # If the greeting changes, we have to edit every line.
 #
-# Functions solve this: write the logic once, reuse it everywhere.
+# Functions solve this: **write the logic once, reuse it everywhere.**
 
 # %% [markdown]
 # ### 1.2 Defining and Calling a Function
@@ -46,12 +46,15 @@ greet("Carol")
 # **Anatomy of a function definition:**
 #
 # ```
-# def  greet  (name)  :
-#  ^     ^      ^
-#  |     |      └── parameter (placeholder for the real value)
-#  |     └── function name
-#  └── keyword that starts the definition
+# def function_name (parameter list)
+#     block of code that is executed to perform the function's task
+#     return variable_or_expression
 # ```
+# * **`def`** is a keyword that starts the function definition
+# * The function name should be descriptive of what the function does
+# * The parameter list is the set of variables which receive the values that will be used by the function
+# * A function can return a value or several values. **`return`** is the keyword that allows a function to return the value of one or more a variables or expressions.
+#
 
 # %% [markdown]
 # ### 1.3 Parameters and Arguments
@@ -65,13 +68,18 @@ def say_hello():
 say_hello()
 
 # %%
-def add(a, b):
+def add(a, b):  # a and b are parameters
     return a + b
 
-print(add(3, 4))
-print(add(10, -2))
+print(add(3, 4))  # 3 and 4 are the arguments
+print(add(10, -2))  # 10 and -2 are the arguments
+x = 5
+y = 7
+print(add(x, y))  # x and y are the arguments
 
 # %% [markdown]
+# **TERMINOLOGY**
+#
 # **Parameter** = the name inside `def` (the placeholder).
 # **Argument** = the actual value passed when calling.
 
@@ -83,11 +91,16 @@ print(add(10, -2))
 
 # %%
 def square(n):
-    return n * n
+    print(n * n)
 
-result = square(5)
+square(5)  # value computed by function is lost
+
+def square(n):
+    return n * n  # value computed by function is returned
+
+result = square(5)   # value computed by function is stored
 print(result)          # 25
-print(square(7) + 1)   # 50
+print(square(7) + 1)   # 50  # value computed by function is used
 
 # %% [markdown]
 # If a function has no `return` statement it automatically returns `None`.
@@ -97,10 +110,13 @@ def greet_no_return(name):
     print(f"Hello, {name}!")
 
 value = greet_no_return("Dana")
-print(value)   # None
+print(value)   # None was returned since function had no return statement
 
 # %% [markdown]
 # ### 1.5 Default Parameters
+
+# %% [markdown]
+# Default values can be used for parameters to establish standard behavior.
 
 # %%
 def greet(name, greeting="Hello"):
@@ -131,6 +147,9 @@ describe_pet("hamster", name="Nibbles")       # mix
 # %% [markdown]
 # ### 1.7 Docstrings
 
+# %% [markdown]
+# A docstring is a comment block that describes the functions purpose, arguments (inputs), and returns (outputs).
+
 # %%
 def celsius_to_fahrenheit(celsius):
     """Convert a temperature from Celsius to Fahrenheit.
@@ -150,7 +169,7 @@ help(celsius_to_fahrenheit)
 # %% [markdown]
 # ### 1.8 Variable Scope
 #
-# Variables created *inside* a function are **local** — invisible outside.
+# Variables created *inside* a function are **local** to the function — invisible outside.
 
 # %%
 def compute():
@@ -172,6 +191,19 @@ def circle_area(radius):
     return pi * radius ** 2
 
 print(circle_area(5))
+
+# %% [markdown]
+# Inside a function, the value of local variables of the same name as global variables are used rather than the values of the global variables of the same name.
+
+# %%
+x =5
+def compute():
+    x = 42
+    print(x) # the local x (inside the function) is used instead of the global x (outside the function)
+
+compute()
+print(x)   # will print the value of x outside the function
+
 
 # %% [markdown]
 # ### 1.9 Multiple Return Values
@@ -282,7 +314,7 @@ print(poem.count("\n"))   # 3 newlines → 4 lines
 # ---
 # ## Part 3 — Dictionaries
 #
-# A **dictionary** maps *keys* to *values*.
+# A **dictionary** is used to lump related data together in one data object.  It maps *keys* to *values*.
 # Think of it like a real dictionary: look up a word (key) to get its
 # definition (value).
 
@@ -498,7 +530,7 @@ print(f"17 = {q} * 5 + {r}")     # 17 = 3 * 5 + 2
 #
 # You've been using objects all along without realising it.
 # In Python, *everything* is an object — strings, lists, dicts, files.
-# An **object** bundles data (*attributes*) and behaviour (*methods*)
+# An **object** bundles data (*attributes*) and behavior (*methods*)
 # together under one name.
 #
 # We'll build our own objects in **Week 5**.  For now, let's notice the pattern
