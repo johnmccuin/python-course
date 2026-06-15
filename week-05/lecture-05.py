@@ -6,8 +6,12 @@
 # like `today.year`) and **behaviour** (methods, like `today.strftime()`) under
 # one name.  This week you learn to build your own.
 #
-# A **class** is a blueprint.  An **instance** is one thing built from that
-# blueprint.  `date` is a class; a particular `today` is an instance of it.
+# A **class** is a blueprint.  
+#
+# An **instance** is one thing built from that
+# blueprint.  
+#
+# `date` is a class; a particular `today` is an instance of it.
 # Classes are how Python programs model "a thing that has some data and some
 # things it can do" — a bank account, a player in a game, a timer.
 #
@@ -63,6 +67,7 @@ print(account.balance)              # 150
 # ### 1.2 The Dot Connects an Instance to Its Data and Methods
 #
 # `account.balance` reads an **attribute** (no parentheses — it's a value).
+#
 # `account.deposit(50)` calls a **method** (parentheses — it's an action).
 # It's the same dot you've used since Week 1 on strings and lists.
 

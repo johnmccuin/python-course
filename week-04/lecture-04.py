@@ -67,7 +67,11 @@ print(len(lines))      # 3
 # %% [markdown]
 # ### 1.5 Appending to a File
 #
-# `"w"` erases the file first; `"a"` keeps what's there and adds to the end.
+# `"w"` stands for write and erases the file first and writes it anew.
+#
+# `"a"` stands for append and keeps what's there and adds to the end.
+#
+# `"r"` stands for read and allows you to read but not modify the file.
 
 # %%
 with open("sample.txt", "a") as f:
@@ -155,13 +159,14 @@ print(pi)         # 3.14159…
 # %% [markdown]
 # ### 2.3 Aliases
 #
-# Long module names can be aliased with `as`.
+# Long module names can be aliased with `as`.  In this way, you don't have to type the full name of the package.
 
 # %%
 import random as rnd
+import tensorflow as tf  # could type tf instead of full package name tensorflow
 
-print(rnd.randint(1, 6))    # simulated die roll
-print(rnd.choice(["heads", "tails"]))
+print(rnd.randint(1, 6))    # instead of random.randint, simulated die roll
+print(rnd.choice(["heads", "tails"]))  # instead of random.choice
 
 # %% [markdown]
 # ### 2.4 Useful Standard-Library Modules
@@ -340,6 +345,7 @@ def celsius_to_fahrenheit(c):
 
 print(celsius_to_fahrenheit(100))   # 212.0
 
+#print(celsius_to_fahrenheit(-300))   # this will cause error because not in try block
 try:
     print(celsius_to_fahrenheit(-300))
 except ValueError as e:
@@ -409,7 +415,7 @@ def process(items):
         total += double(item)
     return total
 
-# process([1, 2, "three"])   # uncomment to see the traceback
+#process([1, 2, "three"])   # uncomment to see the traceback
 
 # %% [markdown]
 # A traceback reads **bottom-up**:
@@ -472,12 +478,12 @@ print(greet("Alice"))
 def find_first_negative(numbers):
     for i, n in enumerate(numbers):
         print(f"  checking index {i}: {n}")   # debug print
-        if n < 0:
-            return i
+        if n <= 0:  # starting with error, <= instead of <
+            return i, n
     return -1
 
-result = find_first_negative([3, 7, -2, 5])
-print(f"First negative at index: {result}")
+index, number = find_first_negative([3, 7, 0, -2, 5])
+print(f"First negative at index: {index} for number {number}")
 
 # %% [markdown]
 # Remove debug prints before committing code — or replace them with
@@ -608,6 +614,12 @@ def clamp(value, lo, hi):
 print(clamp(5, 0, 10))    # 5
 print(clamp(-3, 0, 10))   # 0
 print(clamp(15, 0, 10))   # 10
+
+# print(clamp(15, 10, 0))  # assert raises error and crashes since not in try
+try:
+    print(clamp(15, 10, 0))
+except AssertionError as e:
+    print(f"AssertionError: {e}")
 
 # %% [markdown]
 # ### 5.5 Assertions vs. Exceptions — When to Use Which
