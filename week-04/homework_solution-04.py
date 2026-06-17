@@ -100,17 +100,17 @@ grader.check("ex3_circle_area", lambda: checks.check_ex3(circle_area))
 
 # %% [markdown]
 # ---
-# ### Exercise 4: safe_divide
+# ### Exercise 4: safe_lookup
 
 # %%
-def safe_divide(a, b):
+def safe_lookup(prices, item):
     try:
-        return a / b
-    except ZeroDivisionError:
-        return "Cannot divide by zero."
+        return prices[item]
+    except KeyError:
+        return "Item not found."
 
 # %%
-grader.check("ex4_safe_divide", lambda: checks.check_ex4(safe_divide))
+grader.check("ex4_safe_lookup", lambda: checks.check_ex4(safe_lookup))
 
 # %% [markdown]
 # ---
@@ -135,16 +135,16 @@ grader.check("ex5_parse_scores", lambda: checks.check_ex5(parse_scores))
 
 # %% [markdown]
 # ---
-# ### Exercise 6: fix average
+# ### Exercise 6: fix success_rate
 
 # %%
-def average(numbers):
-    if len(numbers) == 0:
-        return 0
-    return sum(numbers) / len(numbers)
+def success_rate(passed, total):
+    if total == 0:
+        return 0.0
+    return passed / total * 100
 
 # %%
-grader.check("ex6_average", lambda: checks.check_ex6(average))
+grader.check("ex6_success_rate", lambda: checks.check_ex6(success_rate))
 
 # %% [markdown]
 # ---

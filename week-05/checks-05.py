@@ -18,168 +18,168 @@ def _make(cls, *args):
         return None, f"creating {cls.__name__}({', '.join(repr(a) for a in args)}) raised {type(exc).__name__}: {exc}"
 
 
-def check_ex1(Dog):
-    if not isinstance(Dog, type):
-        return "Dog doesn't seem to be a class — define it with `class Dog:`."
+def check_ex1(Robot):
+    if not isinstance(Robot, type):
+        return "Robot doesn't seem to be a class — define it with `class Robot:`."
 
-    rex, err = _make(Dog, "Rex")
+    r2d2, err = _make(Robot, "R2D2")
     if err:
         return err
-    if not hasattr(rex, "name"):
-        return "A Dog has no `name` attribute — set `self.name = name` in __init__."
-    if rex.name != "Rex":
-        return f'Dog("Rex").name is {rex.name!r}, expected "Rex".'
-    if not hasattr(rex, "bark") or not callable(rex.bark):
-        return "Dog needs a `bark` method."
+    if not hasattr(r2d2, "name"):
+        return "A Robot has no `name` attribute — set `self.name = name` in __init__."
+    if r2d2.name != "R2D2":
+        return f'Robot("R2D2").name is {r2d2.name!r}, expected "R2D2".'
+    if not hasattr(r2d2, "speak") or not callable(r2d2.speak):
+        return "Robot needs a `speak` method."
     try:
-        got = rex.bark()
+        got = r2d2.speak()
     except Exception as exc:
-        return f"Dog(\"Rex\").bark() raised {type(exc).__name__}: {exc} (did you include `self`?)"
-    if got != "Rex says woof!":
-        return f'Dog("Rex").bark() returned {got!r}, expected "Rex says woof!".'
+        return f"Robot(\"R2D2\").speak() raised {type(exc).__name__}: {exc} (did you include `self`?)"
+    if got != "R2D2 says beep boop!":
+        return f'Robot("R2D2").speak() returned {got!r}, expected "R2D2 says beep boop!".'
 
-    fifi, err = _make(Dog, "Fifi")
+    wall_e, err = _make(Robot, "WallE")
     if err:
         return err
-    if fifi.bark() != "Fifi says woof!":
-        return f'Dog("Fifi").bark() returned {fifi.bark()!r} — use self.name in the message.'
+    if wall_e.speak() != "WallE says beep boop!":
+        return f'Robot("WallE").speak() returned {wall_e.speak()!r} — use self.name in the message.'
     return True
 
 
-def check_ex2(Counter):
-    if not isinstance(Counter, type):
-        return "Counter doesn't seem to be a class — define it with `class Counter:`."
+def check_ex2(Pedometer):
+    if not isinstance(Pedometer, type):
+        return "Pedometer doesn't seem to be a class — define it with `class Pedometer:`."
 
-    c, err = _make(Counter)
+    p, err = _make(Pedometer)
     if err:
         return err
-    if not hasattr(c, "count"):
-        return "Counter has no `count` attribute — set `self.count = 0` in __init__."
-    if c.count != 0:
-        return f"A fresh Counter has count {c.count!r}, expected 0."
-    if not hasattr(c, "increment") or not callable(c.increment):
-        return "Counter needs an `increment` method."
+    if not hasattr(p, "steps"):
+        return "Pedometer has no `steps` attribute — set `self.steps = 0` in __init__."
+    if p.steps != 0:
+        return f"A fresh Pedometer has steps {p.steps!r}, expected 0."
+    if not hasattr(p, "step") or not callable(p.step):
+        return "Pedometer needs a `step` method."
     try:
-        c.increment()
-        c.increment()
-        c.increment()
+        p.step()
+        p.step()
+        p.step()
     except Exception as exc:
-        return f"increment() raised {type(exc).__name__}: {exc} (remember `self.count = self.count + 1`)."
-    if c.count != 3:
-        return f"After three increments, count is {c.count!r}, expected 3."
-    if not hasattr(c, "reset") or not callable(c.reset):
-        return "Counter needs a `reset` method."
-    c.reset()
-    if c.count != 0:
-        return f"After reset(), count is {c.count!r}, expected 0."
+        return f"step() raised {type(exc).__name__}: {exc} (remember `self.steps = self.steps + 1`)."
+    if p.steps != 3:
+        return f"After three step() calls, steps is {p.steps!r}, expected 3."
+    if not hasattr(p, "reset") or not callable(p.reset):
+        return "Pedometer needs a `reset` method."
+    p.reset()
+    if p.steps != 0:
+        return f"After reset(), steps is {p.steps!r}, expected 0."
     return True
 
 
-def check_ex3(Rectangle):
-    if not isinstance(Rectangle, type):
-        return "Rectangle doesn't seem to be a class — define it with `class Rectangle:`."
+def check_ex3(GardenPlot):
+    if not isinstance(GardenPlot, type):
+        return "GardenPlot doesn't seem to be a class — define it with `class GardenPlot:`."
 
-    r, err = _make(Rectangle, 3, 4)
+    g, err = _make(GardenPlot, 3, 4)
     if err:
         return err
     for meth in ("area", "perimeter"):
-        if not hasattr(r, meth) or not callable(getattr(r, meth)):
-            return f"Rectangle needs a `{meth}` method."
+        if not hasattr(g, meth) or not callable(getattr(g, meth)):
+            return f"GardenPlot needs a `{meth}` method."
     try:
-        area = r.area()
-        perim = r.perimeter()
+        area = g.area()
+        perim = g.perimeter()
     except Exception as exc:
-        return f"calling Rectangle(3, 4) methods raised {type(exc).__name__}: {exc} (use self.width / self.height)."
+        return f"calling GardenPlot(3, 4) methods raised {type(exc).__name__}: {exc} (use self.length / self.width)."
     if area != 12:
-        return f"Rectangle(3, 4).area() returned {area!r}, expected 12 (width * height)."
+        return f"GardenPlot(3, 4).area() returned {area!r}, expected 12 (length * width)."
     if perim != 14:
-        return f"Rectangle(3, 4).perimeter() returned {perim!r}, expected 14 (2 * (width + height))."
+        return f"GardenPlot(3, 4).perimeter() returned {perim!r}, expected 14 (2 * (length + width))."
 
-    sq, err = _make(Rectangle, 5, 5)
+    sq, err = _make(GardenPlot, 5, 5)
     if err:
         return err
     if sq.area() != 25:
-        return f"Rectangle(5, 5).area() returned {sq.area()!r}, expected 25."
+        return f"GardenPlot(5, 5).area() returned {sq.area()!r}, expected 25."
     return True
 
 
-def check_ex4(BankAccount):
-    if not isinstance(BankAccount, type):
-        return "BankAccount doesn't seem to be a class — define it with `class BankAccount:`."
+def check_ex4(Warehouse):
+    if not isinstance(Warehouse, type):
+        return "Warehouse doesn't seem to be a class — define it with `class Warehouse:`."
 
-    # Default balance.
-    a, err = _make(BankAccount)
+    # Default stock.
+    w, err = _make(Warehouse)
     if err:
-        return err + "  (give balance a default: `def __init__(self, balance=0):`)"
-    if not hasattr(a, "balance"):
-        return "BankAccount has no `balance` attribute — set `self.balance = balance` in __init__."
-    if a.balance != 0:
-        return f"A new BankAccount() has balance {a.balance!r}, expected 0 (the default)."
+        return err + "  (give stock a default: `def __init__(self, stock=0):`)"
+    if not hasattr(w, "stock"):
+        return "Warehouse has no `stock` attribute — set `self.stock = stock` in __init__."
+    if w.stock != 0:
+        return f"A new Warehouse() has stock {w.stock!r}, expected 0 (the default)."
 
-    # Deposit.
-    if not hasattr(a, "deposit") or not callable(a.deposit):
-        return "BankAccount needs a `deposit` method."
+    # Receive.
+    if not hasattr(w, "receive") or not callable(w.receive):
+        return "Warehouse needs a `receive` method."
     try:
-        a.deposit(50)
+        w.receive(50)
     except Exception as exc:
-        return f"deposit(50) raised {type(exc).__name__}: {exc}"
-    if a.balance != 50:
-        return f"After deposit(50) on a new account, balance is {a.balance!r}, expected 50."
+        return f"receive(50) raised {type(exc).__name__}: {exc}"
+    if w.stock != 50:
+        return f"After receive(50) on a new warehouse, stock is {w.stock!r}, expected 50."
 
-    # Withdraw — normal case.
-    if not hasattr(a, "withdraw") or not callable(a.withdraw):
-        return "BankAccount needs a `withdraw` method."
+    # Ship — normal case.
+    if not hasattr(w, "ship") or not callable(w.ship):
+        return "Warehouse needs a `ship` method."
     try:
-        result = a.withdraw(30)
+        result = w.ship(30)
     except Exception as exc:
-        return f"withdraw(30) raised {type(exc).__name__}: {exc}"
-    if a.balance != 20:
-        return f"After withdraw(30) from 50, balance is {a.balance!r}, expected 20."
+        return f"ship(30) raised {type(exc).__name__}: {exc}"
+    if w.stock != 20:
+        return f"After ship(30) from 50, stock is {w.stock!r}, expected 20."
     if result != 20:
-        return f"withdraw(30) returned {result!r}, expected the new balance 20."
+        return f"ship(30) returned {result!r}, expected the new stock 20."
 
-    # Withdraw — overdraw guard.
+    # Ship — over-ship guard.
     try:
-        result = a.withdraw(100)   # balance is 20
+        result = w.ship(100)   # stock is 20
     except Exception as exc:
-        return f"withdraw(100) raised {type(exc).__name__}: {exc} — it should return a message, not crash."
-    if result != "Insufficient funds":
+        return f"ship(100) raised {type(exc).__name__}: {exc} — it should return a message, not crash."
+    if result != "Insufficient stock":
         return (
-            f"withdraw(100) on a balance of 20 returned {result!r}, "
-            'expected the string "Insufficient funds".'
+            f"ship(100) on a stock of 20 returned {result!r}, "
+            'expected the string "Insufficient stock".'
         )
-    if a.balance != 20:
+    if w.stock != 20:
         return (
-            f"After a failed withdraw(100), balance is {a.balance!r}, expected it to stay 20 — "
-            "don't subtract when there are insufficient funds."
+            f"After a failed ship(100), stock is {w.stock!r}, expected it to stay 20 — "
+            "don't subtract when there is insufficient stock."
         )
     return True
 
 
-def check_ex5(Student):
-    if not isinstance(Student, type):
-        return "Student doesn't seem to be a class — define it with `class Student:`."
+def check_ex5(Book):
+    if not isinstance(Book, type):
+        return "Book doesn't seem to be a class — define it with `class Book:`."
 
-    s, err = _make(Student, "Ada", 95)
+    b, err = _make(Book, "Dune", "Herbert")
     if err:
         return err
     try:
-        text = str(s)
+        text = str(b)
     except Exception as exc:
-        return f"str(Student('Ada', 95)) raised {type(exc).__name__}: {exc}"
+        return f"str(Book('Dune', 'Herbert')) raised {type(exc).__name__}: {exc}"
     if "object at 0x" in text:
         return (
-            "Student is using the default text representation — define a "
+            "Book is using the default text representation — define a "
             "`__str__(self)` method that returns the formatted string."
         )
-    if text != "Ada (grade 95)":
-        return f'str(Student("Ada", 95)) returned {text!r}, expected "Ada (grade 95)".'
+    if text != "Dune by Herbert":
+        return f'str(Book("Dune", "Herbert")) returned {text!r}, expected "Dune by Herbert".'
 
-    s2, err = _make(Student, "Bob", 72)
+    b2, err = _make(Book, "1984", "Orwell")
     if err:
         return err
-    if str(s2) != "Bob (grade 72)":
-        return f'str(Student("Bob", 72)) returned {str(s2)!r} — use self.name and self.grade.'
+    if str(b2) != "1984 by Orwell":
+        return f'str(Book("1984", "Orwell")) returned {str(b2)!r} — use self.title and self.author.'
     return True
 
 
@@ -220,37 +220,37 @@ def check_ex6(Playlist):
     return True
 
 
-def check_ex7(Thermostat):
-    if not isinstance(Thermostat, type):
-        return "Thermostat doesn't seem to be a class — define it with `class Thermostat:`."
+def check_ex7(Elevator):
+    if not isinstance(Elevator, type):
+        return "Elevator doesn't seem to be a class — define it with `class Elevator:`."
 
-    t, err = _make(Thermostat, 70)
+    e, err = _make(Elevator, 3)
     if err:
         return err
-    if not hasattr(t, "temp"):
-        return "Thermostat has no `temp` attribute — set `self.temp = temp` in __init__."
-    if t.temp != 70:
-        return f"Thermostat(70).temp is {t.temp!r}, expected 70."
-    for meth in ("warmer", "cooler", "is_freezing"):
-        if not hasattr(t, meth) or not callable(getattr(t, meth)):
-            return f"Thermostat needs a `{meth}` method."
+    if not hasattr(e, "floor"):
+        return "Elevator has no `floor` attribute — set `self.floor = floor` in __init__."
+    if e.floor != 3:
+        return f"Elevator(3).floor is {e.floor!r}, expected 3."
+    for meth in ("up", "down", "is_ground_floor"):
+        if not hasattr(e, meth) or not callable(getattr(e, meth)):
+            return f"Elevator needs a `{meth}` method."
     try:
-        t.warmer()
-        t.warmer()
+        e.up()
+        e.up()
     except Exception as exc:
-        return f"warmer() raised {type(exc).__name__}: {exc} (use self.temp)."
-    if t.temp != 72:
-        return f"After warmer() twice on 70, temp is {t.temp!r}, expected 72."
+        return f"up() raised {type(exc).__name__}: {exc} (use self.floor)."
+    if e.floor != 5:
+        return f"After up() twice on 3, floor is {e.floor!r}, expected 5."
 
-    # is_freezing logic.
-    cold, _ = _make(Thermostat, 33)
-    cold.cooler()   # -> 32
-    if cold.is_freezing() is not True:
+    # is_ground_floor logic.
+    low, _ = _make(Elevator, 1)
+    low.down()   # -> 0
+    if low.is_ground_floor() is not True:
         return (
-            f"Thermostat(33) then cooler() gives temp {cold.temp}; is_freezing() returned "
-            f"{cold.is_freezing()!r}, expected True (32 or below counts as freezing)."
+            f"Elevator(1) then down() gives floor {low.floor}; is_ground_floor() returned "
+            f"{low.is_ground_floor()!r}, expected True (floor 0 is the ground floor)."
         )
-    warm, _ = _make(Thermostat, 70)
-    if warm.is_freezing() is not False:
-        return f"Thermostat(70).is_freezing() returned {warm.is_freezing()!r}, expected False."
+    high, _ = _make(Elevator, 3)
+    if high.is_ground_floor() is not False:
+        return f"Elevator(3).is_ground_floor() returned {high.is_ground_floor()!r}, expected False."
     return True

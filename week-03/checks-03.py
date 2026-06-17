@@ -107,114 +107,114 @@ def check_ex3(count_word):
     return True
 
 
-def check_ex4(filter_scores):
-    if not callable(filter_scores):
-        return "filter_scores doesn't seem to be a function — make sure you used `def`."
+def check_ex4(popular_pages):
+    if not callable(popular_pages):
+        return "popular_pages doesn't seem to be a function — make sure you used `def`."
 
     tests = [
-        ({"Alice": 92, "Bob": 65, "Carol": 80}, 80, {"Alice": 92, "Carol": 80}),
-        ({"Alice": 92, "Bob": 65}, 100, {}),
-        ({"Alice": 92, "Bob": 65}, 0, {"Alice": 92, "Bob": 65}),
-        ({"solo": 50}, 50, {"solo": 50}),
-        ({"solo": 50}, 51, {}),
+        ({"home": 1200, "about": 300, "blog": 800}, 800, {"home": 1200, "blog": 800}),
+        ({"home": 1200, "about": 300}, 5000, {}),
+        ({"home": 1200, "about": 300}, 0, {"home": 1200, "about": 300}),
+        ({"solo": 500}, 500, {"solo": 500}),
+        ({"solo": 500}, 501, {}),
     ]
-    for scores, min_score, expected in tests:
+    for views, min_views, expected in tests:
         try:
-            got = filter_scores(scores, min_score)
+            got = popular_pages(views, min_views)
         except Exception as exc:
-            return f"filter_scores({scores!r}, {min_score!r}) raised {type(exc).__name__}: {exc}"
+            return f"popular_pages({views!r}, {min_views!r}) raised {type(exc).__name__}: {exc}"
         if got is None:
             return (
-                "filter_scores returned None — make sure you build a result dict "
+                "popular_pages returned None — make sure you build a result dict "
                 "and return it at the end of the function."
             )
         if not isinstance(got, dict):
-            return f"filter_scores returned {got!r} — the result should be a dictionary."
+            return f"popular_pages returned {got!r} — the result should be a dictionary."
         if got != expected:
             # Common mistake: using > instead of >=
-            strict = {k: v for k, v in scores.items() if v > min_score}
+            strict = {k: v for k, v in views.items() if v > min_views}
             if got == strict:
                 return (
-                    f"filter_scores({scores!r}, {min_score!r}) returned {got!r}: "
-                    "scores exactly equal to min_score are missing. "
+                    f"popular_pages({views!r}, {min_views!r}) returned {got!r}: "
+                    "pages whose view_count exactly equals min_views are missing. "
                     "Use >= not >."
                 )
             return (
-                f"filter_scores({scores!r}, {min_score!r}) returned {got!r}, "
+                f"popular_pages({views!r}, {min_views!r}) returned {got!r}, "
                 f"expected {expected!r}."
             )
     return True
 
 
-def check_ex5(best_score):
-    if not callable(best_score):
-        return "best_score doesn't seem to be a function — make sure you used `def`."
+def check_ex5(top_page):
+    if not callable(top_page):
+        return "top_page doesn't seem to be a function — make sure you used `def`."
 
     tests = [
-        ({"Alice": 92, "Bob": 85, "Carol": 97}, "Carol"),
+        ({"home": 1200, "about": 300, "blog": 800}, "home"),
         ({"only": 75}, "only"),
-        ({"Zara": 70, "Eli": 99, "Mia": 88}, "Eli"),
-        ({"a": 1, "b": 100, "c": 50}, "b"),
+        ({"news": 70, "shop": 990, "faq": 880}, "shop"),
+        ({"a": 1, "b": 1000, "c": 500}, "b"),
     ]
-    for scores, expected in tests:
+    for views, expected in tests:
         try:
-            got = best_score(scores)
+            got = top_page(views)
         except Exception as exc:
-            return f"best_score({scores!r}) raised {type(exc).__name__}: {exc}"
+            return f"top_page({views!r}) raised {type(exc).__name__}: {exc}"
         if got is None:
-            return "best_score returned None — check that you have a return statement."
-        # Check if they returned the score instead of the name
-        if isinstance(got, (int, float)) and got == max(scores.values()):
+            return "top_page returned None — check that you have a return statement."
+        # Check if they returned the view count instead of the page name
+        if isinstance(got, (int, float)) and got == max(views.values()):
             return (
-                f"best_score({scores!r}) returned {got!r} — "
-                "that's the highest score, but the function should return the student's name."
+                f"top_page({views!r}) returned {got!r} — "
+                "that's the highest view count, but the function should return the page name."
             )
-        if got not in scores:
+        if got not in views:
             return (
-                f"best_score({scores!r}) returned {got!r}, "
-                "which isn't a name in the dictionary."
+                f"top_page({views!r}) returned {got!r}, "
+                "which isn't a page name in the dictionary."
             )
-        if scores.get(got, -1) != max(scores.values()):
+        if views.get(got, -1) != max(views.values()):
             return (
-                f"best_score({scores!r}) returned {got!r} (score: {scores.get(got)}), "
-                f"but {expected!r} has the highest score ({scores[expected]})."
+                f"top_page({views!r}) returned {got!r} (views: {views.get(got)}), "
+                f"but {expected!r} has the most views ({views[expected]})."
             )
     return True
 
 
-def check_ex6(min_max):
-    if not callable(min_max):
-        return "min_max doesn't seem to be a function — make sure you used `def`."
+def check_ex6(count_and_total):
+    if not callable(count_and_total):
+        return "count_and_total doesn't seem to be a function — make sure you used `def`."
 
     tests = [
-        ([3, 1, 4, 1, 5], (1, 5)),
-        ([7], (7, 7)),
-        ([-2, 0, 2], (-2, 2)),
-        ([10, 9, 8, 7], (7, 10)),
+        ([3, 1, 4, 1, 5], (5, 14)),
+        ([7], (1, 7)),
+        ([], (0, 0)),
+        ([10, 9, 8, 7], (4, 34)),
     ]
     for numbers, expected in tests:
         try:
-            got = min_max(numbers)
+            got = count_and_total(numbers)
         except Exception as exc:
-            return f"min_max({numbers!r}) raised {type(exc).__name__}: {exc}"
+            return f"count_and_total({numbers!r}) raised {type(exc).__name__}: {exc}"
         if got is None:
-            return "min_max returned None — check that you have a return statement."
+            return "count_and_total returned None — check that you have a return statement."
         if isinstance(got, list):
             return (
-                f"min_max({numbers!r}) returned the list {got!r} — return a tuple instead. "
-                "Use parentheses or just `return min(...), max(...)`."
+                f"count_and_total({numbers!r}) returned the list {got!r} — return a tuple instead. "
+                "Use parentheses or just `return len(...), sum(...)`."
             )
         if not isinstance(got, tuple):
-            return f"min_max({numbers!r}) returned {got!r} — the result should be a tuple (minimum, maximum)."
+            return f"count_and_total({numbers!r}) returned {got!r} — the result should be a tuple (count, total)."
         if len(got) != 2:
-            return f"min_max({numbers!r}) returned {got!r} — the tuple should have exactly two items."
+            return f"count_and_total({numbers!r}) returned {got!r} — the tuple should have exactly two items."
         if got == (expected[1], expected[0]) and expected[0] != expected[1]:
             return (
-                f"min_max({numbers!r}) returned {got!r} — the order is reversed. "
-                "Return (minimum, maximum), smallest first."
+                f"count_and_total({numbers!r}) returned {got!r} — the order is reversed. "
+                "Return (count, total) — how many items first, then their sum."
             )
         if got != expected:
-            return f"min_max({numbers!r}) returned {got!r}, expected {expected!r}."
+            return f"count_and_total({numbers!r}) returned {got!r}, expected {expected!r}."
     return True
 
 

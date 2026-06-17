@@ -94,35 +94,35 @@ grader.check("ex3_count_word", lambda: checks.check_ex3(count_word))
 
 # %% [markdown]
 # ---
-# ### Exercise 4: filter_scores
+# ### Exercise 4: popular_pages
 
 # %%
-def filter_scores(scores, min_score):
+def popular_pages(views, min_views):
     result = {}
-    for name, score in scores.items():
-        if score >= min_score:
-            result[name] = score
+    for page, count in views.items():
+        if count >= min_views:
+            result[page] = count
     return result
 
 # %%
-grader.check("ex4_filter_scores", lambda: checks.check_ex4(filter_scores))
+grader.check("ex4_popular_pages", lambda: checks.check_ex4(popular_pages))
 
 # %% [markdown]
 # ---
-# ### Exercise 5: best_score
+# ### Exercise 5: top_page
 
 # %%
-def best_score(scores):
+def top_page(views):
     best_name = None
     best_val = -1
-    for name, score in scores.items():
-        if score > best_val:
-            best_val = score
-            best_name = name
+    for page, count in views.items():
+        if count > best_val:
+            best_val = count
+            best_name = page
     return best_name
 
 # %%
-grader.check("ex5_best_score", lambda: checks.check_ex5(best_score))
+grader.check("ex5_top_page", lambda: checks.check_ex5(top_page))
 
 # %% [markdown]
 # ---
@@ -130,14 +130,14 @@ grader.check("ex5_best_score", lambda: checks.check_ex5(best_score))
 
 # %% [markdown]
 # ---
-# ### Exercise 6: min_max
+# ### Exercise 6: count_and_total
 
 # %%
-def min_max(numbers):
-    return min(numbers), max(numbers)
+def count_and_total(numbers):
+    return len(numbers), sum(numbers)
 
 # %%
-grader.check("ex6_min_max", lambda: checks.check_ex6(min_max))
+grader.check("ex6_count_and_total", lambda: checks.check_ex6(count_and_total))
 
 # %% [markdown]
 # ---

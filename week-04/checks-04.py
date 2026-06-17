@@ -115,45 +115,50 @@ def check_ex3(circle_area):
     return True
 
 
-def check_ex4(safe_divide):
-    if not callable(safe_divide):
-        return "safe_divide doesn't seem to be a function — make sure you used `def`."
+def check_ex4(safe_lookup):
+    if not callable(safe_lookup):
+        return "safe_lookup doesn't seem to be a function — make sure you used `def`."
 
-    msg = "Cannot divide by zero."
-    number_tests = [
-        (10, 2, 5.0),
-        (7, 7, 1.0),
-        (0, 5, 0.0),
-        (9, 2, 4.5),
+    msg = "Item not found."
+    found_tests = [
+        ({"apple": 50, "pear": 75}, "apple", 50),
+        ({"apple": 50, "pear": 75}, "pear", 75),
+        ({"milk": 3, "bread": 2, "eggs": 4}, "bread", 2),
+        ({"banana": 0}, "banana", 0),
     ]
-    for a, b, expected in number_tests:
+    for prices, item, expected in found_tests:
         try:
-            got = safe_divide(a, b)
+            got = safe_lookup(prices, item)
+        except KeyError:
+            return (
+                f"safe_lookup({prices!r}, {item!r}) crashed with KeyError, "
+                f"but {item!r} is in the catalog — return its price {expected!r}."
+            )
         except Exception as exc:
-            return f"safe_divide({a!r}, {b!r}) raised {type(exc).__name__}: {exc}"
+            return f"safe_lookup({prices!r}, {item!r}) raised {type(exc).__name__}: {exc}"
         if got is None:
-            return "safe_divide returned None — check that you return the division result."
+            return "safe_lookup returned None — check that you return the looked-up price."
         if isinstance(got, str):
             return (
-                f"safe_divide({a!r}, {b!r}) returned the error string, "
-                f"but {a} / {b} is a valid division — return the number {expected}."
+                f"safe_lookup({prices!r}, {item!r}) returned the error string, "
+                f"but {item!r} is in the catalog — return its price {expected!r}."
             )
-        if abs(got - expected) > 1e-9:
-            return f"safe_divide({a!r}, {b!r}) returned {got!r}, expected {expected!r}."
+        if got != expected:
+            return f"safe_lookup({prices!r}, {item!r}) returned {got!r}, expected {expected!r}."
 
-    # Division by zero must be handled, not crash.
+    # A missing key must be handled, not crash.
     try:
-        got = safe_divide(10, 0)
-    except ZeroDivisionError:
+        got = safe_lookup({"apple": 50}, "banana")
+    except KeyError:
         return (
-            "safe_divide(10, 0) crashed with ZeroDivisionError — "
-            "wrap the division in try / except ZeroDivisionError and return the message instead."
+            "safe_lookup({'apple': 50}, 'banana') crashed with KeyError — "
+            "wrap the lookup in try / except KeyError and return the message instead."
         )
     except Exception as exc:
-        return f"safe_divide(10, 0) raised {type(exc).__name__}: {exc}"
+        return f"safe_lookup({{'apple': 50}}, 'banana') raised {type(exc).__name__}: {exc}"
     if got != msg:
         return (
-            f"safe_divide(10, 0) returned {got!r}, expected the string {msg!r} "
+            f"safe_lookup({{'apple': 50}}, 'banana') returned {got!r}, expected the string {msg!r} "
             "(exact text, including the period)."
         )
     return True
@@ -196,38 +201,39 @@ def check_ex5(parse_scores):
     return True
 
 
-def check_ex6(average):
-    if not callable(average):
-        return "average doesn't seem to be a function — make sure you used `def`."
+def check_ex6(success_rate):
+    if not callable(success_rate):
+        return "success_rate doesn't seem to be a function — make sure you used `def`."
 
     tests = [
-        ([2, 4, 6], 4.0),
-        ([10], 10.0),
-        ([1, 2], 1.5),
-        ([100, 0, 50, 50], 50.0),
+        (3, 4, 75.0),
+        (9, 10, 90.0),
+        (1, 2, 50.0),
+        (5, 5, 100.0),
+        (0, 8, 0.0),
     ]
-    for numbers, expected in tests:
+    for passed, total, expected in tests:
         try:
-            got = average(numbers)
+            got = success_rate(passed, total)
         except Exception as exc:
-            return f"average({numbers!r}) raised {type(exc).__name__}: {exc}"
+            return f"success_rate({passed!r}, {total!r}) raised {type(exc).__name__}: {exc}"
         if got is None:
-            return "average returned None — check that you have a return statement."
+            return "success_rate returned None — check that you have a return statement."
         if abs(got - expected) > 1e-9:
-            return f"average({numbers!r}) returned {got!r}, expected {expected!r}."
+            return f"success_rate({passed!r}, {total!r}) returned {got!r}, expected {expected!r}."
 
-    # The bug: the original crashes on an empty list. Fixed version returns 0.
+    # The bug: the original crashes when total is 0. Fixed version returns 0.0.
     try:
-        got = average([])
+        got = success_rate(0, 0)
     except ZeroDivisionError:
         return (
-            "average([]) still crashes with ZeroDivisionError — that's the bug. "
-            "When the list is empty there's nothing to divide by; return 0 in that case."
+            "success_rate(0, 0) still crashes with ZeroDivisionError — that's the bug. "
+            "When total is 0 there's nothing to divide by; return 0.0 in that case."
         )
     except Exception as exc:
-        return f"average([]) raised {type(exc).__name__}: {exc}"
+        return f"success_rate(0, 0) raised {type(exc).__name__}: {exc}"
     if got != 0:
-        return f"average([]) returned {got!r}, expected 0 for an empty list."
+        return f"success_rate(0, 0) returned {got!r}, expected 0.0 when total is 0."
     return True
 
 

@@ -169,27 +169,28 @@ grader.check("ex3_circle_area", lambda: checks.check_ex3(circle_area))
 
 # %% [markdown]
 # ---
-# ### Exercise 4: safe_divide
+# ### Exercise 4: safe_lookup
 #
-# Write a function `safe_divide(a, b)` that returns `a / b`. If `b` is zero,
-# catch the `ZeroDivisionError` and return the string
-# `"Cannot divide by zero."` instead of crashing.
+# A price catalog is a dictionary mapping each item name to its price, e.g.
+# `{"apple": 50, "pear": 75}`. Write a function `safe_lookup(prices, item)`
+# that returns `prices[item]`. If `item` isn't in the catalog, catch the
+# `KeyError` and return the string `"Item not found."` instead of crashing.
 #
 # | Call | Expected result |
 # |------|----------------|
-# | `safe_divide(10, 2)` | `5.0` |
-# | `safe_divide(9, 2)` | `4.5` |
-# | `safe_divide(10, 0)` | `"Cannot divide by zero."` |
+# | `safe_lookup({"apple": 50, "pear": 75}, "apple")` | `50` |
+# | `safe_lookup({"apple": 50, "pear": 75}, "pear")` | `75` |
+# | `safe_lookup({"apple": 50}, "banana")` | `"Item not found."` |
 #
-# *Tip: put the division inside a `try` block and handle*
-# *`except ZeroDivisionError:`.*
+# *Tip: put the lookup `prices[item]` inside a `try` block and handle*
+# *`except KeyError:`.*
 
 # %%
-def safe_divide(a, b):
+def safe_lookup(prices, item):
     pass  # ← delete this line and write your code here
 
 # %%
-grader.check("ex4_safe_divide", lambda: checks.check_ex4(safe_divide))
+grader.check("ex4_safe_lookup", lambda: checks.check_ex4(safe_lookup))
 
 # %% [markdown]
 # ---
@@ -228,31 +229,32 @@ grader.check("ex5_parse_scores", lambda: checks.check_ex5(parse_scores))
 
 # %% [markdown]
 # ---
-# ### Exercise 6: fix average
+# ### Exercise 6: fix success_rate
 #
-# The function `average(numbers)` is supposed to return the mean of a list.
-# It works for non-empty lists but **crashes on an empty list** with a
-# `ZeroDivisionError` (dividing by `len([])`, which is 0).
+# The function `success_rate(passed, total)` is supposed to return the
+# percentage of attempts that passed: `passed / total * 100`. It works when
+# `total` is positive but **crashes when `total` is 0** with a
+# `ZeroDivisionError` (dividing by 0).
 #
-# Fix it so that an empty list returns `0` instead of crashing. Leave the
-# behavior for non-empty lists unchanged.
+# Fix it so that `total == 0` returns `0.0` instead of crashing. Leave the
+# behavior for a positive `total` unchanged.
 #
 # | Call | Expected result |
 # |------|----------------|
-# | `average([2, 4, 6])` | `4.0` |
-# | `average([10])` | `10.0` |
-# | `average([])` | `0` |
+# | `success_rate(3, 4)` | `75.0` |
+# | `success_rate(9, 10)` | `90.0` |
+# | `success_rate(0, 0)` | `0.0` |
 #
-# *Tip: check whether the list is empty before dividing — `if len(numbers) == 0:`*
-# *return 0; otherwise do the normal calculation.*
+# *Tip: check whether `total` is 0 before dividing — `if total == 0:`*
+# *return 0.0; otherwise do the normal calculation.*
 
 # %%
-def average(numbers):
-    # BUG: this line crashes when numbers is empty. Fix the function.
-    return sum(numbers) / len(numbers)
+def success_rate(passed, total):
+    # BUG: this line crashes when total is 0. Fix the function.
+    return passed / total * 100
 
 # %%
-grader.check("ex6_average", lambda: checks.check_ex6(average))
+grader.check("ex6_success_rate", lambda: checks.check_ex6(success_rate))
 
 # %% [markdown]
 # ---

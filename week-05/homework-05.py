@@ -67,48 +67,48 @@ print("Ready!")
 
 # %% [markdown]
 # ---
-# ### Exercise 1: Dog
+# ### Exercise 1: Robot
 #
-# Define a class `Dog` with:
+# Define a class `Robot` with:
 # - an `__init__(self, name)` that stores `name` as an attribute, and
-# - a method `bark(self)` that returns the string `f"{name} says woof!"`.
+# - a method `speak(self)` that returns the string `f"{name} says beep boop!"`.
 #
 # | Code | Expected result |
 # |------|----------------|
-# | `Dog("Rex").name` | `"Rex"` |
-# | `Dog("Rex").bark()` | `"Rex says woof!"` |
-# | `Dog("Fifi").bark()` | `"Fifi says woof!"` |
+# | `Robot("R2D2").name` | `"R2D2"` |
+# | `Robot("R2D2").speak()` | `"R2D2 says beep boop!"` |
+# | `Robot("WallE").speak()` | `"WallE says beep boop!"` |
 
 # %%
-class Dog:
-    pass  # ← replace this with your __init__ and bark methods
+class Robot:
+    pass  # ← replace this with your __init__ and speak methods
 
 # %%
-grader.check("ex1_dog", lambda: checks.check_ex1(Dog))
+grader.check("ex1_robot", lambda: checks.check_ex1(Robot))
 
 # %% [markdown]
 # ---
-# ### Exercise 2: Counter
+# ### Exercise 2: Pedometer
 #
-# Define a class `Counter` with:
-# - an `__init__(self)` that sets `self.count = 0`,
-# - a method `increment(self)` that adds 1 to `self.count`, and
-# - a method `reset(self)` that sets `self.count` back to 0.
+# Define a class `Pedometer` with:
+# - an `__init__(self)` that sets `self.steps = 0`,
+# - a method `step(self)` that adds 1 to `self.steps`, and
+# - a method `reset(self)` that sets `self.steps` back to 0.
 #
 # | Code | Expected result |
 # |------|----------------|
-# | a fresh `Counter().count` | `0` |
-# | after `increment()` three times | `count == 3` |
-# | after `reset()` | `count == 0` |
+# | a fresh `Pedometer().steps` | `0` |
+# | after `step()` three times | `steps == 3` |
+# | after `reset()` | `steps == 0` |
 #
-# *Remember: inside a method, the attribute is `self.count`, never bare `count`.*
+# *Remember: inside a method, the attribute is `self.steps`, never bare `steps`.*
 
 # %%
-class Counter:
-    pass  # ← replace this with your __init__, increment, and reset methods
+class Pedometer:
+    pass  # ← replace this with your __init__, step, and reset methods
 
 # %%
-grader.check("ex2_counter", lambda: checks.check_ex2(Counter))
+grader.check("ex2_pedometer", lambda: checks.check_ex2(Pedometer))
 
 # %% [markdown]
 # ---
@@ -116,51 +116,51 @@ grader.check("ex2_counter", lambda: checks.check_ex2(Counter))
 
 # %% [markdown]
 # ---
-# ### Exercise 3: Rectangle
+# ### Exercise 3: GardenPlot
 #
-# Define a class `Rectangle` with:
-# - an `__init__(self, width, height)` storing both, and
-# - methods `area(self)` (returns `width * height`) and `perimeter(self)`
-#   (returns `2 * (width + height)`).
+# Define a class `GardenPlot` with:
+# - an `__init__(self, length, width)` storing both, and
+# - methods `area(self)` (returns `length * width`, the planting area) and
+#   `perimeter(self)` (returns `2 * (length + width)`, the fencing needed).
 #
 # | Code | Expected result |
 # |------|----------------|
-# | `Rectangle(3, 4).area()` | `12` |
-# | `Rectangle(3, 4).perimeter()` | `14` |
-# | `Rectangle(5, 5).area()` | `25` |
+# | `GardenPlot(3, 4).area()` | `12` |
+# | `GardenPlot(3, 4).perimeter()` | `14` |
+# | `GardenPlot(5, 5).area()` | `25` |
 
 # %%
-class Rectangle:
+class GardenPlot:
     pass  # ← replace this with your __init__, area, and perimeter methods
 
 # %%
-grader.check("ex3_rectangle", lambda: checks.check_ex3(Rectangle))
+grader.check("ex3_garden_plot", lambda: checks.check_ex3(GardenPlot))
 
 # %% [markdown]
 # ---
-# ### Exercise 4: BankAccount
+# ### Exercise 4: Warehouse
 #
-# Define a class `BankAccount` with:
-# - an `__init__(self, balance=0)` storing the starting balance (default 0),
-# - a method `deposit(self, amount)` that adds `amount` to the balance, and
-# - a method `withdraw(self, amount)` that:
-#     - if `amount` is **more than** the balance, returns the string
-#       `"Insufficient funds"` **and leaves the balance unchanged**, otherwise
-#     - subtracts `amount` from the balance and returns the new balance.
+# Define a class `Warehouse` with:
+# - an `__init__(self, stock=0)` storing the starting stock (default 0),
+# - a method `receive(self, amount)` that adds `amount` to the stock, and
+# - a method `ship(self, amount)` that:
+#     - if `amount` is **more than** the stock, returns the string
+#       `"Insufficient stock"` **and leaves the stock unchanged**, otherwise
+#     - subtracts `amount` from the stock and returns the new stock.
 #
 # | Code | Expected result |
 # |------|----------------|
-# | `BankAccount().balance` | `0` |
-# | after `deposit(50)` on a new account | `balance == 50` |
-# | `withdraw(30)` on a balance of 50 | returns `20`, balance is `20` |
-# | `withdraw(100)` on a balance of 20 | returns `"Insufficient funds"`, balance still `20` |
+# | `Warehouse().stock` | `0` |
+# | after `receive(50)` on a new warehouse | `stock == 50` |
+# | `ship(30)` on a stock of 50 | returns `20`, stock is `20` |
+# | `ship(100)` on a stock of 20 | returns `"Insufficient stock"`, stock still `20` |
 
 # %%
-class BankAccount:
-    pass  # ← replace this with your __init__, deposit, and withdraw methods
+class Warehouse:
+    pass  # ← replace this with your __init__, receive, and ship methods
 
 # %%
-grader.check("ex4_bank_account", lambda: checks.check_ex4(BankAccount))
+grader.check("ex4_warehouse", lambda: checks.check_ex4(Warehouse))
 
 # %% [markdown]
 # ---
@@ -168,26 +168,26 @@ grader.check("ex4_bank_account", lambda: checks.check_ex4(BankAccount))
 
 # %% [markdown]
 # ---
-# ### Exercise 5: Student
+# ### Exercise 5: Book
 #
-# Define a class `Student` with:
-# - an `__init__(self, name, grade)` storing both, and
-# - a `__str__(self)` method that returns `f"{name} (grade {grade})"`.
+# Define a class `Book` with:
+# - an `__init__(self, title, author)` storing both, and
+# - a `__str__(self)` method that returns `f"{title} by {author}"`.
 #
 # | Code | Expected result |
 # |------|----------------|
-# | `str(Student("Ada", 95))` | `"Ada (grade 95)"` |
-# | `str(Student("Bob", 72))` | `"Bob (grade 72)"` |
+# | `str(Book("Dune", "Herbert"))` | `"Dune by Herbert"` |
+# | `str(Book("1984", "Orwell"))` | `"1984 by Orwell"` |
 #
 # *Remember: `__str__` is what `print()` and `str()` use to turn an instance*
 # *into text.*
 
 # %%
-class Student:
+class Book:
     pass  # ← replace this with your __init__ and __str__ methods
 
 # %%
-grader.check("ex5_student", lambda: checks.check_ex5(Student))
+grader.check("ex5_book", lambda: checks.check_ex5(Book))
 
 # %% [markdown]
 # ---
@@ -213,28 +213,28 @@ grader.check("ex6_playlist", lambda: checks.check_ex6(Playlist))
 
 # %% [markdown]
 # ---
-# ### Exercise 7: Thermostat
+# ### Exercise 7: Elevator
 #
-# Tie it together. Define a class `Thermostat` with:
-# - an `__init__(self, temp)` storing the temperature,
-# - a method `warmer(self)` that raises `self.temp` by 1,
-# - a method `cooler(self)` that lowers `self.temp` by 1, and
-# - a method `is_freezing(self)` that returns `True` when `self.temp` is 32 or
-#   below, and `False` otherwise.
+# Tie it together. Define a class `Elevator` with:
+# - an `__init__(self, floor)` storing the current floor,
+# - a method `up(self)` that raises `self.floor` by 1,
+# - a method `down(self)` that lowers `self.floor` by 1, and
+# - a method `is_ground_floor(self)` that returns `True` when `self.floor` is 0,
+#   and `False` otherwise.
 #
 # | Code | Expected result |
 # |------|----------------|
-# | `Thermostat(70).temp` | `70` |
-# | after `warmer()` twice on 70 | `temp == 72` |
-# | `Thermostat(33)` then `cooler()` then `is_freezing()` | `True` |
-# | `Thermostat(70).is_freezing()` | `False` |
+# | `Elevator(3).floor` | `3` |
+# | after `up()` twice on 3 | `floor == 5` |
+# | `Elevator(1)` then `down()` then `is_ground_floor()` | `True` |
+# | `Elevator(3).is_ground_floor()` | `False` |
 
 # %%
-class Thermostat:
-    pass  # ← replace this with your __init__, warmer, cooler, and is_freezing methods
+class Elevator:
+    pass  # ← replace this with your __init__, up, down, and is_ground_floor methods
 
 # %%
-grader.check("ex7_thermostat", lambda: checks.check_ex7(Thermostat))
+grader.check("ex7_elevator", lambda: checks.check_ex7(Elevator))
 
 # %% [markdown]
 # ---

@@ -154,49 +154,49 @@ grader.check("ex3_count_word", lambda: checks.check_ex3(count_word))
 
 # %% [markdown]
 # ---
-# ### Exercise 4: filter_scores
+# ### Exercise 4: popular_pages
 #
-# Write a function `filter_scores(scores, min_score)` that takes a
-# dictionary of `{name: score}` pairs and returns a **new** dictionary
-# containing only the entries whose score is **greater than or equal to**
-# `min_score`.
+# Write a function `popular_pages(views, min_views)` that takes a
+# dictionary of `{page_name: view_count}` pairs and returns a **new**
+# dictionary containing only the pages whose view_count is **greater than
+# or equal to** `min_views`.
 #
 # | Call | Expected result |
 # |------|----------------|
-# | `filter_scores({"Alice": 92, "Bob": 65, "Carol": 80}, 80)` | `{"Alice": 92, "Carol": 80}` |
-# | `filter_scores({"Alice": 92, "Bob": 65}, 100)` | `{}` |
-# | `filter_scores({"Alice": 92, "Bob": 65}, 0)` | `{"Alice": 92, "Bob": 65}` |
+# | `popular_pages({"home": 1200, "about": 300, "blog": 800}, 800)` | `{"home": 1200, "blog": 800}` |
+# | `popular_pages({"home": 1200, "about": 300}, 5000)` | `{}` |
+# | `popular_pages({"home": 1200, "about": 300}, 0)` | `{"home": 1200, "about": 300}` |
 
 # %%
-def filter_scores(scores, min_score):
+def popular_pages(views, min_views):
     pass  # ← delete this line and write your code here
 
 # %%
-grader.check("ex4_filter_scores", lambda: checks.check_ex4(filter_scores))
+grader.check("ex4_popular_pages", lambda: checks.check_ex4(popular_pages))
 
 # %% [markdown]
 # ---
-# ### Exercise 5: best_score
+# ### Exercise 5: top_page
 #
-# Write a function `best_score(scores)` that takes a `{name: score}`
-# dictionary and returns the **name** of the student with the highest score.
+# Write a function `top_page(views)` that takes a `{page_name: view_count}`
+# dictionary and returns the **name** of the page with the most views.
 # You may assume the dictionary has at least one entry.
-# If two students are tied, returning either name is fine.
+# If two pages are tied, returning either name is fine.
 #
 # | Call | Expected result |
 # |------|----------------|
-# | `best_score({"Alice": 92, "Bob": 85, "Carol": 97})` | `"Carol"` |
-# | `best_score({"only": 75})` | `"only"` |
+# | `top_page({"home": 1200, "about": 300, "blog": 800})` | `"home"` |
+# | `top_page({"only": 75})` | `"only"` |
 #
 # *Hint: use the same "track the best so far" strategy from Week 2's*
-# *`largest` exercise — but now track a name and a score together.*
+# *`largest` exercise — but now track a page name and its view count together.*
 
 # %%
-def best_score(scores):
+def top_page(views):
     pass  # ← delete this line and write your code here
 
 # %%
-grader.check("ex5_best_score", lambda: checks.check_ex5(best_score))
+grader.check("ex5_top_page", lambda: checks.check_ex5(top_page))
 
 # %% [markdown]
 # ---
@@ -214,27 +214,28 @@ grader.check("ex5_best_score", lambda: checks.check_ex5(best_score))
 
 # %% [markdown]
 # ---
-# ### Exercise 6: min_max
+# ### Exercise 6: count_and_total
 #
-# Write a function `min_max(numbers)` that returns a **tuple** `(minimum,
-# maximum)` of a non-empty list of numbers.  You may use the built-in `min()`
-# and `max()`.
+# Write a function `count_and_total(numbers)` that returns a **tuple**
+# `(count, total)` for a list of numbers, where `count` is how many items
+# are in the list and `total` is their sum.  You may use the built-in
+# `len()` and `sum()`.
 #
 # | Call | Expected result |
 # |------|----------------|
-# | `min_max([3, 1, 4, 1, 5])` | `(1, 5)` |
-# | `min_max([7])` | `(7, 7)` |
-# | `min_max([-2, 0, 2])` | `(-2, 2)` |
+# | `count_and_total([3, 1, 4, 1, 5])` | `(5, 14)` |
+# | `count_and_total([7])` | `(1, 7)` |
+# | `count_and_total([])` | `(0, 0)` |
 #
-# *Tip: a tuple is just values separated by commas — `return min(...), max(...)`*
+# *Tip: a tuple is just values separated by commas — `return len(...), sum(...)`*
 # *returns the two of them as one tuple.*
 
 # %%
-def min_max(numbers):
+def count_and_total(numbers):
     pass  # ← delete this line and write your code here
 
 # %%
-grader.check("ex6_min_max", lambda: checks.check_ex6(min_max))
+grader.check("ex6_count_and_total", lambda: checks.check_ex6(count_and_total))
 
 # %% [markdown]
 # ---

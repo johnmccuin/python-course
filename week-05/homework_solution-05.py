@@ -49,36 +49,36 @@ print("Ready!")
 
 # %% [markdown]
 # ---
-# ### Exercise 1: Dog
+# ### Exercise 1: Robot
 
 # %%
-class Dog:
+class Robot:
     def __init__(self, name):
         self.name = name
 
-    def bark(self):
-        return f"{self.name} says woof!"
+    def speak(self):
+        return f"{self.name} says beep boop!"
 
 # %%
-grader.check("ex1_dog", lambda: checks.check_ex1(Dog))
+grader.check("ex1_robot", lambda: checks.check_ex1(Robot))
 
 # %% [markdown]
 # ---
-# ### Exercise 2: Counter
+# ### Exercise 2: Pedometer
 
 # %%
-class Counter:
+class Pedometer:
     def __init__(self):
-        self.count = 0
+        self.steps = 0
 
-    def increment(self):
-        self.count += 1
+    def step(self):
+        self.steps += 1
 
     def reset(self):
-        self.count = 0
+        self.steps = 0
 
 # %%
-grader.check("ex2_counter", lambda: checks.check_ex2(Counter))
+grader.check("ex2_pedometer", lambda: checks.check_ex2(Pedometer))
 
 # %% [markdown]
 # ---
@@ -86,43 +86,43 @@ grader.check("ex2_counter", lambda: checks.check_ex2(Counter))
 
 # %% [markdown]
 # ---
-# ### Exercise 3: Rectangle
+# ### Exercise 3: GardenPlot
 
 # %%
-class Rectangle:
-    def __init__(self, width, height):
+class GardenPlot:
+    def __init__(self, length, width):
+        self.length = length
         self.width = width
-        self.height = height
 
     def area(self):
-        return self.width * self.height
+        return self.length * self.width
 
     def perimeter(self):
-        return 2 * (self.width + self.height)
+        return 2 * (self.length + self.width)
 
 # %%
-grader.check("ex3_rectangle", lambda: checks.check_ex3(Rectangle))
+grader.check("ex3_garden_plot", lambda: checks.check_ex3(GardenPlot))
 
 # %% [markdown]
 # ---
-# ### Exercise 4: BankAccount
+# ### Exercise 4: Warehouse
 
 # %%
-class BankAccount:
-    def __init__(self, balance=0):
-        self.balance = balance
+class Warehouse:
+    def __init__(self, stock=0):
+        self.stock = stock
 
-    def deposit(self, amount):
-        self.balance += amount
+    def receive(self, amount):
+        self.stock += amount
 
-    def withdraw(self, amount):
-        if amount > self.balance:
-            return "Insufficient funds"
-        self.balance -= amount
-        return self.balance
+    def ship(self, amount):
+        if amount > self.stock:
+            return "Insufficient stock"
+        self.stock -= amount
+        return self.stock
 
 # %%
-grader.check("ex4_bank_account", lambda: checks.check_ex4(BankAccount))
+grader.check("ex4_warehouse", lambda: checks.check_ex4(Warehouse))
 
 # %% [markdown]
 # ---
@@ -130,19 +130,19 @@ grader.check("ex4_bank_account", lambda: checks.check_ex4(BankAccount))
 
 # %% [markdown]
 # ---
-# ### Exercise 5: Student
+# ### Exercise 5: Book
 
 # %%
-class Student:
-    def __init__(self, name, grade):
-        self.name = name
-        self.grade = grade
+class Book:
+    def __init__(self, title, author):
+        self.title = title
+        self.author = author
 
     def __str__(self):
-        return f"{self.name} (grade {self.grade})"
+        return f"{self.title} by {self.author}"
 
 # %%
-grader.check("ex5_student", lambda: checks.check_ex5(Student))
+grader.check("ex5_book", lambda: checks.check_ex5(Book))
 
 # %% [markdown]
 # ---
@@ -164,24 +164,24 @@ grader.check("ex6_playlist", lambda: checks.check_ex6(Playlist))
 
 # %% [markdown]
 # ---
-# ### Exercise 7: Thermostat
+# ### Exercise 7: Elevator
 
 # %%
-class Thermostat:
-    def __init__(self, temp):
-        self.temp = temp
+class Elevator:
+    def __init__(self, floor):
+        self.floor = floor
 
-    def warmer(self):
-        self.temp += 1
+    def up(self):
+        self.floor += 1
 
-    def cooler(self):
-        self.temp -= 1
+    def down(self):
+        self.floor -= 1
 
-    def is_freezing(self):
-        return self.temp <= 32
+    def is_ground_floor(self):
+        return self.floor == 0
 
 # %%
-grader.check("ex7_thermostat", lambda: checks.check_ex7(Thermostat))
+grader.check("ex7_elevator", lambda: checks.check_ex7(Elevator))
 
 # %% [markdown]
 # ---
