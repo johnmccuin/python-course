@@ -76,6 +76,10 @@ print(add(10, -2))  # 10 and -2 are the arguments
 x = 5
 y = 7
 print(add(x, y))  # x and y are the arguments
+print(add("bob", "cindy"))
+print (add(5.7,3.4))
+print (add(5.7,3))
+# print (add("cindy",5.67))
 
 # %% [markdown]
 # **TERMINOLOGY**
@@ -137,7 +141,7 @@ greet("Bob", "Good morning")   # overrides default
 # ### 1.6 Keyword Arguments
 
 # %%
-def describe_pet(animal, name):
+def describe_pet(animal, name="Unnamed"):
     print(f"I have a {animal} named {name}.")
 
 describe_pet("dog", "Rex")                    # positional
@@ -173,11 +177,11 @@ help(celsius_to_fahrenheit)
 
 # %%
 def compute():
-    x = 42
-    print(x)
+    x22 = 42
+    print(x22)
 
 compute()
-# print(x)   # NameError — x does not exist here
+print(x22)   # NameError — x22 does not exist here
 
 # %% [markdown]
 # Variables created *outside* any function are **global** and can be *read*
@@ -196,13 +200,13 @@ print(circle_area(5))
 # Inside a function, the value of local variables of the same name as global variables are used rather than the values of the global variables of the same name.
 
 # %%
-x =5
+x42 = 5
 def compute():
-    x = 42
-    print(x) # the local x (inside the function) is used instead of the global x (outside the function)
+    x42 = 42
+    print("inside", x42) # the local x (inside the function) is used instead of the global x (outside the function)
 
 compute()
-print(x)   # will print the value of x outside the function
+print("outside", x42)   # will print the value of x outside the function
 
 
 # %% [markdown]
@@ -215,6 +219,10 @@ def min_max(numbers):
 
 low, high = min_max([3, 1, 4, 1, 5, 9, 2, 6])
 print(f"Min: {low}, Max: {high}")
+low = min_max([3, 1, 4, 1, 5, 9, 2, 6])[0] # specified that we wanted the first value passed
+print(f"Min: {low}")
+low = min_max([3, 1, 4, 1, 5, 9, 2, 6])  # only last value passed is saved
+print(f"Max: {high}")
 
 # %% [markdown]
 # The comma creates a **tuple** — we'll cover tuples in depth in Part 4.
@@ -248,6 +256,9 @@ print(s[::2])   # every second character
 #
 # Instead, build a new string.
 
+# %%
+s[0]='h'
+
 # %% [markdown]
 # ### 2.2 Common String Methods
 
@@ -279,14 +290,16 @@ filename = "report_2026.txt"
 print(filename.startswith("report"))   # True
 print(filename.endswith(".txt"))        # True
 print(filename.find("2026"))           # index where substring starts (or -1)
+print(filename.find("2025"))           # index where substring starts (or -1)
 print("2026" in filename)              # True — membership test
+print("2025" in filename)              # False — membership test
 
 # %% [markdown]
 # ### 2.3 f-strings (review + more)
 
 # %%
 name = "Alice"
-score = 92.5
+score = 92.536
 
 # Basic interpolation
 print(f"Name: {name}, Score: {score}")
@@ -295,8 +308,9 @@ print(f"Name: {name}, Score: {score}")
 print(f"Score: {score:.1f}%")       # one decimal place
 print(f"Score: {score:06.2f}")      # zero-padded, 6 wide, 2 decimal places
 print(f"{'centered':^20}")          # center in 20 chars
-print(f"{'left':<20}|")             # left-align
-print(f"{'right':>20}|")            # right-align
+print("01234567890123456789")
+print(f"{'left':<20}")             # left-align
+print(f"{'right':>20}")            # right-align
 
 # %% [markdown]
 # ### 2.4 Multi-line Strings
@@ -323,14 +337,21 @@ print(poem.count("\n"))   # 3 newlines → 4 lines
 
 # %%
 # Literal syntax: {key: value, ...}
-student = {
+student1 = {
     "name": "Alice",
     "age": 20,
     "major": "Computer Science",
 }
 
-print(student)
-print(type(student))
+student2 = {
+    "name": "Bob",
+    "age": 21,
+    "major": "Mathematics",
+}
+
+print(student1)
+print(student2)
+print(type(student1))
 
 # %% [markdown]
 # Keys can be any **immutable** type (strings, numbers, tuples).
@@ -340,40 +361,44 @@ print(type(student))
 # ### 3.2 Accessing and Modifying Values
 
 # %%
-print(student["name"])    # Alice
-print(student["age"])     # 20
+print(student1["name"])    # Alice
+print(student2["age"])     # 20
 
 # Add a new key
-student["gpa"] = 3.8
+student1["gpa"] = 3.8
 
 # Update an existing key
-student["age"] = 21
+student1["age"] = 23
 
-print(student)
+print(student1)
+print(student2)
 
 # %% [markdown]
 # Accessing a key that doesn't exist raises `KeyError`.
 # Use `.get()` for a safe lookup with an optional default.
 
 # %%
-print(student.get("email"))           # None
-print(student.get("email", "n/a"))    # n/a
+print(student1.get("email"))           # None
+print(student1.get("email", "n/a"))    # n/a
+#print(student1["email"])             # gives error because email doesn't exist as a key
 
 # %% [markdown]
 # ### 3.3 Checking Membership
 
 # %%
-print("name" in student)      # True
-print("email" in student)     # False
+print("name" in student1)      # True
+print("email" in student1)     # False
 
 # %% [markdown]
 # ### 3.4 Removing Keys
 
 # %%
-del student["gpa"]
-removed = student.pop("major")   # removes and returns the value
+print(student1)
+del student1["gpa"]
+print(student1)
+removed = student1.pop("major")   # removes and returns the value
 print(removed)
-print(student)
+print(student1)
 
 # %% [markdown]
 # ### 3.5 Iterating Over a Dictionary
@@ -382,18 +407,18 @@ print(student)
 scores = {"Alice": 92, "Bob": 85, "Carol": 78}
 
 # Keys only (default)
-for name in scores:
-    print(name)
+for x in scores:
+    print(x)
 
 # %%
 # Values only
-for score in scores.values():
-    print(score)
+for x in scores.values():
+    print(x)
 
 # %%
 # Key-value pairs
-for name, score in scores.items():
-    print(f"{name}: {score}")
+for x, y in scores.items():
+    print(f"{x}: {y}")
 
 # %% [markdown]
 # ### 3.6 Useful Dictionary Patterns
@@ -411,6 +436,10 @@ print(freq)
 # Dict comprehension
 squares = {n: n**2 for n in range(1, 6)}
 print(squares)   # {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
+
+# %% [markdown]
+# **Exercise 3.1.** Create a dictionary `book` holding a key "title", an "author", and a "year".
+# Print a sentence using all three.
 
 # %% [markdown]
 # ---
@@ -431,8 +460,9 @@ single = (42,)             # a one-item tuple needs a trailing comma
 empty = ()
 
 print(point, type(point))
-print(rgb)
+print(rgb, type(rgb))
 print(single, type(single))
+print(empty, type(empty))
 
 # %% [markdown]
 # ### 4.2 Indexing Works Like Lists; Changing Does Not
@@ -445,7 +475,7 @@ print(point[0])    # 3
 print(point[-1])   # 4
 print(len(point))  # 2
 
-# point[0] = 99    # uncomment: TypeError — tuples are immutable
+point[0] = 99    # uncomment: TypeError — tuples are immutable
 
 # %% [markdown]
 # ### 4.3 Packing and Unpacking
@@ -466,7 +496,16 @@ print(city)
 a = 1
 b = 2
 a, b = b, a
-print(a, b)   # 2 1
+print(a, b)   # 2 1   pattern works without temp
+
+temp = a
+a = b
+b = temp
+print (a,b)
+
+a = b
+b = a
+print(a,b)  # pattern doesn't work without temp
 
 # %% [markdown]
 # ### 4.4 Returning Multiple Values Is Just a Tuple
@@ -504,7 +543,14 @@ print(f"17 = {q} * 5 + {r}")     # 17 = 3 * 5 + 2
 # Unpack it into three variables and print a sentence using all three.
 
 # %%
-# Your code here
+book = ("Harry Potter and the Sorcerer's Stone", "J.K. Rowling", 1997)
+title, author, year = book
+print(f"The book '{title}' by {author} was published in {year}.")
+
+
+# %%
+book = {"title": "Harry Potter and the Sorcerer's Stone", "author": "J.K. Rowling", "year": 1997}
+print(f"The book '{book['title']}' by {book['author']} was published in {book['year']}.")
 
 
 # %% [markdown]
@@ -513,7 +559,21 @@ print(f"17 = {q} * 5 + {r}")     # 17 = 3 * 5 + 2
 # variables `lo` and `hi`.
 
 # %%
-# Your code here
+def min_and_max(numbers):
+    return min(numbers), max(numbers)
+
+def min_and_max(numbers):
+    min = numbers[0]
+    max = numbers[0]
+    for num in numbers:
+        if num < min:
+            min = num
+        if num > max:
+            max = num
+    return min, max
+
+lo, hi = min_and_max([3, 1, 4, 1, 5, 9, 2, 6])
+print(f"Min: {lo}, Max: {hi}")
 
 
 # %% [markdown]
@@ -521,7 +581,10 @@ print(f"17 = {q} * 5 + {r}")     # 17 = 3 * 5 + 2
 # values in a single line using tuple unpacking, then print both.
 
 # %%
-# Your code here
+start = "Monday"
+end = "Friday"
+start, end = end, start
+print(start, end)
 
 
 # %% [markdown]
@@ -558,7 +621,9 @@ today = date.today()            # calling a method on the class itself
 print(today)                    # 2026-05-27
 print(today.year)               # attribute: no parentheses
 print(today.month)
-print(today.strftime("%B %d, %Y"))  # format as string
+print(today.strftime("%B %d, %Y"))  # method that returns a formatted string
+print(today.day)
+print(today.weekday())         # method, use parentheses
 
 # %%
 now = datetime.now()
@@ -573,7 +638,7 @@ print(age_days.days, "days old")
 # %% [markdown]
 # Notice: `today`, `birthday`, `now` are all **objects**.
 # They have *attributes* (`.year`, `.month`, `.days`) and
-# *methods* (`.strftime()`, `.today()`).
+# *methods* (`.strftime()`, `.today()`, and `now()`).
 
 # %% [markdown]
 # ### 5.3 `pathlib.Path` — file paths as objects
@@ -608,6 +673,7 @@ counts = Counter(words)
 print(counts)
 print(counts["apple"])           # 3
 print(counts.most_common(2))     # top 2
+
 
 # %% [markdown]
 # `Counter` is a dict subclass — all dict operations work on it.
@@ -645,6 +711,14 @@ print(counts.most_common(2))     # top 2
 
 # %%
 # Your code here
+def word_lengths(sentence):
+    words = sentence.split()  # string is split into a list of each word
+    length_dict = {}  # create an empty dictionary that will hold our dictionary mapping word lengths
+    for word in words:
+        length_dict[word] = len(word)   # each key is a word in the list, with the value = the length of the word
+    return length_dict
+
+word_lengths("hi there bob")
 
 
 # %% [markdown]
@@ -654,6 +728,22 @@ print(counts.most_common(2))     # top 2
 
 # %%
 # Your code here
+def most_frequent_char(s):
+    # start to process characters
+    char_count = {}  #make empty dictionary to hold my character count
+    for char in s:
+        if char == " ":  # skip whitespace
+            # print("skipping whitespace")  # a print statement for demonstration and testing
+            continue
+        elif char in char_count:
+            char_count[char] += 1
+        else:
+            char_count[char] = 1
+        #print(char_count)  # a print statement for demonstration and testing
+    return max(char_count, key=char_count.get)
+
+print(most_frequent_char(" Mi ssiss  ip  pi "))
+print(most_frequent_char(" Mi ssiss  ip  pi s"))
 
 
 # %% [markdown]
@@ -663,6 +753,11 @@ print(counts.most_common(2))     # top 2
 
 # %%
 # Your code here
+def high_low(numbers):
+    return min(numbers), max(numbers)
+
+lo, hi = high_low([3, 9, 1, -5, 0, 7])
+print(f"Min: {lo}, Max: {hi}")
 
 
 # %% [markdown]
@@ -672,6 +767,23 @@ print(counts.most_common(2))     # top 2
 
 # %%
 # Your code here
+from datetime import date
+
+def days_until(month, day):
+    today = date.today()   # get today's date
+    next_day = date(today.year, month, day)  # make a date object of the next date with a year of this year
+
+    # adjust next year if needed (i.e. is the next occurrence in this year or next year?)
+    if next_day < today:
+        next_day = date(today.year + 1, month, day)
+
+    return (next_day - today).days
+
+print(days_until(date.today().month, date.today().day))  # testing with today's date
+print(days_until(date.today().month, date.today().day-1))  # testing with one day before today's date
+print(days_until(date.today().month, date.today().day+1))  # testing with one day after today's date
+print(days_until(4, 15))
+print(days_until(12, 25))
 
 
 # %% [markdown]
@@ -685,3 +797,11 @@ print(counts.most_common(2))     # top 2
 
 # %%
 # Your code here
+def affordable_items(menu, budget):
+    affordable_menu = {}   # create empty dictionary to hold the affordable items
+    for item, price in menu.items():  # read the items (keys) and prices (values) from the menu dictionary
+        if price <= budget:   # if the price is less than our budget, add the item to the affordable dictionary
+            affordable_menu[item] = price
+    return affordable_menu
+
+print(affordable_items({"taco": 3, "burrito": 8, "soda": 2}, 3))

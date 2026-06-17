@@ -90,7 +90,9 @@ with open("sample.txt") as f:   # "r" is the default mode
 with open("sample.txt") as f:
     text = f.read()
 
-word_count = len(text.split())
+words = text.split()
+print(words)
+word_count = len(words)
 
 with open("summary.txt", "w") as f:
     f.write(f"Word count: {word_count}\n")
@@ -144,6 +146,7 @@ print(math.sqrt(16))    # 4.0
 print(math.pi)          # 3.14159…
 print(math.floor(3.7))  # 3
 print(math.ceil(3.2))   # 4
+print(math.e)
 
 # %% [markdown]
 # ### 2.2 Importing Specific Names
@@ -155,6 +158,7 @@ from math import sqrt, pi
 
 print(sqrt(25))   # 5.0
 print(pi)         # 3.14159…
+math.e                  # not in scope if entire package or math.e has not been previously loaded
 
 # %% [markdown]
 # ### 2.3 Aliases
@@ -163,9 +167,13 @@ print(pi)         # 3.14159…
 
 # %%
 import random as rnd
+import math as m
 import tensorflow as tf  # could type tf instead of full package name tensorflow
 
 print(rnd.randint(1, 6))    # instead of random.randint, simulated die roll
+print(random.randint(1,6))
+print(m.e)
+print(math.e)
 print(rnd.choice(["heads", "tails"]))  # instead of random.choice
 
 # %% [markdown]
@@ -238,6 +246,7 @@ print(string.punctuation)       # !"#$%&'()*+,...
 # %%
 # Your code here
 
+
 # %% [markdown]
 # **Exercise 2.3.** Use `os.path.exists` to check whether the file `"foods.txt"`
 # you made in Part 1 exists in the current directory.  Print a message saying
@@ -245,6 +254,7 @@ print(string.punctuation)       # !"#$%&'()*+,...
 
 # %%
 # Your code here
+
 
 # %% [markdown]
 # ---
@@ -266,9 +276,12 @@ print(string.punctuation)       # !"#$%&'()*+,...
 
 # %%
 try:
-    value = int("abc")
+    #value = "abc"
+    value = int(input("Enter an integer: "))
 except ValueError:
     print("That's not a valid integer.")
+    value = 0
+print(value)
 
 # %% [markdown]
 # The `except` block only runs if the specified exception type is raised.
@@ -295,7 +308,8 @@ except ZeroDivisionError as e:
 try:
     with open("does_not_exist.txt") as f:
         print(f.read())
-except FileNotFoundError:
+except FileNotFoundError as e:
+    #print(f"ERROR {e}")
     print("That file isn't here — check the name and try again.")
 
 # %% [markdown]
@@ -324,13 +338,24 @@ print(safe_divide(10, "x"))  # Both arguments must be numbers.
 
 # %%
 try:
-    number = int("42")
+    number = int("abc")
 except ValueError:
-    print("Bad input.")
+    print("Input must be convertible to an integer.")
 else:
-    print(f"Parsed successfully: {number}")   # runs here
+    print(f"Parsed successfully: {number}")   # else gets skipped since exception was raised
 finally:
     print("Done — this always runs.")
+
+# %%
+try:
+    number = int("4")
+except ValueError:
+    print("Input must be convertible to an integer.")
+else:
+    print(f"Parsed successfully: {number}")   # no exception, else block is run
+finally:
+    print("Done — this always runs.")
+
 
 # %% [markdown]
 # ### 3.7 Raising Exceptions
@@ -375,10 +400,11 @@ except ValueError as e:
 # %%
 # Your code here
 
+
 # %% [markdown]
 # **Exercise 3.2.** Write a function `read_int(prompt)` that uses `input()`
 # to ask the user for an integer.  If the user types something that isn't
-# a valid integer, print `"Please enter a whole number."` and return `None`.
+# a valid integer, print `"That was not an integer. Please enter an integer."` and return `None`.
 # Otherwise return the integer.
 
 # %%
@@ -392,6 +418,7 @@ except ValueError as e:
 
 # %%
 # Your code here
+
 
 # %% [markdown]
 # ---
@@ -414,8 +441,8 @@ def process(items):
     for item in items:
         total += double(item)
     return total
-
-#process([1, 2, "three"])   # uncomment to see the traceback
+print(process([1,2,3]))
+print(process([1, 2, "three"]))   # uncomment to see the traceback
 
 # %% [markdown]
 # A traceback reads **bottom-up**:
@@ -440,8 +467,8 @@ def process(items):
 # %%
 # Bug 1: Off-by-one in a loop
 items = [10, 20, 30]
-# for i in range(len(items) + 1):   # IndexError on the last iteration
-#     print(items[i])
+for i in range(len(items) + 1):   # IndexError on the last iteration
+    print(items[i])
 
 # %% [markdown]
 # **Notice:** the error is `IndexError: list index out of range`.
@@ -450,8 +477,8 @@ items = [10, 20, 30]
 # %%
 # Bug 2: Using = instead of == in a condition
 x = 5
-# if x = 5:           # SyntaxError — caught before the program runs
-#     print("five")
+if x = 5:           # SyntaxError — caught before the program runs
+    print("five")
 
 if x == 5:
     print("five")
@@ -462,7 +489,7 @@ if x == 5:
 
 # %%
 # Bug 3: Calling a function before defining it
-# print(greet("Alice"))   # NameError — greet isn't defined yet
+print(greet("Alice"))   # NameError — greet isn't defined yet
 
 def greet(name):
     return f"Hello, {name}!"
@@ -477,8 +504,8 @@ print(greet("Alice"))
 # %%
 def find_first_negative(numbers):
     for i, n in enumerate(numbers):
-        print(f"  checking index {i}: {n}")   # debug print
-        if n <= 0:  # starting with error, <= instead of <
+        #print(f"  checking index {i}: {n}")   # debug print
+        if n < 0:  # starting with error, <= instead of <
             return i, n
     return -1
 
@@ -517,14 +544,15 @@ print(f"First negative at index: {index} for number {number}")
 def average(numbers):
     return sum(numbers) / len(numbers)
 
-# print(average([]))   # uncomment to see the error, then fix the function above
+print(average([3, 4]))   # uncomment to see the error, then fix the function above
 
 # %% [markdown]
 # **Exercise 4.2.** The loop below is supposed to print the squares of 1–5,
-# but it has an off-by-one error.  Find and fix it.
+# but it has an error.  Find and fix it.
 
 # %%
-for i in range(1, 5):   # bug is here
+print("The squares of 1-5 are as follows:")
+for i in range(1, 5):
     print(i ** 2)
 
 # %% [markdown]
@@ -540,7 +568,7 @@ def count_evens(numbers):
             count += 1
     return count
 
-print(count_evens([1, 2, 3, 4, 5, 6]))
+print(count_evens([11, 22, 33, 44, 55, 66]))
 
 # %% [markdown]
 # ---
@@ -560,7 +588,7 @@ print(count_evens([1, 2, 3, 4, 5, 6]))
 # ### 5.1 Basic Assertions
 
 # %%
-x = 42
+x = 4.2
 assert x > 0, "x must be positive"
 assert isinstance(x, int), "x must be an integer"
 print("Both assertions passed.")
@@ -592,12 +620,27 @@ def bmi(weight_kg, height_m):
     assert height_m > 0, f"height must be positive, got {height_m}"
     return weight_kg / height_m ** 2
 
-print(bmi(70, 1.75))   # 22.86
+# Can try not inside try block
+# print(bmi(70, 1.75))   # 22.86
+# print(bmi(-5, 1.75))
 
+# Can try with validated input
 try:
-    print(bmi(-5, 1.75))
+    weight_kg = float(input("Enter your weight in kg: "))
+    height_m = float(input("Enter your height in m: "))
+except ValueError as e:
+    print(f"Invalid input: {e}")
+
+# can try bmi inside try block
+try:
+    print(bmi(weight_kg, height_m))
 except AssertionError as e:
     print(f"AssertionError: {e}")
+
+# try:
+#     print(bmi(-5, 1.75))
+# except AssertionError as e:
+#     print(f"AssertionError: {e}")
 
 # %% [markdown]
 # ### 5.4 Checking Function Outputs
@@ -615,7 +658,7 @@ print(clamp(5, 0, 10))    # 5
 print(clamp(-3, 0, 10))   # 0
 print(clamp(15, 0, 10))   # 10
 
-# print(clamp(15, 10, 0))  # assert raises error and crashes since not in try
+print(clamp(15, 10, 0))  # assert raises error and crashes since not in try
 try:
     print(clamp(15, 10, 0))
 except AssertionError as e:
@@ -654,6 +697,7 @@ except AssertionError as e:
 # %%
 # Your code here
 
+
 # %% [markdown]
 # **Exercise 5.3.** The function below computes a letter grade from a
 # percentage score.  Add an assertion that `score` is between 0 and 100
@@ -673,9 +717,12 @@ def letter_grade(score):
     else:
         return "F"
 
-print(letter_grade(85))
+try:
+    print(letter_grade(85))
+except AssertionError as e:
+    print(f"AssertionError: {e}")
 
-# try:
-#     print(letter_grade(110))
-# except AssertionError as e:
-#     print(f"AssertionError: {e}")
+try:
+    print(letter_grade(110))
+except AssertionError as e:
+    print(f"AssertionError: {e}")
