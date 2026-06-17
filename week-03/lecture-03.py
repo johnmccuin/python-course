@@ -221,8 +221,8 @@ low, high = min_max([3, 1, 4, 1, 5, 9, 2, 6])
 print(f"Min: {low}, Max: {high}")
 low = min_max([3, 1, 4, 1, 5, 9, 2, 6])[0] # specified that we wanted the first value passed
 print(f"Min: {low}")
-low = min_max([3, 1, 4, 1, 5, 9, 2, 6])  # only last value passed is saved
-print(f"Max: {high}")
+low = min_max([3, 1, 4, 1, 5, 9, 2, 6])  # if two variables are not listed, the entire tuple is saved in the variable
+print(f"Max: {low}")
 
 # %% [markdown]
 # The comma creates a **tuple** — we'll cover tuples in depth in Part 4.
